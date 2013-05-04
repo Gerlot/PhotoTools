@@ -1,0 +1,93 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".DeadlinesDetailActivity" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin" >
+
+        <TextView
+            android:id="@+id/textViewDeadlineName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Model Shoot"
+            android:textColor="@color/abs__holo_blue_light"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/textViewDeadlineTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textViewDeadlineName"
+            android:layout_below="@+id/textViewDeadlineName"
+            android:layout_marginTop="10dp"
+            android:text="08:00-10:00"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textViewDeadlineDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textViewDeadlineName"
+            android:layout_below="@+id/textViewDeadlineTime"
+            android:layout_marginTop="10dp"
+            android:text="2013. May 10., Friday"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textViewDeadlineLocationLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textViewDeadlineName"
+            android:layout_below="@+id/textViewDeadlineDate"
+            android:layout_marginTop="10dp"
+            android:text="Location:"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textViewDeadlineLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textViewDeadlineLocationLabel"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/textViewDeadlineLocationLabel"
+            android:text="SPOT Studio, Schönherz Dormitory"
+            android:textSize="15sp" />
+
+        <View
+            android:id="@+id/separator"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/textViewDeadlineLocationLabel"
+            android:layout_marginTop="28dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/textViewDeadlineNotesLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textViewDeadlineName"
+            android:layout_below="@+id/separator"
+            android:layout_marginTop="10dp"
+            android:text="Notes:"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textViewDeadlineNotes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textViewDeadlineName"
+            android:layout_below="@+id/textViewDeadlineNotesLabel"
+            android:layout_marginTop="10dp"
+            android:text="(No notes for this deadline)"
+            android:textColor="@color/abs__bright_foreground_disabled_holo_light"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</ScrollView>

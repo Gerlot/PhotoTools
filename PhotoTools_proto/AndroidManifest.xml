@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="hu.bute.gb.onlab.PhotoToolsProto"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
+    <application
+        android:allowBackup="true"
+        android:debuggable="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.StatsActivity"
+            android:label="@string/title_activity_stats" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.FriendsActivity"
+            android:label="@string/title_activity_friends" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.LocationsActivity"
+            android:label="@string/title_activity_locations" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.LocationsDetailActivity"
+            android:label="@string/title_activity_locations_detail" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.FriendsDetailActivity"
+            android:label="@string/title_activity_friends_detail" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.EquipmentActivity"
+            android:label="@string/title_activity_equipment" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.EquipmentDetailActivity"
+            android:label="@string/title_activity_equipment_detail" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.DeadlinesActivity"
+            android:label="@string/title_activity_deadlines" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.DeadlinesDetailActivity"
+            android:label="@string/title_activity_deadlines_detail" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.OnMapActivity"
+            android:label="@string/title_activity_on_map" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.DeadlinesEditActivity"
+            android:label="@string/title_activity_deadlines_edit" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.EquipmentEditActivity"
+            android:label="@string/title_activity_equipment_edit" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.FriendsEditActivity"
+            android:label="@string/title_activity_friends_edit" >
+        </activity>
+        <activity
+            android:name="hu.bute.gb.onlab.PhotoToolsProto.LocationsEditActivity"
+            android:label="@string/title_activity_locations_edit" >
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App-wide -->
+    <string name="app_name">pPhotoTools</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_on_map">Showing Nearby Locations</string>
+    <string name="search">Search</string>
+    <string name="camera">Camera</string>
+    <string name="lenses">Lenses</string>
+    <string name="filters">Filters</string>
+    <string name="flashes">Flashes</string>
+    <string name="memory_cards_and_readers">Memory Cards &amp; Readers</string>
+    <string name="accessories">Accessories</string>
+    <string name="search">Search</string>
+    <string name="yes_delete">Yes, Delete</string>
+    <string name="no_cancel">No, Cancel</string>
+    <string name="save">Save</string>
+    
+    <!-- MainActivity -->
+    <string name="action_settings">Settings</string>
+    <string name="locations">Locations</string>
+    <string name="deadlines">Deadlines</string>
+    <string name="equipment">Equipment</string>
+    <string name="friends">Friends</string>
+    <string name="stats">Stats</string>
+    
+    <!-- Locations -->
+    <string name="title_activity_locations">Locations</string>
+    <string name="title_activity_locations_detail">Locations</string>
+    <string name="title_activity_locations_edit">LocationsEditActivity</string>
+    <string name="new_location">New Location</string>
+    <string name="edit_location">Edit Location</string>
+    <string name="delete_location">Delete Location</string>
+    <string name="location_name">Name:</string>
+    <string name="address">Address:</string>
+    <string name="coordinates">Coordinates:</string>
+    <string name="carentry">Car entry</string>
+    <string name="powersource">Power source</string>
+    <string name="notes">Notes:</string>
+    <string name="nearby_locations">Nearby Locations</string>
+    <string name="show_location_stats">Show Location Stats</string>
+    <string name="delete_location_confirmation">Do you really want to delete this location?</string>
+    <string name="empty_locationlist">You don\'t have any saved locations. Let\'s go explore and add some!</string>
+    <string name="no_location_name_specified">Please specify a name to this location!</string>
+    
+    
+    <!-- Deadlines -->
+    <string name="title_activity_deadlines">Deadlines</string>
+    <string name="title_activity_deadlines_detail">Deadline Details</string>
+    <string name="title_activity_deadlines_edit">DeadlinesEditActivity</string>
+    <string name="new_deadline">New Deadline</string>
+    <string name="edit_deadline">Edit Deadline</string>
+    <string name="delete_deadline">Delete Deadline</string>
+    <string name="delete_deadline_confirmation">Do you really want to delete this deadline?</string>
+    <string name="empty_deadlinelist">You can have a rest. You don\'t have any upcoming deadline.</string>
+    <string name="no_deadline_name_specified">Please specify a name to this deadline!</string>
+    <string name="deadline_name">Deadline Name</string>
+    <string name="when">When:</string>
+    <string name="location">Location</string>
+    <string name="deadlinenotes">Notes</string>
+    
+    <!-- Equipment -->
+    <string name="title_activity_equipment">Equipment</string>
+    <string name="title_activity_equipment_detail">Equipment Details</string>
+    <string name="title_activity_equipment_edit">EquipmentEditActivity</string>
+    <string name="new_equipment">New Equipment</string>
+    <string name="edit_equipment">Edit Equipment</string>
+    <string name="delete_equipment">Delete Equipment</string>
+    <string name="equipmentname">Name</string>
+    <string name="equipmentcategory">Category</string>
+    <string name="equipmentnotes">Notes</string>
+    <string name="lent_to">Lent To</string>
+    <string name="lend_equipment">Lend this eqipment</string>
+    <string name="delete_equipment_confirmation">Do you really want to delete this equipment?</string>
+    <string name="no_equipment_name_specified">Please specify a name to this equipment!</string>
+    <string name="lend_to">Lend to someone</string>
+    
+    <!-- Friends -->
+    <string name="title_activity_friends"></string>
+    <string name="title_activity_friends_detail">Friends</string>
+    <string name="title_activity_friends_edit">FriendsEditActivity</string>
+    <string name="add_friend">Add Friend</string>
+    <string name="edit_friend">Edit Friend</string>
+    <string name="delete_friend">Delete Friend</string>
+    <string name="new_friend">New friend</string>
+    <string name="existing_contact">Import from contacts</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
+    <string name="friendaddress">Address</string>
+    <string name="friendlent">Lent equipment</string>
+    <string name="all_friends">All Friends</string>
+    <string name="delete_friend_confirmation">Do you really want to delete this friend?\n</string>
+    <string name="delete_friend_note">Note: It will only be deleted from this application, not the phone\'s contact list.</string>
+    <string name="no_friend_name_specified">Please specify a name to this friend!</string>
+    <string name="lend_equipment">Lend equipment</string>
+    
+    <!-- Stats -->
+    <string name="title_activity_stats">Stats</string>
+    <string name="focal_length_stats">Focal Length Stats</string>
+    <string name="location_stats">Location Stats</string>
+
+</resources>

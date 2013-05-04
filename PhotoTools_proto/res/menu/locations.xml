@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_search"
+        android:title="@string/search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:actionLayout="@layout/collapsible_edittext"
+        android:showAsAction="ifRoom|collapseActionView"/>
+    
+    <item
+        android:id="@+id/action_new_location"
+        android:title="@string/new_location"
+        android:icon="@android:drawable/ic_menu_add"
+        android:showAsAction="ifRoom|withText"/>
+    
+    <item
+        android:id="@+id/action_nearby_locations"
+        android:title="@string/nearby_locations"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:showAsAction="ifRoom|withText"/>
+    
+    <item
+        android:id="@+id/action_location_stats"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/show_location_stats"/>
+
+</menu>
