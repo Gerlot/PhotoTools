@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="menu">
+        <item>@string/all_friends</item>
+        <item>@string/lent_to</item>
+    </string-array>
+    <string-array name="equipment_categories">
+        <item>@string/camera</item>
+        <item>@string/lenses</item>
+        <item>@string/filters</item>
+        <item>@string/flashes</item>
+        <item>@string/memory_cards_and_readers</item>
+        <item>@string/accessories</item>
+    </string-array>
+    <string-array name="add_friend">
+        <item>@string/existing_contact</item>
+        <item>@string/new_friend</item>
+    </string-array>
+    <string-array name="stats">
+        <item>@string/focal_length_stats</item>
+        <item>@string/location_stats</item>
+    </string-array>
+</resources>

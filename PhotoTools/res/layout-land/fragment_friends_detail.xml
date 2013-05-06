@@ -1,0 +1,134 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".FriendsDetailActivity" >
+
+    <ImageView
+        android:id="@+id/imageViewFriend"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/android_contact" />
+
+    <ScrollView
+        android:id="@+id/scrollViewFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/imageViewFriend" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp" >
+
+            <TextView
+                android:id="@+id/textViewFriendName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Aladár Kovács"
+                android:textColor="@color/abs__holo_blue_light"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textViewFriendPhoneLabel"
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewFriendName"
+                android:text="@string/phone" />
+
+            <RelativeLayout
+                android:id="@+id/realtiveLayoutPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewFriendPhoneLabel"
+                android:background="@color/listitem_colors"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/textViewFriendPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:text="+36 20 123 4567"
+                    android:textSize="24sp" />
+
+                <ImageButton
+                    android:id="@+id/imageButtonSms"
+                    android:layout_width="53dp"
+                    android:layout_height="53dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/textViewFriendPhoneLabel"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/sms" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/textViewFriendEmailLabel"
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/realtiveLayoutPhone"
+                android:layout_marginTop="10dp"
+                android:text="@string/email" />
+
+            <TextView
+                android:id="@+id/textViewFriendEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textViewFriendEmailLabel"
+                android:layout_below="@+id/textViewFriendEmailLabel"
+                android:layout_marginTop="10dp"
+                android:text="antonio.banderas@hollywood.com"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textViewFriendAddressLabel"
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewFriendEmail"
+                android:layout_marginTop="10dp"
+                android:text="@string/friendaddress" />
+
+            <TextView
+                android:id="@+id/textViewFriendAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textViewFriendAddressLabel"
+                android:layout_below="@+id/textViewFriendAddressLabel"
+                android:layout_marginTop="10dp"
+                android:text="1117 Budapest, Irinyi József St 42"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textViewFriendLentLabel"
+                style="?android:attr/listSeparatorTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewFriendAddress"
+                android:layout_marginTop="10dp"
+                android:text="@string/friendlent" />
+
+            <LinearLayout
+                android:id="@+id/linearLayoutLentEquipment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textViewFriendLentLabel"
+                android:layout_below="@+id/textViewFriendLentLabel"
+                android:orientation="vertical" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

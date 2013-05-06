@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_search"
+        android:title="@string/search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:actionLayout="@layout/collapsible_edittext"
+        android:showAsAction="ifRoom|collapseActionView"/>
+    
+    <item
+        android:id="@+id/action_add_friend"
+        android:title="@string/add_friend"
+        android:icon="@android:drawable/ic_menu_add"
+        android:showAsAction="ifRoom|withText"/>
+
+</menu>
