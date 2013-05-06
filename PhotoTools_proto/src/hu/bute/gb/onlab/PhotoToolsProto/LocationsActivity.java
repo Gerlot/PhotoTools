@@ -7,18 +7,23 @@ import hu.bute.gb.onlab.PhotoToolsProto.fragment.MenuListFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class LocationsActivity extends SherlockFragmentActivity {
@@ -29,6 +34,8 @@ public class LocationsActivity extends SherlockFragmentActivity {
 	private FragmentManager fragmentManager_;
 	private LocationsListFragment locationsListFragment_;
 	private SlidingMenu menu;
+
+	private EditText editTextSearch_;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +81,7 @@ public class LocationsActivity extends SherlockFragmentActivity {
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.menu_frame, MenuListFragment.newInstance(0, menu)).commit();
 
-	}	
+	}
 
 	public void showLocationDetails(int index) {
 		if (fragmentContainer_ != null) {
@@ -141,6 +148,12 @@ public class LocationsActivity extends SherlockFragmentActivity {
 	}
 
 	@Override
+	public void onOptionsMenuClosed(android.view.Menu menu) {
+		super.onOptionsMenuClosed(menu);
+		Toast.makeText(LocationsActivity.this, "closed", Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
@@ -152,6 +165,8 @@ public class LocationsActivity extends SherlockFragmentActivity {
 			finish();
 			return true;
 		case R.id.action_search:
+			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 			return true;
 		case R.id.action_nearby_locations:
 			Intent mapIntent = new Intent();
@@ -173,6 +188,40 @@ public class LocationsActivity extends SherlockFragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.locations, menu);
+		
+		final EditText editTextSearch = (EditText) menu.findItem(R.id.action_search).getActionView();
+		editTextSearch.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence charSequence, int start, int before,
+					int count) {
+				locationsListFragment_.search(charSequence);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void afterTextChanged(Editable s) {}
+		});
+		
+		MenuItem searchItem = (MenuItem) menu.getItem(0);
+		searchItem.setOnActionExpandListener(new OnActionExpandListener() {
+			
+			@Override
+			public boolean onMenuItemActionExpand(MenuItem item) {
+				editTextSearch.requestFocus();
+				return true;
+			}
+			
+			@Override
+			public boolean onMenuItemActionCollapse(MenuItem item) {
+				editTextSearch.setText("");
+				locationsListFragment_.listAdapter.clear();
+				locationsListFragment_.populateList();
+				return true;
+			}
+		});
 		return super.onCreateOptionsMenu(menu);
 	}
 

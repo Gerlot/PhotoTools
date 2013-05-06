@@ -31,7 +31,7 @@ public class FriendsListFragment extends SherlockListFragment {
 	// Log tag
 	public static final String TAG = "FriendsListFragment";
 	public boolean isAllSelected = true;
-	private boolean addedSection_ = false;
+	public boolean isEmpty = true;
 
 	private DummyModel model_;
 	private FriendsActivity activity_;
@@ -42,7 +42,6 @@ public class FriendsListFragment extends SherlockListFragment {
 		super.onAttach(activity);
 		activity_ = (FriendsActivity) activity;
 		model_ = DummyModel.getInstance();
-
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class FriendsListFragment extends SherlockListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		allPhotoToolersSelected();
+		allFriendsSelected(null);
 
 		ListView listView = getListView();
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -85,13 +84,13 @@ public class FriendsListFragment extends SherlockListFragment {
 			}
 			TextView title = (TextView) convertView.findViewById(R.id.row_title);
 			title.setText(getItem(position).tag);
-			
+
 			// Only put up sign if has lent item(s)
 			ImageView sign = (ImageView) convertView.findViewById(R.id.row_sign);
 			if (!getItem(position).hasLentItem) {
 				sign.setVisibility(View.INVISIBLE);
 			}
-			
+
 			ImageView icon = (ImageView) convertView.findViewById(R.id.row_icon);
 			icon.setImageResource(getItem(position).iconRes);
 
@@ -109,7 +108,7 @@ public class FriendsListFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		super.onListItemClick(listView, view, position, id);
-		if (addedSection_) {
+		if (!isEmpty) {
 			activity_.showFriendDetails(position);
 			selectedPosition_ = position;
 		}
@@ -120,44 +119,28 @@ public class FriendsListFragment extends SherlockListFragment {
 		super.onDetach();
 		activity_ = null;
 	}
-
-	public void allPhotoToolersSelected() {
-		activity_.friendsOnView.clear();
-
-		// Create the friend list with custom adapter
-		SeparatedListAdapter adapter = new SeparatedListAdapter(getActivity());
-		for (Map.Entry<String, TreeSet<Friend>> alphabet : model_.friends.entrySet()) {
-
-			FriendAdapter friendAdapter = new FriendAdapter(getActivity());
-
-			TreeSet<Friend> current = alphabet.getValue();
-			activity_.friendsOnView.add(Integer.valueOf(0));
-			for (Friend friend : current) {
-				
-				// Put warning sign if has lent items
-				if (friend.getLentItems() != null) {
-					friendAdapter.add(new FriendItem(friend.getFirstName() + " "
-							+ friend.getLastName(), true, R.drawable.android_contact));
-					activity_.friendsOnView.add(Integer.valueOf(friend.getID()));
-				}
-				else {
-					friendAdapter.add(new FriendItem(friend.getFirstName() + " "
-							+ friend.getLastName(), false, R.drawable.android_contact));
-					activity_.friendsOnView.add(Integer.valueOf(friend.getID()));
-				}
-				
-			}
-			adapter.addSection(alphabet.getKey(), friendAdapter);
-			addedSection_ = true;
+	
+	public void search(CharSequence searchFilter){
+		if (isAllSelected) {
+			allFriendsSelected(searchFilter);
 		}
-		setListAdapter(adapter);
+		else {
+			lentToSelected(searchFilter);
+		}
+		
+		if (isEmpty) {
+			ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(),
+					android.R.layout.simple_list_item_1);
+			emptyAdapter.add(getResources().getString(R.string.search_no_result));
+			setListAdapter(emptyAdapter);
+		}
 	}
 
-	public void lentToSelected() {
+	public void allFriendsSelected(CharSequence searchFilter) {
 		activity_.friendsOnView.clear();
+		isEmpty = true;
 
 		// Create the friend list with custom adapter
-		addedSection_ = false;
 		SeparatedListAdapter adapter = new SeparatedListAdapter(getActivity());
 		for (Map.Entry<String, TreeSet<Friend>> alphabet : model_.friends.entrySet()) {
 
@@ -167,31 +150,79 @@ public class FriendsListFragment extends SherlockListFragment {
 			boolean addedFriend = false;
 			activity_.friendsOnView.add(Integer.valueOf(0));
 			for (Friend friend : current) {
-				
-				// Only add friends with lent items
-				if (friend.getLentItems() != null) {
-					friendAdapter.add(new FriendItem(friend.getFirstName() + " "
-							+ friend.getLastName(), false, R.drawable.android_contact));
-					activity_.friendsOnView.add(Integer.valueOf(friend.getID()));
+
+				// Filter by search term if searched
+				if (searchFilter == null
+						|| friend.getFullNameFirstLast().toLowerCase()
+								.contains(searchFilter.toString().toLowerCase())) {
+					// Put warning sign if has lent items
+					if (friend.getLentItems() != null) {
+						friendAdapter.add(new FriendItem(friend.getFirstName() + " "
+								+ friend.getLastName(), true, R.drawable.android_contact));
+						activity_.friendsOnView.add(Integer.valueOf(friend.getID()));
+					}
+					else {
+						friendAdapter.add(new FriendItem(friend.getFirstName() + " "
+								+ friend.getLastName(), false, R.drawable.android_contact));
+						activity_.friendsOnView.add(Integer.valueOf(friend.getID()));
+					}
 					addedFriend = true;
 				}
-				
 			}
+			// Only add section, if has child items
 			if (addedFriend) {
 				adapter.addSection(alphabet.getKey(), friendAdapter);
-				addedSection_ = true;
+				isEmpty = false;
 			}
 			else {
 				activity_.friendsOnView.remove(activity_.friendsOnView.size() - 1);
 			}
 		}
-		if (addedSection_) {
+		setListAdapter(adapter);
+	}
+
+	public void lentToSelected(CharSequence searchFilter) {
+		activity_.friendsOnView.clear();
+		isEmpty = true;
+
+		// Create the friend list with custom adapter
+		SeparatedListAdapter adapter = new SeparatedListAdapter(getActivity());
+		for (Map.Entry<String, TreeSet<Friend>> alphabet : model_.friends.entrySet()) {
+
+			FriendAdapter friendAdapter = new FriendAdapter(getActivity());
+
+			TreeSet<Friend> current = alphabet.getValue();
+			boolean addedFriend = false;
+			activity_.friendsOnView.add(Integer.valueOf(0));
+			for (Friend friend : current) {
+
+				// Only add friends with lent items
+				// Filter by search term if searched
+				if ((searchFilter == null || friend.getFullNameFirstLast().toLowerCase()
+						.contains(searchFilter.toString().toLowerCase()))
+						&& friend.getLentItems() != null) {
+					friendAdapter.add(new FriendItem(friend.getFirstName() + " "
+							+ friend.getLastName(), false, R.drawable.android_contact));
+					activity_.friendsOnView.add(Integer.valueOf(friend.getID()));
+					addedFriend = true;
+				}
+
+			}
+			if (addedFriend) {
+				adapter.addSection(alphabet.getKey(), friendAdapter);
+				isEmpty = false;
+			}
+			else {
+				activity_.friendsOnView.remove(activity_.friendsOnView.size() - 1);
+			}
+		}
+		if (!isEmpty) {
 			setListAdapter(adapter);
 		}
 		else {
 			ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(),
 					android.R.layout.simple_list_item_1);
-			emptyAdapter.add("Huh. No friend has any of your gear!");
+			emptyAdapter.add(getResources().getString(R.string.no_lent_to));
 			setListAdapter(emptyAdapter);
 		}
 

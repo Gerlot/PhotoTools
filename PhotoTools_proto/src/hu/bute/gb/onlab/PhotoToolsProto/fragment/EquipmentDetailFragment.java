@@ -85,6 +85,8 @@ public class EquipmentDetailFragment extends SherlockFragment {
 		textViewLentTo_ = (TextView) view.findViewById(R.id.textViewLentTo);
 		imageViewLentTo_ = (ImageView) view.findViewById(R.id.imageViewLentTo);
 		linearLayoutLend_ = (LinearLayout) view.findViewById(R.id.linearLayoutLend);
+		
+		final EquipmentDetailFragment fragment = this;
 
 		if (equipment_.getLentTo() == 0) {
 			linearLayoutLentTo_.setVisibility(View.GONE);
@@ -92,35 +94,13 @@ public class EquipmentDetailFragment extends SherlockFragment {
 				
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					
+					FriendSelectorDialog dialog = FriendSelectorDialog.newInstance(fragment);
+					dialog.show(getFragmentManager(), "Select Friend");
 				}
 			});
 		}
 		else {
-			Friend friend = model_.getFriendById(equipment_.getLentTo());
-			linearLayoutLend_.setVisibility(View.GONE);
-			textViewLentTo_.setText(friend.getFirstName() + " " + friend.getLastName());
-			imageViewLentTo_.setImageResource(R.drawable.android_contact);
-
-			textViewLentTo_.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					int index = equipment_.getLentTo();
-					Intent myIntent = new Intent();
-					if (!tabletSize_) {
-						myIntent.setClass(getActivity(), FriendsDetailActivity.class);
-					}
-					else {
-						myIntent.setClass(getActivity(), FriendsActivity.class);
-					}
-					myIntent.putExtra("showafriend", true);
-					myIntent.putExtra("index", index);
-					startActivity(myIntent);
-				}
-			});
-
+			showFriendLentTo();
 		}
 
 		return view;
@@ -142,5 +122,36 @@ public class EquipmentDetailFragment extends SherlockFragment {
 
 	public int getSelectedEquipment() {
 		return selectedEquipment_;
+	}
+	
+	public void lendEquipment(int friendId){
+		model_.lendEquipment(equipment_.getID(), friendId);
+		showFriendLentTo();
+	}
+	
+	private void showFriendLentTo(){
+		Friend friend = model_.getFriendById(equipment_.getLentTo());
+		linearLayoutLend_.setVisibility(View.GONE);
+		linearLayoutLentTo_.setVisibility(View.VISIBLE);
+		textViewLentTo_.setText(friend.getFirstName() + " " + friend.getLastName());
+		imageViewLentTo_.setImageResource(R.drawable.android_contact);
+
+		textViewLentTo_.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				int index = equipment_.getLentTo();
+				Intent myIntent = new Intent();
+				if (!tabletSize_) {
+					myIntent.setClass(getActivity(), FriendsDetailActivity.class);
+				}
+				else {
+					myIntent.setClass(getActivity(), FriendsActivity.class);
+				}
+				myIntent.putExtra("showafriend", true);
+				myIntent.putExtra("index", index);
+				startActivity(myIntent);
+			}
+		});
 	}
 }

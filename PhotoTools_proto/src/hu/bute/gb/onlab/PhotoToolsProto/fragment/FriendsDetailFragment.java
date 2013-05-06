@@ -2,10 +2,8 @@ package hu.bute.gb.onlab.PhotoToolsProto.fragment;
 
 import hu.bute.gb.onlab.PhotoToolsProto.EquipmentActivity;
 import hu.bute.gb.onlab.PhotoToolsProto.EquipmentDetailActivity;
+import hu.bute.gb.onlab.PhotoToolsProto.FriendsEditActivity;
 import hu.bute.gb.onlab.PhotoToolsProto.R;
-import hu.bute.gb.onlab.PhotoToolsProto.R.bool;
-import hu.bute.gb.onlab.PhotoToolsProto.R.id;
-import hu.bute.gb.onlab.PhotoToolsProto.R.layout;
 import hu.bute.gb.onlab.PhotoToolsProto.model.DummyModel;
 import hu.bute.gb.onlab.PhotoToolsProto.model.Equipment;
 import hu.bute.gb.onlab.PhotoToolsProto.model.Friend;
@@ -21,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -40,6 +39,7 @@ public class FriendsDetailFragment extends SherlockFragment {
 	private TextView textViewFriendAddress_;
 	private TextView textViewFriendLentLabel_;
 	private LinearLayout linearLayoutLentEquipment_;
+	private LayoutInflater inflater_;
 
 	public static FriendsDetailFragment newInstance(int index) {
 		FriendsDetailFragment fragment = new FriendsDetailFragment();
@@ -78,12 +78,13 @@ public class FriendsDetailFragment extends SherlockFragment {
 			return null;
 		}
 		View view = inflater.inflate(R.layout.fragment_friends_detail, container, false);
+		inflater_ = inflater;
 
 		textViewFriendName_ = (TextView) view.findViewById(R.id.textViewFriendName);
-		
+
 		realtiveLayoutPhone_ = (RelativeLayout) view.findViewById(R.id.realtiveLayoutPhone);
 		realtiveLayoutPhone_.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -91,10 +92,10 @@ public class FriendsDetailFragment extends SherlockFragment {
 				startActivity(callIntent);
 			}
 		});
-		
+
 		imageButtonSms_ = (ImageButton) view.findViewById(R.id.imageButtonSms);
 		imageButtonSms_.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent sendIntent = new Intent(Intent.ACTION_VIEW);
@@ -103,7 +104,7 @@ public class FriendsDetailFragment extends SherlockFragment {
 				startActivity(sendIntent);
 			}
 		});
-		
+
 		textViewFriendPhone_ = (TextView) view.findViewById(R.id.textViewFriendPhone);
 		textViewFriendEmail_ = (TextView) view.findViewById(R.id.textViewFriendEmail);
 		textViewFriendAddress_ = (TextView) view.findViewById(R.id.textViewFriendAddress);
@@ -111,64 +112,28 @@ public class FriendsDetailFragment extends SherlockFragment {
 		linearLayoutLentEquipment_ = (LinearLayout) view
 				.findViewById(R.id.linearLayoutLentEquipment);
 
+		final FriendsDetailFragment fragment = this;
+
 		if (friend_.getLentItems() == null) {
 			// Only add lend new button
 			View lendView = inflater.inflate(R.layout.lendnew, null);
 			lendView.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					
+					EquipmentSelectorDialog dialog = EquipmentSelectorDialog.newInstance(fragment);
+					dialog.show(getFragmentManager(), "Select Equipment");
 				}
 			});
 			linearLayoutLentEquipment_.addView(lendView);
 		}
 		else {
-			// Add lent items
-			for (Integer item : friend_.getLentItems()) {
-				final Equipment equipment = model_.getEquipmentById(item.intValue());
-				// Show the lent item
-				View lentView = inflater.inflate(R.layout.lentitem, null);
-				TextView textViewLentEquipment = (TextView) lentView
-						.findViewById(R.id.textViewLentEquipment);
-				textViewLentEquipment.setText(equipment.getName());
-				textViewLentEquipment.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						int index = equipment.getID();
-						Intent myIntent = new Intent();
-						if (!tabletSize_) {
-							myIntent.setClass(getActivity(),
-									EquipmentDetailActivity.class);
-						}
-						else {
-							myIntent.setClass(getActivity(), EquipmentActivity.class);
-						}
-						myIntent.putExtra("showanequipment", true);
-						myIntent.putExtra("index", index);
-						startActivity(myIntent);
-					}
-				});
-				linearLayoutLentEquipment_.addView(lentView);
-			}
-			// Add lend new button
-			View lendView = inflater.inflate(R.layout.lendnew, null);
-			lendView.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-			linearLayoutLentEquipment_.addView(lendView);
+			showLentEquipment();
 		}
 
 		return view;
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -186,5 +151,61 @@ public class FriendsDetailFragment extends SherlockFragment {
 
 	public int getSelectedFriend() {
 		return selectedFriend_;
+	}
+
+	public void lendEquipment(int equipmentId) {
+		boolean lendSuccesfully = model_.lendEquipment(equipmentId, friend_.getID());
+		if (lendSuccesfully) {
+			showLentEquipment();
+		}
+		else {
+			Toast.makeText(getActivity(),
+					getResources().getString(R.string.already_lent),
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	private void showLentEquipment() {
+		final FriendsDetailFragment fragment = this;
+		linearLayoutLentEquipment_.removeAllViews();
+		
+		// Add lent items
+		for (Integer item : friend_.getLentItems()) {
+			final Equipment equipment = model_.getEquipmentById(item.intValue());
+			// Show the lent item
+			View lentView = inflater_.inflate(R.layout.lentitem, null);
+			TextView textViewLentEquipment = (TextView) lentView
+					.findViewById(R.id.textViewLentEquipment);
+			textViewLentEquipment.setText(equipment.getName());
+			textViewLentEquipment.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					int index = equipment.getID();
+					Intent myIntent = new Intent();
+					if (!tabletSize_) {
+						myIntent.setClass(getActivity(), EquipmentDetailActivity.class);
+					}
+					else {
+						myIntent.setClass(getActivity(), EquipmentActivity.class);
+					}
+					myIntent.putExtra("showanequipment", true);
+					myIntent.putExtra("index", index);
+					startActivity(myIntent);
+				}
+			});
+			linearLayoutLentEquipment_.addView(lentView);
+		}
+		// Add lend new button
+		View lendView = inflater_.inflate(R.layout.lendnew, null);
+		lendView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				EquipmentSelectorDialog dialog = EquipmentSelectorDialog.newInstance(fragment);
+				dialog.show(getFragmentManager(), "Select Equipment");
+			}
+		});
+		linearLayoutLentEquipment_.addView(lendView);
 	}
 }

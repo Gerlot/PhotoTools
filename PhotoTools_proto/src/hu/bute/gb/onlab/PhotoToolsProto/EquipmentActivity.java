@@ -7,16 +7,22 @@ import hu.bute.gb.onlab.PhotoToolsProto.fragment.MenuListFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class EquipmentActivity extends SherlockFragmentActivity {
@@ -155,6 +161,10 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 			startActivity(myIntent);
 			finish();
 			return true;
+		case R.id.action_search:
+			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+			return true;
 		case R.id.action_new_equipment:
 			Intent newIntent = new Intent();
 			newIntent.setClass(EquipmentActivity.this, EquipmentEditActivity.class);
@@ -169,6 +179,40 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.equipment, menu);
+		
+		final EditText editTextSearch = (EditText) menu.findItem(R.id.action_search).getActionView();
+		editTextSearch.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence charSequence, int start, int before,
+					int count) {
+				equipmentListFragment_.populateList(charSequence);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void afterTextChanged(Editable s) {}
+		});
+		
+		MenuItem searchItem = (MenuItem) menu.getItem(0);
+		searchItem.setOnActionExpandListener(new OnActionExpandListener() {
+			
+			@Override
+			public boolean onMenuItemActionExpand(MenuItem item) {
+				editTextSearch.requestFocus();
+				return true;
+			}
+			
+			@Override
+			public boolean onMenuItemActionCollapse(MenuItem item) {
+				editTextSearch.setText("");
+				equipmentListFragment_.populateList(null);
+				return true;
+			}
+		});
+		
 		return super.onCreateOptionsMenu(menu);
 	}
 }

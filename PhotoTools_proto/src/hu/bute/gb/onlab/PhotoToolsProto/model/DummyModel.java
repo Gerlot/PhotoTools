@@ -63,19 +63,19 @@ public class DummyModel {
 				false,
 				"SPOT Schönherz Photo Studio",
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam justo dui, elementum quis sollicitudin sit amet");
-		// addDeadline(deadline);
+		addDeadline(deadline);
 
 		start = new DateTime(2013, 4, 26, 15, 0);
 		end = null;
 		deadline = new Deadline(deadlineId.getAndIncrement(), "Finish the Model Shoot Retouch",
 				start, end, true, "", "");
-		// addDeadline(deadline);
+		addDeadline(deadline);
 
 		start = new DateTime(2013, 4, 25, 18, 0);
 		end = null;
 		deadline = new Deadline(deadlineId.getAndIncrement(), "Finish the Photo Tour Retouch",
 				start, end, true, "", "You promised the photos to your friend.");
-		// addDeadline(deadline);
+		addDeadline(deadline);
 
 		start = new DateTime(2013, 4, 28, 12, 0);
 		end = null;
@@ -133,10 +133,12 @@ public class DummyModel {
 		anequipment.setLentTo(8);
 		addEquipment(anequipment);
 
-		anequipment = new Equipment(equipmentId.getAndIncrement(), "Remote Controller For Nikon",
-				equipmentCategories[5],
-				"A simple and cheap chinese-made remote controller for Nikons");
-		addEquipment(anequipment);
+		//for (int i = 0; i < 1000; i++) {
+			anequipment = new Equipment(equipmentId.getAndIncrement(), "Remote Controller For Nikon",
+					equipmentCategories[5],
+					"A simple and cheap chinese-made remote controller for Nikons");
+			addEquipment(anequipment);
+		//}
 
 		// Populate Friends
 		for (int i = 0; i < 3; i++) {
@@ -358,12 +360,16 @@ public class DummyModel {
 		return false;
 	}
 	
-	public void lendEquipment(int equipmentId, int friendId){
+	public boolean lendEquipment(int equipmentId, int friendId){
 		Equipment equipment = getEquipmentById(equipmentId);
-		equipment.setLentTo(friendId);
-		
-		Friend friend = getFriendById(friendId);
-		friend.lendItem(equipmentId);
+		if (!equipment.isLent()) {
+			equipment.setLentTo(friendId);
+			
+			Friend friend = getFriendById(friendId);
+			friend.lendItem(equipmentId);
+			return true;
+		}
+		return false;
 	}
 
 	public Friend getFriendById(int id) {

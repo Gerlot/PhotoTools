@@ -47,31 +47,39 @@
                 android:layout_below="@+id/textViewFriendName"
                 android:text="@string/phone" />
 
-            <TextView
-                android:id="@+id/textViewFriendPhone"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/realtiveLayoutPhone"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textViewFriendPhoneLabel"
                 android:layout_below="@+id/textViewFriendPhoneLabel"
-                android:layout_marginTop="10dp"
-                android:text="+36 20 123 4567"
-                android:textSize="24sp" />
+                android:background="@color/listitem_colors"
+                android:orientation="horizontal" >
 
-            <ImageButton
-                android:id="@+id/imageViewSms"
-                android:layout_width="53dp"
-                android:layout_height="53dp"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/textViewFriendPhoneLabel"
-                android:layout_marginTop="2dp"
-                android:src="@android:drawable/stat_notify_chat" />
+                <TextView
+                    android:id="@+id/textViewFriendPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:text="+36 20 123 4567"
+                    android:textSize="24sp" />
+
+                <ImageButton
+                    android:id="@+id/imageButtonSms"
+                    android:layout_width="53dp"
+                    android:layout_height="53dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/textViewFriendPhoneLabel"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/sms" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/textViewFriendEmailLabel"
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewFriendPhone"
+                android:layout_below="@+id/realtiveLayoutPhone"
                 android:layout_marginTop="10dp"
                 android:text="@string/email" />
 

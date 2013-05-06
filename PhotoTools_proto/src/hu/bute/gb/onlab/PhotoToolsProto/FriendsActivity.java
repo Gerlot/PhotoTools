@@ -12,6 +12,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,8 +21,12 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -30,6 +35,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class FriendsActivity extends SherlockFragmentActivity implements OnNavigationListener {
@@ -247,14 +253,14 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 		switch (itemPosition) {
 		case 0:
 			if (!friendsListFragment_.isAllSelected) {
-				friendsListFragment_.allPhotoToolersSelected();
+				friendsListFragment_.allFriendsSelected(null);
 				friendsListFragment_.isAllSelected = true;
 				return true;
 			}
 			break;
 		case 1:
 			if (friendsListFragment_.isAllSelected) {
-				friendsListFragment_.lentToSelected();
+				friendsListFragment_.lentToSelected(null);
 				friendsListFragment_.isAllSelected = false;
 				return true;
 			}
@@ -277,6 +283,10 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 			startActivity(myIntent);
 			finish();
 			return true;
+		case R.id.action_search:
+			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+			return true;
 		case R.id.action_add_friend:
 			AddFriendMethodDialog dialog = AddFriendMethodDialog.newInstance(FriendsActivity.this);
 			dialog.show(fragmentManager_, "Add Friend Method");
@@ -288,6 +298,45 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.friends, menu);
+		
+		final EditText editTextSearch = (EditText) menu.findItem(R.id.action_search).getActionView();
+		editTextSearch.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence charSequence, int start, int before,
+					int count) {
+				friendsListFragment_.search(charSequence);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void afterTextChanged(Editable s) {}
+		});
+		
+		MenuItem searchItem = (MenuItem) menu.getItem(0);
+		searchItem.setOnActionExpandListener(new OnActionExpandListener() {
+			
+			@Override
+			public boolean onMenuItemActionExpand(MenuItem item) {
+				editTextSearch.requestFocus();
+				return true;
+			}
+			
+			@Override
+			public boolean onMenuItemActionCollapse(MenuItem item) {
+				editTextSearch.setText("");
+				if (friendsListFragment_.isAllSelected) {
+					friendsListFragment_.allFriendsSelected(null);
+				}
+				else {
+					friendsListFragment_.lentToSelected(null);
+				}
+				return true;
+			}
+		});
+		
 		return super.onCreateOptionsMenu(menu);
 	}
 

@@ -40,7 +40,6 @@ public class DeadlinesListFragment extends SherlockListFragment {
 	private DummyModel model_;
 	private DeadlinesActivity activity_;
 	private int selectedPosition_ = 0;
-	private boolean addedSection_ = false;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -60,7 +59,7 @@ public class DeadlinesListFragment extends SherlockListFragment {
 		super.onActivityCreated(savedInstanceState);
 
 		ListView listView = getListView();
-		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
 		listView.setSelection(selectedPosition_);
 	}
 	
@@ -141,7 +140,7 @@ public class DeadlinesListFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		super.onListItemClick(listView, view, position, id);
-		if (addedSection_) {
+		if (!isEmpty) {
 			activity_.showDeadlineDetails(position);
 			selectedPosition_ = position;
 		}
@@ -156,7 +155,7 @@ public class DeadlinesListFragment extends SherlockListFragment {
 	private void populateList() {
 		activity_.deadlinesOnView.clear();
 		listAdapter = new SeparatedListAdapter(getActivity());
-		addedSection_ = false;
+		isEmpty = true;
 		for (Map.Entry<DeadlineDay, TreeBag<Deadline>> day : model_.deadlines.entrySet()) {
 
 			DeadlineAdapter deadlineAdapter = new DeadlineAdapter(getActivity());
@@ -192,15 +191,16 @@ public class DeadlinesListFragment extends SherlockListFragment {
 				addedDeadline = true;
 
 			}
+			// Only add section, if has child items
 			if (addedDeadline) {
 				listAdapter.addSection(day.getKey().toString(), deadlineAdapter);
-				addedSection_ = true;
+				isEmpty = false;
 			}
 			else {
 				activity_.deadlinesOnView.remove(activity_.deadlinesOnView.size() - 1);
 			}
 		}
-		if (addedSection_) {
+		if (!isEmpty) {
 			setListAdapter(listAdapter);
 		}
 		else {

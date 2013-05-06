@@ -101,6 +101,21 @@ public class LocationsListFragment extends SherlockListFragment {
 		listAdapter.add(getResources().getString(R.string.empty_locationlist));
 	}
 	
+	public void search(CharSequence charSequence){
+		listAdapter.clear();
+		isEmpty = true;
+		for (Location location : model_.locations) {
+			if (location.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+				listAdapter.add(location.getName());
+				activity_.locationsOnView.add(Integer.valueOf(location.getID()));
+				isEmpty = false;
+			}
+		}
+		if (isEmpty) {
+			listAdapter.add(getResources().getString(R.string.search_no_result));
+		}
+	}
+	
 	public final class SelectActionMode implements ActionMode.Callback {
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -132,7 +147,7 @@ public class LocationsListFragment extends SherlockListFragment {
 		}
 	}
 	
-	private void populateList(){
+	public void populateList(){
 		for (Location location : model_.locations) {
 			listAdapter.add(location.getName());
 			activity_.locationsOnView.add(Integer.valueOf(location.getID()));

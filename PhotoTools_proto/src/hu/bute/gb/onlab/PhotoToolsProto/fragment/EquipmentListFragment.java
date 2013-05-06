@@ -32,8 +32,8 @@ public class EquipmentListFragment extends SherlockListFragment {
 
 	// Log tag
 	public static final String TAG = "EquipmentListFragment";
-	private boolean addedSection_ = false;
 	public SeparatedListAdapter listAdapter = null;
+	public boolean isEmpty = true;
 
 	private DummyModel model_;
 	private EquipmentActivity activity_;
@@ -46,7 +46,6 @@ public class EquipmentListFragment extends SherlockListFragment {
 		super.onAttach(activity);
 		activity_ = (EquipmentActivity) activity;
 		model_ = DummyModel.getInstance();
-
 	}
 
 	@Override
@@ -66,7 +65,7 @@ public class EquipmentListFragment extends SherlockListFragment {
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				if (actionMode_ == null) {
 					actionMode_ = getSherlockActivity().startActionMode(new SelectActionMode());
-					populateList();
+					populateList(null);
 					return true;
 				}
 				return false;
@@ -77,7 +76,7 @@ public class EquipmentListFragment extends SherlockListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		populateList();
+		populateList(null);
 	}
 
 	private class EquipmentItem {
@@ -132,7 +131,7 @@ public class EquipmentListFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		super.onListItemClick(listView, view, position, id);
-		if (addedSection_) {
+		if (!isEmpty) {
 			activity_.showEquipmentDetails(position);
 			selectedPosition_ = position;
 		}
@@ -168,14 +167,15 @@ public class EquipmentListFragment extends SherlockListFragment {
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
 			actionMode_ = null;
-			populateList();
+			populateList(null);
 		}
 	}
 
-	private void populateList() {
+	public void populateList(CharSequence searchFilter) {
 		// Clearing the list adapter and the id container in base activity
 		listAdapter = new SeparatedListAdapter(getActivity());
 		activity_.equipmentOnView.clear();
+		isEmpty = true;
 		for (Map.Entry<String, TreeSet<Equipment>> categories : model_.equipment.entrySet()) {
 
 			EquipmentAdapter equipmentAdapter = new EquipmentAdapter(getActivity());
@@ -184,13 +184,14 @@ public class EquipmentListFragment extends SherlockListFragment {
 			// Add a 0 value because for each category headers
 			activity_.equipmentOnView.add(Integer.valueOf(0));
 			for (Equipment equipment : current) {
-				equipmentAdapter.add(new EquipmentItem(equipment.getName(), equipment.isLent()));
-				activity_.equipmentOnView.add(Integer.valueOf(equipment.getID()));
+				if (searchFilter == null || equipment.getName().toLowerCase().contains(searchFilter.toString().toLowerCase())) {
+					equipmentAdapter.add(new EquipmentItem(equipment.getName(), equipment.isLent()));
+					activity_.equipmentOnView.add(Integer.valueOf(equipment.getID()));
+				}
 			}
 			listAdapter.addSection(categories.getKey(), equipmentAdapter);
-			// listAdapter_.notifyDataSetChanged();
 			setListAdapter(listAdapter);
-			addedSection_ = true;
+			isEmpty = false;
 		}
 	}
 
