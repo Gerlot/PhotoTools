@@ -3,9 +3,9 @@ package hu.bute.gb.onlab.PhotoTools.fragment;
 import hu.bute.gb.onlab.PhotoTools.FriendsActivity;
 import hu.bute.gb.onlab.PhotoTools.FriendsDetailActivity;
 import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Equipment;
-import hu.bute.gb.onlab.PhotoTools.model.Friend;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
+import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +24,7 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	private boolean tabletSize_;
 	private DummyModel model_;
 	private Activity activity_;
-	private int selectedEquipment_ = 0;
+	private long selectedEquipment_ = 0;
 	private Equipment equipment_;
 
 	private TextView textViewEquipmentName_;
@@ -36,18 +36,18 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	private ImageView imageViewLentTo_;
 	private LinearLayout linearLayoutLend_;
 
-	public static EquipmentDetailFragment newInstance(int index) {
+	public static EquipmentDetailFragment newInstance(long index) {
 		EquipmentDetailFragment fragment = new EquipmentDetailFragment();
 
 		Bundle arguments = new Bundle();
-		arguments.putInt("index", index);
+		arguments.putLong("index", index);
 		fragment.setArguments(arguments);
 
 		return fragment;
 	}
 
 	public static EquipmentDetailFragment newInstance(Bundle bundle) {
-		int index = bundle.getInt("index", 0);
+		long index = bundle.getLong("index", 0);
 		return newInstance(index);
 	}
 
@@ -63,7 +63,7 @@ public class EquipmentDetailFragment extends SherlockFragment {
 		super.onCreate(savedInstanceState);
 		tabletSize_ = getResources().getBoolean(R.bool.isTablet);
 
-		selectedEquipment_ = getArguments().getInt("index", 0);
+		selectedEquipment_ = getArguments().getLong("index", 0);
 		equipment_ = model_.getEquipmentById(selectedEquipment_);
 	}
 
@@ -117,11 +117,11 @@ public class EquipmentDetailFragment extends SherlockFragment {
 		textViewNotes_.setText(equipment_.getNotes());
 	}
 
-	public int getSelectedEquipment() {
+	public long getSelectedEquipment() {
 		return selectedEquipment_;
 	}
 	
-	public void lendEquipment(int friendId){
+	public void lendEquipment(long friendId){
 		model_.lendEquipment(equipment_.getID(), friendId);
 		showFriendLentTo();
 	}
@@ -137,7 +137,7 @@ public class EquipmentDetailFragment extends SherlockFragment {
 
 			@Override
 			public void onClick(View v) {
-				int index = equipment_.getLentTo();
+				long index = equipment_.getLentTo();
 				Intent myIntent = new Intent();
 				if (!tabletSize_) {
 					myIntent.setClass(getActivity(), FriendsDetailActivity.class);

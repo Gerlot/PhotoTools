@@ -1,9 +1,9 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import hu.bute.gb.onlab.PhotoTools.fragment.DatePickerFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.TimePickerFragment;
-import hu.bute.gb.onlab.PhotoTools.model.Deadline;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.R;
 
 import org.joda.time.DateTime;
@@ -27,7 +27,7 @@ import com.actionbarsherlock.view.Window;
 public class DeadlinesEditActivity extends SherlockFragmentActivity {
 
 	private DummyModel model_;
-	private int selectedDeadline_ = 0;
+	private long selectedDeadline_ = 0;
 	private boolean editMode_ = false;
 	private Deadline deadline_;
 	private Deadline oldDeadline_;
@@ -91,7 +91,7 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 
 		if (getIntent().getExtras().getBoolean("edit")) {
 			editMode_ = true;
-			selectedDeadline_ = getIntent().getExtras().getInt("index");
+			selectedDeadline_ = getIntent().getExtras().getLong("index");
 			deadline_ = model_.getDeadlineById(selectedDeadline_);
 			textViewTitle_.setText("Edit " + deadline_.getName());
 
@@ -225,7 +225,7 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 				if (nameChanged || startTimeChanged || endTimeChanged || allDayChanged
 						|| locationChanged || notesChanged) {
 					// Existing ID
-					int id = deadline_.getID();
+					long id = deadline_.getID();
 					oldDeadline_ = deadline_;
 					deadline_ = new Deadline(id, name, selectedStartTime_, selectedEndTime_,
 							isAllDay, location, notes);
@@ -234,7 +234,7 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 			}
 			else {
 				// Generate new ID for new entry
-				int id = model_.deadlineId.getAndIncrement();
+				long id = model_.deadlineId.getAndIncrement();
 				deadline_ = new Deadline(id, name, selectedStartTime_, selectedEndTime_, isAllDay,
 						location, notes);
 				model_.addDeadline(deadline_);

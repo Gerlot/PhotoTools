@@ -1,7 +1,7 @@
 package hu.bute.gb.onlab.PhotoTools;
 
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Location;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.R;
 import android.os.Bundle;
 import android.widget.ImageView;

@@ -1,12 +1,13 @@
-package hu.bute.gb.onlab.PhotoTools.model;
+package hu.bute.gb.onlab.PhotoTools.entities;
 
 import org.joda.time.DateTime;
 
-import android.util.Log;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Deadline implements Comparable<Deadline> {
+public class Deadline implements Comparable<Deadline>, Parcelable {
 
-	private int ID_;
+	private long ID_;
 	private String name_;
 	private DateTime startTime_;
 	private DateTime endTime_;
@@ -14,7 +15,7 @@ public class Deadline implements Comparable<Deadline> {
 	private String location_;
 	private String notes_;
 
-	public Deadline(int ID, String name, DateTime startTime, DateTime endTime, boolean isAllDay,
+	public Deadline(long ID, String name, DateTime startTime, DateTime endTime, boolean isAllDay,
 			String location, String notes) {
 		ID_ = ID;
 		name_ = name;
@@ -24,12 +25,22 @@ public class Deadline implements Comparable<Deadline> {
 		location_ = location;
 		notes_ = notes;
 	}
+	
+	public Deadline(Parcel in){
+		ID_ = in.readLong();
+		name_ = in.readString();
+		startTime_ = new DateTime(in.readLong());
+		endTime_ = new DateTime(in.readLong());
+		isAllDay_ = Boolean.parseBoolean(in.readString());
+		location_ = in.readString();
+		notes_ = in.readString();
+	}
 
-	public int getID() {
+	public long getID() {
 		return ID_;
 	}
 
-	public void setID(int ID) {
+	public void setID(long ID) {
 		ID_ = ID;
 	}
 
@@ -123,4 +134,30 @@ public class Deadline implements Comparable<Deadline> {
 		}
 		return names;
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeLong(ID_);
+		dest.writeString(name_);
+		dest.writeLong(startTime_.getMillis());
+		dest.writeLong(endTime_.getMillis());
+		dest.writeString(Boolean.toString(isAllDay_));
+		dest.writeString(location_);
+		dest.writeString(notes_);
+	}
+	
+	public static final Parcelable.Creator<Deadline> CREATOR = new Parcelable.Creator<Deadline>() {
+		public Deadline createFromParcel(Parcel in) {
+			return new Deadline(in);
+		}
+
+		public Deadline[] newArray(int size) {
+			return new Deadline[size];
+		}
+	};
 }

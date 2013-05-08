@@ -1,5 +1,11 @@
-package hu.bute.gb.onlab.PhotoTools.model;
+package hu.bute.gb.onlab.PhotoTools.datastorage;
 
+import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
+import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
+import hu.bute.gb.onlab.PhotoTools.entities.Friend;
+import hu.bute.gb.onlab.PhotoTools.entities.Location;
+import hu.bute.gb.onlab.PhotoTools.helpers.Coordinate;
+import hu.bute.gb.onlab.PhotoTools.helpers.DeadlineDay;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -44,12 +50,12 @@ public class DummyModel {
 		// Populate Locations
 		boolean jitter = false;
 		for (int i = 0; i < 5; i++) {
-			String note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam justo dui, elementum quis sollicitudin sit amet";
+			String note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam justo dui, elementum quis sollicitudin sit ametxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 			Location location = new Location(locationId.getAndIncrement(), DUMMYLOCATIONS[i],
 					"1117 Budapest, Irinyi József St 42", new Coordinate(0.01, 0.02), jitter,
 					!jitter, note);
 			jitter = !jitter;
-			// addLocation(location);
+			addLocation(location);
 		}
 
 		// Populate Deadlines
@@ -102,43 +108,41 @@ public class DummyModel {
 			equipment.put(equipmentCategories[i], new TreeSet<Equipment>());
 		}
 		anequipment = new Equipment(equipmentId.getAndIncrement(), "Crumpler Cupcake Backpack",
-				equipmentCategories[5], "Present from my Girlfriend");
+				equipmentCategories[5], "Present from my Girlfriend", 0);
 		addEquipment(anequipment);
 
 		anequipment = new Equipment(equipmentId.getAndIncrement(), "Metz mecablitz 50 AF-1",
-				equipmentCategories[3], "Powerful flash for my Nikon");
+				equipmentCategories[3], "Powerful flash for my Nikon", 0);
 		addEquipment(anequipment);
 
 		anequipment = new Equipment(equipmentId.getAndIncrement(), "Nikon D5000",
-				equipmentCategories[0], "My first DSLR");
+				equipmentCategories[0], "My first DSLR", 0);
 		addEquipment(anequipment);
 
 		anequipment = new Equipment(equipmentId.getAndIncrement(),
 				"AF-S DX VR Nikkor 18-55mm f/3.5-5.6G", equipmentCategories[1],
-				"Kit lens came with my D5000.");
+				"Kit lens came with my D5000.", 0);
 		addEquipment(anequipment);
 
 		anequipment = new Equipment(equipmentId.getAndIncrement(),
 				"AF-S DX VR Nikkor 55-200mm f/4-5.6G", equipmentCategories[1],
-				"A light and nimble Nikon zoom lens.");
+				"A light and nimble Nikon zoom lens.", 0);
 		addEquipment(anequipment);
 
 		anequipment = new Equipment(equipmentId.getAndIncrement(), "KingMax SDHC 8GB",
-				equipmentCategories[4], "My primary memory card with a capacity of 8 Gigs.");
+				equipmentCategories[4], "My primary memory card with a capacity of 8 Gigs.", 0);
 		addEquipment(anequipment);
 
 		anequipment = new Equipment(equipmentId.getAndIncrement(), "Maxell SD 2GB",
 				equipmentCategories[4],
-				"My secondary, older memory card with a capacity of 2 Gigs.");
+				"My secondary, older memory card with a capacity of 2 Gigs.", 0);
 		anequipment.setLentTo(8);
 		addEquipment(anequipment);
 
-		//for (int i = 0; i < 1000; i++) {
-			anequipment = new Equipment(equipmentId.getAndIncrement(), "Remote Controller For Nikon",
-					equipmentCategories[5],
-					"A simple and cheap chinese-made remote controller for Nikons");
-			addEquipment(anequipment);
-		//}
+		anequipment = new Equipment(equipmentId.getAndIncrement(), "Remote Controller For Nikon",
+				equipmentCategories[5],
+				"A simple and cheap chinese-made remote controller for Nikons", 0);
+		addEquipment(anequipment);
 
 		// Populate Friends
 		for (int i = 0; i < 3; i++) {
@@ -153,11 +157,8 @@ public class DummyModel {
 					"1117 Budapest, Irinyi József St 42 ", null);
 			addFriend(friend);
 		}
-		ArrayList<Integer> aladarHas = new ArrayList<Integer>();
-		aladarHas.add(Integer.valueOf(7));
-		// aladarHas.add(Integer.valueOf(2));
-		// aladarHas.add(Integer.valueOf(1));
-		// aladarHas.add(Integer.valueOf(4));
+		ArrayList<Long> aladarHas = new ArrayList<Long>();
+		aladarHas.add(Long.valueOf(7));
 		Friend friend = new Friend(friendId.getAndIncrement(), "Aladár", "Kovács", "+36207654321",
 				"aladar@outlook.com", "1117 Budapest, Irinyi József St 42 ", aladarHas);
 		addFriend(friend);
@@ -171,7 +172,7 @@ public class DummyModel {
 		return instance_;
 	}
 
-	public Location getLocationById(int id) {
+	public Location getLocationById(long id) {
 		for (Location location : locations) {
 			if (location.getID() == id) {
 				return location;
@@ -202,7 +203,7 @@ public class DummyModel {
 		locations.remove(locationToRemove);
 	}
 
-	public boolean removeLocationById(int id) {
+	public boolean removeLocationById(long id) {
 		for (Location location : locations) {
 			if (location.getID() == id) {
 				locations.remove(location);
@@ -212,7 +213,7 @@ public class DummyModel {
 		return false;
 	}
 
-	public Deadline getDeadlineById(int id) {
+	public Deadline getDeadlineById(long id) {
 		for (Map.Entry<DeadlineDay, TreeBag<Deadline>> alphabet : deadlines.entrySet()) {
 			TreeBag<Deadline> current = alphabet.getValue();
 			for (Deadline deadline : current) {
@@ -241,9 +242,9 @@ public class DummyModel {
 		// and add in it's new category
 		if (!editedDeadline.getStartTime().toDateMidnight()
 				.equals(oldDeadline.getStartTime().toDateMidnight())) {
-			
+
 			DeadlineDay oldDay = new DeadlineDay(oldDeadline.getStartTime());
-			
+
 			TreeBag<Deadline> oldCategory = deadlines.get(oldDay);
 			if (oldCategory != null) {
 				oldCategory.remove(oldDeadline);
@@ -276,7 +277,7 @@ public class DummyModel {
 		deadlines.remove(deadlineToRemove);
 	}
 
-	public boolean removeDeadlineById(int id) {
+	public boolean removeDeadlineById(long id) {
 		Deadline deadlineToRemove = null;
 		for (Map.Entry<DeadlineDay, TreeBag<Deadline>> alphabet : deadlines.entrySet()) {
 			TreeBag<Deadline> current = alphabet.getValue();
@@ -294,7 +295,7 @@ public class DummyModel {
 		return false;
 	}
 
-	public Equipment getEquipmentById(int id) {
+	public Equipment getEquipmentById(long id) {
 		for (Map.Entry<String, TreeSet<Equipment>> alphabet : equipment.entrySet()) {
 			TreeSet<Equipment> current = alphabet.getValue();
 			for (Equipment equipment : current) {
@@ -342,7 +343,7 @@ public class DummyModel {
 		equipment.remove(equipmentToRemove);
 	}
 
-	public boolean removeEquipmentById(int id) {
+	public boolean removeEquipmentById(long id) {
 		Equipment equipmentToRemove = null;
 		for (Map.Entry<String, TreeSet<Equipment>> alphabet : equipment.entrySet()) {
 			TreeSet<Equipment> current = alphabet.getValue();
@@ -359,12 +360,12 @@ public class DummyModel {
 		}
 		return false;
 	}
-	
-	public boolean lendEquipment(int equipmentId, int friendId){
+
+	public boolean lendEquipment(long equipmentId, long friendId) {
 		Equipment equipment = getEquipmentById(equipmentId);
 		if (!equipment.isLent()) {
 			equipment.setLentTo(friendId);
-			
+
 			Friend friend = getFriendById(friendId);
 			friend.lendItem(equipmentId);
 			return true;
@@ -372,7 +373,7 @@ public class DummyModel {
 		return false;
 	}
 
-	public Friend getFriendById(int id) {
+	public Friend getFriendById(long id) {
 		for (Map.Entry<String, TreeSet<Friend>> alphabet : friends.entrySet()) {
 			TreeSet<Friend> current = alphabet.getValue();
 			for (Friend friend : current) {
@@ -396,7 +397,7 @@ public class DummyModel {
 	private void testDatabase() {
 		// Testing locations database
 		for (Location location : locations) {
-			Log.d("location", Integer.toString(location.getID()));
+			Log.d("location", Long.toString(location.getID()));
 			Log.d("location", location.getName());
 		}
 
@@ -405,7 +406,7 @@ public class DummyModel {
 			Log.d("deadline", "" + d.getKey());
 			TreeBag<Deadline> db = d.getValue();
 			for (Deadline de : db) {
-				Log.d("deadline", Integer.toString(de.getID()));
+				Log.d("deadline", Long.toString(de.getID()));
 				Log.d("deadline", de.getName());
 				Log.d("deadline", de.getStartTime().toString());
 			}
@@ -416,7 +417,7 @@ public class DummyModel {
 			Log.d("equipment", e.getKey());
 			TreeSet<Equipment> db = e.getValue();
 			for (Equipment eq : db) {
-				Log.d("equipment", Integer.toString(eq.getID()));
+				Log.d("equipment", Long.toString(eq.getID()));
 				Log.d("equipment", eq.getName());
 			}
 		}
@@ -426,7 +427,7 @@ public class DummyModel {
 			Log.d("friend", f.getKey());
 			TreeSet<Friend> db = f.getValue();
 			for (Friend fr : db) {
-				Log.d("friend", Integer.toString(fr.getID()));
+				Log.d("friend", Long.toString(fr.getID()));
 				Log.d("friend", fr.getFirstName() + " " + fr.getLastName());
 			}
 		}

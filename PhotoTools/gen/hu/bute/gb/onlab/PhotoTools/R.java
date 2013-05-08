@@ -1341,14 +1341,15 @@ containing a value of this type.
         public static final int list=0x7f030031;
         public static final int listmenu_dropdownrow=0x7f030032;
         public static final int listmenurow=0x7f030033;
-        public static final int menu=0x7f030034;
-        public static final int menu_frame=0x7f030035;
-        public static final int menurow=0x7f030036;
-        public static final int separatedlist_header=0x7f030037;
-        public static final int separatedlist_item=0x7f030038;
-        public static final int sherlock_spinner_dropdown_item=0x7f030039;
-        public static final int sherlock_spinner_item=0x7f03003a;
-        public static final int slidingmenumain=0x7f03003b;
+        public static final int locations_row=0x7f030034;
+        public static final int menu=0x7f030035;
+        public static final int menu_frame=0x7f030036;
+        public static final int menurow=0x7f030037;
+        public static final int separatedlist_header=0x7f030038;
+        public static final int separatedlist_item=0x7f030039;
+        public static final int sherlock_spinner_dropdown_item=0x7f03003a;
+        public static final int sherlock_spinner_item=0x7f03003b;
+        public static final int slidingmenumain=0x7f03003c;
     }
     public static final class menu {
         public static final int deadlines=0x7f0d0000;

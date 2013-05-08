@@ -1,6 +1,7 @@
-package hu.bute.gb.onlab.PhotoTools;
+package hu.bute.gb.onlab.PhotoTools.helpers;
 
 import hu.bute.gb.onlab.PhotoTools.R;
+import hu.bute.gb.onlab.PhotoTools.R.layout;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

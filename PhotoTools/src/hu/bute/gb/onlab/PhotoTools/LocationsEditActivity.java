@@ -1,8 +1,11 @@
 package hu.bute.gb.onlab.PhotoTools;
 
-import hu.bute.gb.onlab.PhotoTools.model.Coordinate;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Location;
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Location;
+import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
+import hu.bute.gb.onlab.PhotoTools.helpers.Coordinate;
 import hu.bute.gb.onlab.PhotoTools.R;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,8 +27,9 @@ import com.actionbarsherlock.view.Window;
 
 public class LocationsEditActivity extends SherlockFragmentActivity {
 
+	public static final String KEY_EDIT = "edit";
+
 	private DummyModel model_;
-	private int selectedLocation_ = 0;
 	private boolean editMode_ = false;
 	private Location location_;
 
@@ -40,12 +44,15 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 	private CheckBox checkBoxPowerSource_;
 	private EditText editTextNotes_;
 
+	private DatabaseLoader databaseLoader_;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_locations_edit);
 		model_ = DummyModel.getInstance();
+		databaseLoader_ = PhotoToolsApplication.getTodoDbLoader();
 
 		imageViewMap_ = (ImageView) findViewById(R.id.imageViewMap);
 		imageViewMap_.setOnClickListener(new OnClickListener() {
@@ -76,10 +83,10 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 		checkBoxPowerSource_ = (CheckBox) findViewById(R.id.checkBoxPowerSource);
 		editTextNotes_ = (EditText) findViewById(R.id.editTextNotes);
 
-		if (getIntent().getExtras().getBoolean("edit")) {
+		if (getIntent().getExtras().getBoolean(KEY_EDIT)) {
 			editMode_ = true;
-			selectedLocation_ = getIntent().getExtras().getInt("index");
-			location_ = model_.getLocationById(selectedLocation_);
+			location_ = getIntent().getExtras().getParcelable(
+					LocationsDetailFragment.KEY_LOCATION);
 			textViewTitle_.setText("Edit " + location_.getName());
 
 			imageViewMap_.setImageResource(R.drawable.map);
@@ -106,7 +113,7 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 		boolean carEntry = checkBoxCarEntry_.isChecked();
 		boolean powerSource = checkBoxPowerSource_.isChecked();
 		String notes = editTextNotes_.getText().toString();
-		int id = 0;
+		long id = 0;
 
 		// Only save if name field isn't empty
 		if (name.trim().length() == 0) {
@@ -135,19 +142,22 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 					id = location_.getID();
 					location_ = new Location(id, name, address, coordinate, carEntry, powerSource,
 							notes);
-					model_.editLocation(location_);
+					//model_.editLocation(location_);
+					databaseLoader_.editLocation(location_.getID(), location_);
 				}
 			}
 			else {
-				// Generate new ID for new entry
-				id = model_.locationId.getAndIncrement();
 				location_ = new Location(id, name, address, coordinate, carEntry, powerSource,
 						notes);
-				model_.addLocation(location_);
+				//model_.addLocation(location_);
+				databaseLoader_.addLocation(location_);
 			}
 			Intent returnIntent = new Intent();
 			returnIntent.putExtra("addedname", name);
 			returnIntent.putExtra("addedid", id);
+			if (editMode_) {
+				returnIntent.putExtra(LocationsDetailFragment.KEY_LOCATION, location_);
+			}
 			setResult(RESULT_OK, returnIntent);
 			finish();
 		}

@@ -2,9 +2,9 @@ package hu.bute.gb.onlab.PhotoTools.fragment;
 
 import hu.bute.gb.onlab.PhotoTools.FriendsActivity;
 import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.SeparatedListAdapter;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Friend;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Friend;
+import hu.bute.gb.onlab.PhotoTools.helpers.SeparatedListAdapter;
 
 import java.util.Map;
 import java.util.TreeSet;
@@ -144,7 +144,7 @@ public class FriendsListFragment extends SherlockListFragment {
 
 			TreeSet<Friend> current = alphabet.getValue();
 			boolean addedFriend = false;
-			activity_.friendsOnView.add(Integer.valueOf(0));
+			activity_.friendsOnView.add(Long.valueOf(0));
 			for (Friend friend : current) {
 
 				// Filter by search term if searched
@@ -155,12 +155,12 @@ public class FriendsListFragment extends SherlockListFragment {
 					if (friend.getLentItems() != null) {
 						friendAdapter.add(new FriendItem(friend.getFirstName() + " "
 								+ friend.getLastName(), true, R.drawable.android_contact));
-						activity_.friendsOnView.add(Integer.valueOf(friend.getID()));
+						activity_.friendsOnView.add(Long.valueOf(friend.getID()));
 					}
 					else {
 						friendAdapter.add(new FriendItem(friend.getFirstName() + " "
 								+ friend.getLastName(), false, R.drawable.android_contact));
-						activity_.friendsOnView.add(Integer.valueOf(friend.getID()));
+						activity_.friendsOnView.add(Long.valueOf(friend.getID()));
 					}
 					addedFriend = true;
 				}
@@ -189,7 +189,7 @@ public class FriendsListFragment extends SherlockListFragment {
 
 			TreeSet<Friend> current = alphabet.getValue();
 			boolean addedFriend = false;
-			activity_.friendsOnView.add(Integer.valueOf(0));
+			activity_.friendsOnView.add(Long.valueOf(0));
 			for (Friend friend : current) {
 
 				// Only add friends with lent items
@@ -199,7 +199,7 @@ public class FriendsListFragment extends SherlockListFragment {
 						&& friend.getLentItems() != null) {
 					friendAdapter.add(new FriendItem(friend.getFirstName() + " "
 							+ friend.getLastName(), false, R.drawable.android_contact));
-					activity_.friendsOnView.add(Integer.valueOf(friend.getID()));
+					activity_.friendsOnView.add(Long.valueOf(friend.getID()));
 					addedFriend = true;
 				}
 

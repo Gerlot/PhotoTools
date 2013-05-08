@@ -28,7 +28,7 @@ import com.slidingmenu.lib.SlidingMenu;
 
 public class EquipmentActivity extends SherlockFragmentActivity {
 
-	public List<Integer> equipmentOnView = new ArrayList<Integer>();
+	public List<Long> equipmentOnView = new ArrayList<Long>();
 
 	private ViewGroup fragmentContainer_;
 	private FragmentManager fragmentManager_;
@@ -63,8 +63,8 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 
 		if (getIntent().getExtras() != null) {
 			Bundle arguments = getIntent().getExtras();
-			int index = arguments.getInt("index");
-			equipmentOnView.add(Integer.valueOf(index));
+			long index = arguments.getLong("index");
+			equipmentOnView.add(Long.valueOf(index));
 			showEquipmentDetails(0);
 		}
 	}
@@ -118,7 +118,7 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 			case 1:
 				if (resultCode == RESULT_OK) {
 					// The id of the location to remove
-					Integer id = Integer.valueOf(data.getIntExtra("deleted", 0));
+					Long id = Long.valueOf(data.getLongExtra("deleted", 0));
 					
 					// The location of the removed location in the listView
 					int index = equipmentOnView.indexOf(id);

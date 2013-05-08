@@ -23,7 +23,7 @@ import com.slidingmenu.lib.SlidingMenu;
 
 public class DeadlinesActivity extends SherlockFragmentActivity {
 
-	public List<Integer> deadlinesOnView = new ArrayList<Integer>();
+	public List<Long> deadlinesOnView = new ArrayList<Long>();
 
 	private ViewGroup fragmentContainer_;
 	private FragmentManager fragmentManager_;
@@ -134,7 +134,7 @@ public class DeadlinesActivity extends SherlockFragmentActivity {
 			case 2:
 				if (resultCode == RESULT_OK) {
 					// The id of the location to add
-					Integer id = Integer.valueOf(data.getIntExtra("addedid", 0));
+					Long id = Long.valueOf(data.getIntExtra("addedid", 0));
 
 					deadlinesOnView.add(id);
 					String toAdd = data.getStringExtra("addedname");

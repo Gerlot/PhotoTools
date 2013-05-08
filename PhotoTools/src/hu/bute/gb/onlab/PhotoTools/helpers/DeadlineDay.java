@@ -1,4 +1,4 @@
-package hu.bute.gb.onlab.PhotoTools.model;
+package hu.bute.gb.onlab.PhotoTools.helpers;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;

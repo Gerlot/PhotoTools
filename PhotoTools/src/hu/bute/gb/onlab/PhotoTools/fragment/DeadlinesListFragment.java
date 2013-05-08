@@ -2,10 +2,10 @@ package hu.bute.gb.onlab.PhotoTools.fragment;
 
 import hu.bute.gb.onlab.PhotoTools.DeadlinesActivity;
 import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.SeparatedListAdapter;
-import hu.bute.gb.onlab.PhotoTools.model.Deadline;
-import hu.bute.gb.onlab.PhotoTools.model.DeadlineDay;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
+import hu.bute.gb.onlab.PhotoTools.helpers.DeadlineDay;
+import hu.bute.gb.onlab.PhotoTools.helpers.SeparatedListAdapter;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 public class DeadlinesListFragment extends SherlockListFragment {
 
 	// Log tag
-	public static final String TAG = "EDeadlinesListFragment";
+	public static final String TAG = "DeadlinesListFragment";
 	public SeparatedListAdapter listAdapter = null;
 	public boolean isEmpty = true;
 
@@ -158,7 +158,7 @@ public class DeadlinesListFragment extends SherlockListFragment {
 
 			TreeBag<Deadline> current = day.getValue();
 			boolean addedDeadline = false;
-			activity_.deadlinesOnView.add(Integer.valueOf(0));
+			activity_.deadlinesOnView.add(Long.valueOf(0));
 			for (Deadline deadline : current) {
 				boolean isSoon = false;
 				DateMidnight today = (new DateTime()).toDateMidnight();
@@ -183,7 +183,7 @@ public class DeadlinesListFragment extends SherlockListFragment {
 							daysBetween));
 				}
 
-				activity_.deadlinesOnView.add(Integer.valueOf(deadline.getID()));
+				activity_.deadlinesOnView.add(Long.valueOf(deadline.getID()));
 				addedDeadline = true;
 
 			}

@@ -1,4 +1,4 @@
-package hu.bute.gb.onlab.PhotoTools.model;
+package hu.bute.gb.onlab.PhotoTools.helpers;
 
 public class Coordinate {
 	

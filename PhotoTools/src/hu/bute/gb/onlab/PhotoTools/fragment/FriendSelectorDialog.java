@@ -1,9 +1,9 @@
 package hu.bute.gb.onlab.PhotoTools.fragment;
 
 import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.SeparatedListAdapter;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Friend;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Friend;
+import hu.bute.gb.onlab.PhotoTools.helpers.SeparatedListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import android.widget.TextView;
 public class FriendSelectorDialog extends DialogFragment {
 
 	public boolean isEmpty = true;
-	public List<Integer> friendsOnView = new ArrayList<Integer>();
+	public List<Long> friendsOnView = new ArrayList<Long>();
 
 	private static EquipmentDetailFragment fragment_;
 	private EditText editTextSearch_;
@@ -135,7 +135,7 @@ public class FriendSelectorDialog extends DialogFragment {
 
 			TreeSet<Friend> current = alphabet.getValue();
 			boolean addedFriend = false;
-			friendsOnView.add(Integer.valueOf(0));
+			friendsOnView.add(Long.valueOf(0));
 			for (Friend friend : current) {
 
 				// Only add friends with lent items
@@ -144,7 +144,7 @@ public class FriendSelectorDialog extends DialogFragment {
 						.contains(searchFilter.toString().toLowerCase())) {
 					friendAdapter.add(new FriendItem(friend.getFirstName() + " "
 							+ friend.getLastName(), false, R.drawable.android_contact));
-					friendsOnView.add(Integer.valueOf(friend.getID()));
+					friendsOnView.add(Long.valueOf(friend.getID()));
 					addedFriend = true;
 				}
 

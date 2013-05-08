@@ -1,9 +1,9 @@
 package hu.bute.gb.onlab.PhotoTools.fragment;
 
 import hu.bute.gb.onlab.PhotoTools.EquipmentActivity;
-import hu.bute.gb.onlab.PhotoTools.SeparatedListAdapter;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Equipment;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
+import hu.bute.gb.onlab.PhotoTools.helpers.SeparatedListAdapter;
 import hu.bute.gb.onlab.PhotoTools.R;
 
 import java.util.Map;
@@ -182,11 +182,11 @@ public class EquipmentListFragment extends SherlockListFragment {
 
 			TreeSet<Equipment> current = categories.getValue();
 			// Add a 0 value because for each category headers
-			activity_.equipmentOnView.add(Integer.valueOf(0));
+			activity_.equipmentOnView.add(Long.valueOf(0));
 			for (Equipment equipment : current) {
 				if (searchFilter == null || equipment.getName().toLowerCase().contains(searchFilter.toString().toLowerCase())) {
 					equipmentAdapter.add(new EquipmentItem(equipment.getName(), equipment.isLent()));
-					activity_.equipmentOnView.add(Integer.valueOf(equipment.getID()));
+					activity_.equipmentOnView.add(Long.valueOf(equipment.getID()));
 				}
 			}
 			listAdapter.addSection(categories.getKey(), equipmentAdapter);

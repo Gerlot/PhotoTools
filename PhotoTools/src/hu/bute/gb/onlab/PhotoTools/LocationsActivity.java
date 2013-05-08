@@ -1,20 +1,15 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsListFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -25,12 +20,17 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
+import com.actionbarsherlock.widget.SearchView;
+import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class LocationsActivity extends SherlockFragmentActivity {
 
-	public List<Integer> locationsOnView = new ArrayList<Integer>();
+	//public List<Long> locationsOnView = new ArrayList<Long>();
+	public static final int LOCATION_DELETE = 1;
+	public static final int LOCATION_ADD = 2;
 
+	private MenuItem searchItem_ = null;
 	private ViewGroup fragmentContainer_;
 	private FragmentManager fragmentManager_;
 	private LocationsListFragment locationsListFragment_;
@@ -70,27 +70,15 @@ public class LocationsActivity extends SherlockFragmentActivity {
 		if (menu != null) {
 			menu.showContent(false);
 		}
-		// Configure the SlidingMenu
-		menu = new SlidingMenu(this);
-		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		menu.setShadowWidthRes(R.dimen.shadow_width);
-		menu.setShadowDrawable(R.drawable.shadow);
-		menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-		menu.setFadeDegree(0.35f);
-		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-		menu.setMenu(R.layout.menu_frame);
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.menu_frame, MenuListFragment.newInstance(0, menu)).commit();
-
 	}
-
-	public void showLocationDetails(int index) {
+	
+	public void showLocationDetails(Location selectedLocation){
 		if (fragmentContainer_ != null) {
 			LocationsDetailFragment detailFragment = (LocationsDetailFragment) fragmentManager_
 					.findFragmentById(R.id.LocationsFragmentContainer);
 			if (detailFragment == null
-					|| detailFragment.getSelectedLocation() != locationsOnView.get(index)) {
-				detailFragment = LocationsDetailFragment.newInstance(locationsOnView.get(index));
+					|| detailFragment.getSelectedLocationId() != selectedLocation.getID()) {
+				detailFragment = LocationsDetailFragment.newInstance(selectedLocation);
 				FragmentTransaction fragmentTransaction = fragmentManager_.beginTransaction();
 				fragmentTransaction.replace(R.id.LocationsFragmentContainer, detailFragment);
 				fragmentTransaction.commit();
@@ -99,7 +87,7 @@ public class LocationsActivity extends SherlockFragmentActivity {
 		}
 		else {
 			Intent intent = new Intent(this, LocationsDetailActivity.class);
-			intent.putExtra("index", locationsOnView.get(index));
+			intent.putExtra(LocationsDetailFragment.KEY_LOCATION, selectedLocation);
 			startActivityForResult(intent, 1);
 		}
 	}
@@ -108,40 +96,14 @@ public class LocationsActivity extends SherlockFragmentActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data != null) {
 			switch (requestCode) {
-			// Location deleted
-			case 1:
+			case LOCATION_DELETE:
 				if (resultCode == RESULT_OK) {
-					// The id of the location to remove
-					Integer id = Integer.valueOf(data.getIntExtra("deleted", 0));
-
-					// The location of the removed location in the listView
-					int index = locationsOnView.indexOf(id);
-
-					locationsOnView.remove(id);
-					String toRemove = locationsListFragment_.listAdapter.getItem(index);
-					locationsListFragment_.listAdapter.remove(toRemove);
-					if (locationsListFragment_.listAdapter.isEmpty()) {
-						locationsListFragment_.isEmpty = true;
-						locationsListFragment_.addPlaceHolderText();
-					}
+					locationsListFragment_.refreshList();
 				}
 				break;
-			// Location added
-			case 2:
+			case LOCATION_ADD:
 				if (resultCode == RESULT_OK) {
-					// The id of the location to add
-					Integer id = Integer.valueOf(data.getIntExtra("addedid", 0));
-
-					locationsOnView.add(id);
-					String toAdd = data.getStringExtra("addedname");
-
-					// If this is the first location, remove place holder text
-					if (locationsListFragment_.isEmpty == true) {
-						locationsListFragment_.listAdapter.clear();
-						locationsListFragment_.isEmpty = false;
-					}
-
-					locationsListFragment_.listAdapter.add(toAdd);
+					locationsListFragment_.refreshList();
 				}
 				break;
 			}
@@ -165,10 +127,6 @@ public class LocationsActivity extends SherlockFragmentActivity {
 			startActivity(myIntent);
 			finish();
 			return true;
-		case R.id.action_search:
-			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-			return true;
 		case R.id.action_nearby_locations:
 			Intent mapIntent = new Intent();
 			mapIntent.setClass(LocationsActivity.this, OnMapActivity.class);
@@ -179,7 +137,7 @@ public class LocationsActivity extends SherlockFragmentActivity {
 			Intent newIntent = new Intent();
 			newIntent.setClass(LocationsActivity.this, LocationsEditActivity.class);
 			newIntent.putExtra("edit", false);
-			startActivityForResult(newIntent, 2);
+			startActivityForResult(newIntent, LOCATION_ADD);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -190,36 +148,33 @@ public class LocationsActivity extends SherlockFragmentActivity {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.locations, menu);
 		
-		final EditText editTextSearch = (EditText) menu.findItem(R.id.action_search).getActionView();
-		editTextSearch.addTextChangedListener(new TextWatcher() {
-
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setOnQueryTextListener(new OnQueryTextListener() {
+			
 			@Override
-			public void onTextChanged(CharSequence charSequence, int start, int before,
-					int count) {
-				locationsListFragment_.search(charSequence);
+			public boolean onQueryTextSubmit(String query) {
+				return false;
 			}
-
+			
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-			@Override
-			public void afterTextChanged(Editable s) {}
+			public boolean onQueryTextChange(String newText) {
+				locationsListFragment_.search(newText);
+				return false;
+			}
 		});
 		
-		MenuItem searchItem = (MenuItem) menu.getItem(0);
-		searchItem.setOnActionExpandListener(new OnActionExpandListener() {
+		searchItem_ = (MenuItem) menu.getItem(0);
+		searchItem_.setOnActionExpandListener(new OnActionExpandListener() {
 			
 			@Override
 			public boolean onMenuItemActionExpand(MenuItem item) {
-				editTextSearch.requestFocus();
 				return true;
 			}
 			
 			@Override
 			public boolean onMenuItemActionCollapse(MenuItem item) {
-				editTextSearch.setText("");
-				locationsListFragment_.listAdapter.clear();
-				locationsListFragment_.populateList();
+				locationsListFragment_.searchFilter = null;
+				locationsListFragment_.refreshList();
 				return true;
 			}
 		});

@@ -1,8 +1,8 @@
 package hu.bute.gb.onlab.PhotoTools.fragment;
 
 import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.model.Deadline;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 
 	private DummyModel model_;
 	private Activity activity_;
-	private int selectedDeadline_ = 0;
+	private long selectedDeadline_ = 0;
 	private Deadline deadline_;
 
 	private TextView textViewDeadlineName_;
@@ -26,18 +26,18 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 	private TextView textViewDeadlineLocation_;
 	private TextView textViewDeadlineNotes_;
 
-	public static DeadlinesDetailFragment newInstance(int index) {
+	public static DeadlinesDetailFragment newInstance(long index) {
 		DeadlinesDetailFragment fragment = new DeadlinesDetailFragment();
 
 		Bundle arguments = new Bundle();
-		arguments.putInt("index", index);
+		arguments.putLong("index", index);
 		fragment.setArguments(arguments);
 
 		return fragment;
 	}
 
 	public static DeadlinesDetailFragment newInstance(Bundle bundle) {
-		int index = bundle.getInt("index", 0);
+		long index = bundle.getLong("index", 0);
 		return newInstance(index);
 	}
 
@@ -51,7 +51,7 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		selectedDeadline_ = getArguments().getInt("index", 0);
+		selectedDeadline_ = getArguments().getLong("index", 0);
 		deadline_ = model_.getDeadlineById(selectedDeadline_);
 	}
 
@@ -111,7 +111,7 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 		}
 	}
 
-	public int getSelectedDeadline() {
+	public long getSelectedDeadline() {
 		return selectedDeadline_;
 	}
 

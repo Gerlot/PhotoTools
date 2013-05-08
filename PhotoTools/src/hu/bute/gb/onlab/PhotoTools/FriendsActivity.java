@@ -1,11 +1,11 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import hu.bute.gb.onlab.PhotoTools.fragment.AddFriendMethodDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.FriendsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.FriendsListFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Friend;
 import hu.bute.gb.onlab.PhotoTools.R;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ import com.slidingmenu.lib.SlidingMenu;
 
 public class FriendsActivity extends SherlockFragmentActivity implements OnNavigationListener {
 
-	public List<Integer> friendsOnView = new ArrayList<Integer>();
+	public List<Long> friendsOnView = new ArrayList<Long>();
 
 	private static final int SHOW_DETAILS = 1;
 	private static final int ADD_FRIEND = 2;
@@ -88,8 +88,8 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 
 		if (getIntent().getExtras() != null) {
 			Bundle arguments = getIntent().getExtras();
-			int index = arguments.getInt("index");
-			friendsOnView.add(Integer.valueOf(index));
+			long index = arguments.getLong("index");
+			friendsOnView.add(Long.valueOf(index));
 			showFriendDetails(0);
 		}
 
@@ -134,7 +134,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 			case IMPORT_CONTACT:
 				if (resultCode == Activity.RESULT_OK) {
 					Uri result = data.getData();
-					String id = result.getLastPathSegment();
+					String contactId = result.getLastPathSegment();
 					ContentResolver contentResolver = getContentResolver();
 
 					String fullname = "";
@@ -145,7 +145,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 					// Query for name
 					Cursor nameCursor = contentResolver.query(
 							ContactsContract.Contacts.CONTENT_URI, null,
-							ContactsContract.Contacts._ID + " = ?", new String[] { id }, null);
+							ContactsContract.Contacts._ID + " = ?", new String[] { contactId }, null);
 					if (nameCursor.moveToFirst()) {
 						fullname = nameCursor.getString(nameCursor
 								.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
@@ -169,7 +169,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 					Cursor phoneCursor = contentResolver.query(
 							ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
 							ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-							new String[] { id }, null);
+							new String[] { contactId }, null);
 					if (phoneCursor.moveToFirst()) {
 						number = phoneCursor.getString(phoneCursor
 								.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA));
@@ -178,14 +178,14 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 
 					// Query for email
 					Cursor emailCursor = getContentResolver().query(Email.CONTENT_URI, null,
-							Email.CONTACT_ID + "=?", new String[] { id }, null);
+							Email.CONTACT_ID + "=?", new String[] { contactId }, null);
 					if (emailCursor.moveToFirst()) {
 						email = emailCursor.getString(emailCursor.getColumnIndex(Email.DATA));
 					}
 
 					String where = ContactsContract.Data.CONTACT_ID + " = ? AND "
 							+ ContactsContract.Data.MIMETYPE + " = ?";
-					String[] whereParameters = new String[] { id,
+					String[] whereParameters = new String[] { contactId,
 							ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE };
 					Cursor addressCursor = contentResolver.query(ContactsContract.Data.CONTENT_URI,
 							null, where, whereParameters, null);

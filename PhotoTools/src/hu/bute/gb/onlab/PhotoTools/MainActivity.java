@@ -1,6 +1,6 @@
 package hu.bute.gb.onlab.PhotoTools;
 
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		DummyModel.getInstance();
+		// DummyModel.getInstance();
 
 		// Getting screen dimensions
 		Display display = getWindowManager().getDefaultDisplay();

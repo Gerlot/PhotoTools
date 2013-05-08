@@ -1,9 +1,9 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeadlinesDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeleteDeadlineDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.R;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class DeadlinesDetailActivity extends SlidingFragmentActivity {
 
-	private int selectedDeadline_ = 0;
+	private long selectedDeadline_ = 0;
 	MenuListFragment menuFragment;
 
 	@Override
@@ -26,14 +26,14 @@ public class DeadlinesDetailActivity extends SlidingFragmentActivity {
 		setContentView(R.layout.activity_deadlines_detail);
 
 		if (getIntent().getExtras() != null && savedInstanceState == null) {
-			selectedDeadline_ = getIntent().getExtras().getInt("index", 0);
+			selectedDeadline_ = getIntent().getExtras().getLong("index", 0);
 			DeadlinesDetailFragment detailFragment = DeadlinesDetailFragment
 					.newInstance(getIntent().getExtras());
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.DeadlinesFragmentContainer, detailFragment).commit();
 		}
 		else if (savedInstanceState != null) {
-			selectedDeadline_ = savedInstanceState.getInt("index");
+			selectedDeadline_ = savedInstanceState.getLong("index");
 		}
 
 		// Set the Behind View for the SlidingMenu
@@ -64,7 +64,7 @@ public class DeadlinesDetailActivity extends SlidingFragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putInt("index", selectedDeadline_);
+		outState.putLong("index", selectedDeadline_);
 	}
 
 	@Override

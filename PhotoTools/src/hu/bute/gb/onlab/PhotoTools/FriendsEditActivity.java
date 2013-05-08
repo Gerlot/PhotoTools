@@ -1,7 +1,7 @@
 package hu.bute.gb.onlab.PhotoTools;
 
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Friend;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import hu.bute.gb.onlab.PhotoTools.R;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import com.actionbarsherlock.view.Window;
 public class FriendsEditActivity extends SherlockActivity {
 
 	private DummyModel model_;
-	private int selectedFriend_ = 0;
+	private long selectedFriend_ = 0;
 	private boolean editMode_ = false;
 	private Friend friend_;
 
@@ -63,7 +63,7 @@ public class FriendsEditActivity extends SherlockActivity {
 
 		if (getIntent().getExtras().getBoolean("edit")) {
 			editMode_ = true;
-			selectedFriend_ = getIntent().getExtras().getInt("index");
+			selectedFriend_ = getIntent().getExtras().getLong("index");
 			Log.d("friend", "" + selectedFriend_);
 			friend_ = model_.getFriendById(selectedFriend_);
 			textViewTitle_.setText("Edit " + friend_.getFullNameFirstLast());

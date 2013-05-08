@@ -4,8 +4,8 @@
         android:id="@+id/action_search"
         android:title="@string/search"
         android:icon="@android:drawable/ic_menu_search"
-        android:actionLayout="@layout/collapsible_edittext"
-        android:showAsAction="ifRoom|collapseActionView"/>
+        android:showAsAction="ifRoom|collapseActionView"
+        android:actionViewClass="com.actionbarsherlock.widget.SearchView"/>
     
     <item
         android:id="@+id/action_new_location"

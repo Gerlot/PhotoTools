@@ -1,9 +1,9 @@
 package hu.bute.gb.onlab.PhotoTools.fragment;
 
 import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.SeparatedListAdapter;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Equipment;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
+import hu.bute.gb.onlab.PhotoTools.helpers.SeparatedListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import android.widget.TextView;
 public class EquipmentSelectorDialog extends DialogFragment{
 	
 	public boolean isEmpty = true;
-	public List<Integer> equipmentOnView = new ArrayList<Integer>();
+	public List<Long> equipmentOnView = new ArrayList<Long>();
 
 	private static FriendsDetailFragment fragment_;
 	private EditText editTextSearch_;
@@ -134,11 +134,11 @@ public class EquipmentSelectorDialog extends DialogFragment{
 
 			TreeSet<Equipment> current = categories.getValue();
 			// Add a 0 value because for each category headers
-			equipmentOnView.add(Integer.valueOf(0));
+			equipmentOnView.add(Long.valueOf(0));
 			for (Equipment equipment : current) {
 				if (searchFilter == null || equipment.getName().toLowerCase().contains(searchFilter.toString().toLowerCase())) {
 					equipmentAdapter.add(new EquipmentItem(equipment.getName(), equipment.isLent()));
-					equipmentOnView.add(Integer.valueOf(equipment.getID()));
+					equipmentOnView.add(Long.valueOf(equipment.getID()));
 				}
 			}
 			listAdapter_.addSection(categories.getKey(), equipmentAdapter);

@@ -16,7 +16,7 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class FriendsDetailActivity extends SlidingFragmentActivity {
 
-	private int selectedFriend_ = 0;
+	private long selectedFriend_ = 0;
 	MenuListFragment menuFragment;
 
 	@Override
@@ -25,23 +25,23 @@ public class FriendsDetailActivity extends SlidingFragmentActivity {
 		setContentView(R.layout.activity_friends_detail);
 
 		if (getIntent().getExtras() != null && savedInstanceState == null) {
-			selectedFriend_ = getIntent().getExtras().getInt("index", 0);
+			selectedFriend_ = getIntent().getExtras().getLong("index", 0);
 			FriendsDetailFragment detailFragment = FriendsDetailFragment.newInstance(getIntent()
 					.getExtras());
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.FriendsFragmentContainer, detailFragment).commit();
 		}
 		else if (savedInstanceState != null) {
-			selectedFriend_ = savedInstanceState.getInt("index");
+			selectedFriend_ = savedInstanceState.getLong("index");
 		}
 
 		// Set the Behind View for the SlidingMenu
 		setBehindContentView(R.layout.menu_frame);
 		if (savedInstanceState == null) {
 			menuFragment = MenuListFragment.newInstance(9, getSlidingMenu());
-			FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
-			t.replace(R.id.menu_frame, menuFragment);
-			t.commit();
+			FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
+			transaction.replace(R.id.menu_frame, menuFragment);
+			transaction.commit();
 		}
 		else {
 			menuFragment = (MenuListFragment) this.getSupportFragmentManager().findFragmentById(
@@ -63,7 +63,7 @@ public class FriendsDetailActivity extends SlidingFragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putInt("index", selectedFriend_);
+		outState.putLong("index", selectedFriend_);
 	}
 
 	@Override

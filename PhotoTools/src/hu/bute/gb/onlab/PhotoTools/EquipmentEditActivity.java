@@ -1,7 +1,7 @@
 package hu.bute.gb.onlab.PhotoTools;
 
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Equipment;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.R;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +24,7 @@ import com.actionbarsherlock.view.Window;
 public class EquipmentEditActivity extends SherlockActivity {
 
 	private DummyModel model_;
-	private int selectedEquipment_ = 0;
+	private long selectedEquipment_ = 0;
 	private boolean editMode_ = false;
 	private Equipment equipment_;
 	private Equipment oldEquipment_;
@@ -65,7 +65,7 @@ public class EquipmentEditActivity extends SherlockActivity {
 
 		if (getIntent().getExtras().getBoolean("edit")) {
 			editMode_ = true;
-			selectedEquipment_ = getIntent().getExtras().getInt("index");
+			selectedEquipment_ = getIntent().getExtras().getLong("index");
 			equipment_ = model_.getEquipmentById(selectedEquipment_);
 
 			textViewTitle_.setText("Edit " + equipment_.getName());
@@ -128,16 +128,16 @@ public class EquipmentEditActivity extends SherlockActivity {
 				// Only save if something is changed
 				if (nameChanged || categoryChanged || notesChanged) {
 					// Existing ID
-					int id = equipment_.getID();
+					long id = equipment_.getID();
 					oldEquipment_ = equipment_;
-					equipment_ = new Equipment(id, name, category, notes);
+					equipment_ = new Equipment(id, name, category, notes, 0);
 					model_.editEquipment(equipment_, oldEquipment_);
 				}
 			}
 			else {
 				// Generate new ID for new entry
-				int id = model_.equipmentId.getAndIncrement();
-				equipment_ = new Equipment(id, name, category, notes);
+				long id = model_.equipmentId.getAndIncrement();
+				equipment_ = new Equipment(id, name, category, notes, 0);
 				model_.addEquipment(equipment_);
 				Log.d("equipment", "" + id);
 			}

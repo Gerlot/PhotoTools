@@ -1,10 +1,10 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeleteEquipmentDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.model.Equipment;
 import hu.bute.gb.onlab.PhotoTools.R;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class EquipmentDetailActivity extends SlidingFragmentActivity {
 
-	private int selectedEquipment_ = 0;
+	private long selectedEquipment_ = 0;
 	MenuListFragment menuFragment;
 
 	@Override
@@ -31,14 +31,14 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 		setContentView(R.layout.activity_equipment_detail);
 
 		if (getIntent().getExtras() != null && savedInstanceState == null) {
-			selectedEquipment_ = getIntent().getExtras().getInt("index", 0);
+			selectedEquipment_ = getIntent().getExtras().getLong("index", 0);
 			EquipmentDetailFragment detailFragment = EquipmentDetailFragment
 					.newInstance(getIntent().getExtras());
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.EquipmentFragmentContainer, detailFragment).commit();
 		}
 		else if (savedInstanceState != null) {
-			selectedEquipment_ = savedInstanceState.getInt("index");
+			selectedEquipment_ = savedInstanceState.getLong("index");
 		}
 
 		// Set the Behind View for the SlidingMenu
@@ -69,7 +69,7 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putInt("index", selectedEquipment_);
+		outState.putLong("index", selectedEquipment_);
 	}
 
 	@Override

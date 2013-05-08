@@ -1,14 +1,15 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeleteLocationDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.model.DummyModel;
-import hu.bute.gb.onlab.PhotoTools.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -18,23 +19,27 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class LocationsDetailActivity extends SlidingFragmentActivity {
 
-	private int selectedLocation_ = 0;
-	MenuListFragment menuFragment;
+	private Location selectedLocation_;
+	private MenuListFragment menuFragment;
+	private LocationsDetailFragment detailFragment_;
+	private DatabaseLoader databaseLoader_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_locations_detail);
+		databaseLoader_ = PhotoToolsApplication.getTodoDbLoader();
 
 		if (getIntent().getExtras() != null && savedInstanceState == null) {
-			selectedLocation_ = getIntent().getExtras().getInt("index", 0);
-			LocationsDetailFragment detailFragment = LocationsDetailFragment
-					.newInstance(getIntent().getExtras());
+			selectedLocation_ = getIntent().getExtras().getParcelable(
+					LocationsDetailFragment.KEY_LOCATION);
+			detailFragment_ = LocationsDetailFragment.newInstance(getIntent().getExtras());
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.LocationsFragmentContainer, detailFragment).commit();
+					.add(R.id.LocationsFragmentContainer, detailFragment_).commit();
 		}
 		else if (savedInstanceState != null) {
-			selectedLocation_ = savedInstanceState.getInt("index");
+			selectedLocation_ = savedInstanceState
+					.getParcelable(LocationsDetailFragment.KEY_LOCATION);
 		}
 
 		// Set the Behind View for the SlidingMenu
@@ -65,13 +70,28 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putInt("index", selectedLocation_);
+		outState.putParcelable(LocationsDetailFragment.KEY_LOCATION, selectedLocation_);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		getSlidingMenu().showContent(false);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			switch (requestCode) {
+			// Location deleted
+			case 3:
+				if (resultCode == RESULT_OK) {
+					Location location = data.getParcelableExtra(LocationsDetailFragment.KEY_LOCATION);
+					detailFragment_.onLocationChanged(location);
+				}
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -88,9 +108,9 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 		case R.id.action_edit_location:
 			Intent editIntent = new Intent();
 			editIntent.setClass(LocationsDetailActivity.this, LocationsEditActivity.class);
-			editIntent.putExtra("edit", true);
-			editIntent.putExtra("index", selectedLocation_);
-			startActivity(editIntent);
+			editIntent.putExtra(LocationsEditActivity.KEY_EDIT, true);
+			editIntent.putExtra(LocationsDetailFragment.KEY_LOCATION, selectedLocation_);
+			startActivityForResult(editIntent, 3);
 			return true;
 		case R.id.action_delete_location:
 			// Show confirmation dialog
@@ -110,9 +130,10 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 	}
 
 	public void deleteLocation() {
-		DummyModel.getInstance().removeLocationById(selectedLocation_);
+		// DummyModel.getInstance().removeLocationById(selectedLocation_);
+		databaseLoader_.removeLocation(selectedLocation_.getID());
 		Intent returnIntent = new Intent();
-		returnIntent.putExtra("deleted", selectedLocation_);
+		returnIntent.putExtra("deleted", selectedLocation_.getID());
 		setResult(RESULT_OK, returnIntent);
 		finish();
 	}
