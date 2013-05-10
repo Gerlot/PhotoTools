@@ -16,7 +16,7 @@ public class Friend implements Comparable<Friend>, Parcelable {
 	public String address_;
 	public List<Long> lentItems_ = null;
 
-	public Friend(int ID, String firstName, String lastName, String phoneNumber,
+	public Friend(long ID, String firstName, String lastName, String phoneNumber,
 			String emailAddress, String address, ArrayList<Long> lentItems) {
 		ID_ = ID;
 		firstName_ = firstName;
@@ -117,11 +117,15 @@ public class Friend implements Comparable<Friend>, Parcelable {
 	}
 	
 	public void lendItem(long id){
-		// Initialize lsit if this is the first item
+		// Initialize list if this is the first item
 		if (lentItems_ == null) {
 			lentItems_ = new ArrayList<Long>();
 		}
 		lentItems_.add(Long.valueOf(id));
+	}
+	
+	public boolean hasLentItems(){
+		return (lentItems_ != null);
 	}
 
 	@Override

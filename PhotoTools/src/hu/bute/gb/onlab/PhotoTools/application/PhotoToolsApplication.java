@@ -6,7 +6,7 @@ import android.app.Application;
 public class PhotoToolsApplication extends Application {
 	private static DatabaseLoader databaseLoader;
 
-	public static DatabaseLoader getTodoDbLoader() {
+	public static DatabaseLoader getDatabaseLoader() {
 		return databaseLoader;
 	}
 

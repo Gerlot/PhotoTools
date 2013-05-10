@@ -90,7 +90,7 @@ public class DeadlinesListFragment extends SherlockListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
 				convertView = LayoutInflater.from(getContext())
-						.inflate(R.layout.deadlinesrow, null);
+						.inflate(R.layout.deadlines_row, null);
 			}
 			TextView title = (TextView) convertView.findViewById(R.id.row_title);
 			title.setText(getItem(position).tag);

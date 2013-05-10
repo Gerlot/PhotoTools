@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class EquipmentDetailFragment extends SherlockFragment {
+	
+	public static final String KEY_EQUIPMENT = "equipment";
 
 	private boolean tabletSize_;
 	private DummyModel model_;
@@ -36,35 +38,46 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	private ImageView imageViewLentTo_;
 	private LinearLayout linearLayoutLend_;
 
-	public static EquipmentDetailFragment newInstance(long index) {
-		EquipmentDetailFragment fragment = new EquipmentDetailFragment();
+	public static EquipmentDetailFragment newInstance(Equipment equipment) {
+		EquipmentDetailFragment result = new EquipmentDetailFragment();
 
 		Bundle arguments = new Bundle();
-		arguments.putLong("index", index);
-		fragment.setArguments(arguments);
+		arguments.putParcelable(KEY_EQUIPMENT, equipment);
+		result.setArguments(arguments);
 
-		return fragment;
+		return result;
 	}
 
 	public static EquipmentDetailFragment newInstance(Bundle bundle) {
-		long index = bundle.getLong("index", 0);
-		return newInstance(index);
+		EquipmentDetailFragment result = new EquipmentDetailFragment();
+		result.setArguments(bundle);
+		return result;
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		activity_ = activity;
-		model_ = DummyModel.getInstance();
+		//model_ = DummyModel.getInstance();
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if (savedInstanceState == null) {
+			if (getArguments() != null) {
+				equipment_ = getArguments().getParcelable(KEY_EQUIPMENT);
+			}
+		}
+		else if (savedInstanceState != null) {
+			equipment_ = savedInstanceState.getParcelable(KEY_EQUIPMENT);
+		}
+		
 		tabletSize_ = getResources().getBoolean(R.bool.isTablet);
 
-		selectedEquipment_ = getArguments().getLong("index", 0);
-		equipment_ = model_.getEquipmentById(selectedEquipment_);
+		//selectedEquipment_ = getArguments().getLong("index", 0);
+		//equipment_ = model_.getEquipmentById(selectedEquipment_);
 	}
 
 	@Override
@@ -106,6 +119,17 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		onEquipmentChanged(equipment_);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putParcelable(KEY_EQUIPMENT, equipment_);
+	}
+	
+	public void onEquipmentChanged(Equipment equipment){
+		equipment_ = equipment;
 		if (!tabletSize_) {
 			activity_.setTitle(equipment_.getName());
 			textViewEquipmentName_.setVisibility(View.GONE);
@@ -117,8 +141,8 @@ public class EquipmentDetailFragment extends SherlockFragment {
 		textViewNotes_.setText(equipment_.getNotes());
 	}
 
-	public long getSelectedEquipment() {
-		return selectedEquipment_;
+	public long getSelectedEquipmentId() {
+		return equipment_.getID();
 	}
 	
 	public void lendEquipment(long friendId){

@@ -1,6 +1,14 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import org.joda.time.DateTime;
+
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
+import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
+import hu.bute.gb.onlab.PhotoTools.entities.Friend;
+import hu.bute.gb.onlab.PhotoTools.entities.Location;
+import hu.bute.gb.onlab.PhotoTools.helpers.Coordinate;
 import hu.bute.gb.onlab.PhotoTools.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -76,8 +84,58 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		// DummyModel.getInstance();
+		/*
+		 * Equipment equipment = new Equipment(1, "Camera", "Camera",
+		 * "My first DSLR", 0);
+		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
+		 * 
+		 * equipment = new Equipment(1, "Lenses", "Lenses", "My first DSLR", 0);
+		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
+		 * 
+		 * equipment = new Equipment(1, "Filter", "Filter", "My first DSLR", 0);
+		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
+		 * 
+		 * equipment = new Equipment(1, "Flashes", "Flashes", "My first DSLR",
+		 * 0);
+		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
+		 * 
+		 * equipment = new Equipment(1, "Memory Cards & Readers",
+		 * "Memory Cards & Readers", "My first DSLR", 0);
+		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
+		 * 
+		 * equipment = new Equipment(1, "Accessories", "Accessories",
+		 * "My first DSLR", 0);
+		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
+		 */
+		
+		/*for (int i = 0; i < 1000; i++) {
+			Equipment equipment = new Equipment(1, "Lenses", "Lenses", "My first DSLR", 0);
+			PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
+		}*/
+
+		DateTime start = new DateTime(2013, 4, 26, 15, 0);
+		DateTime end = new DateTime(2013, 4, 26, 15, 0);
+		Deadline deadline = new Deadline(111, "Finish the Model Shoot Retouch", start, end, true,
+				"", "");
+		// PhotoToolsApplication.getDatabaseLoader().addDeadline(deadline);
+
+		String note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam justo dui, elementum quis sollicitudin sit ametxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+		Location location = new Location(111, "something", "1117 Budapest, Irinyi József St 42",
+				new Coordinate(0.01, 0.02), false, false, note);
+		// PhotoToolsApplication.getDatabaseLoader().addLocation(location);
+
+		Friend friend = new Friend(111, "Bala", "Kavács",
+				"+36207664321", "bala@gmail.com", "1117 Budspest, Irinyi Jyzsef St 42 ",
+				null);
+		//PhotoToolsApplication.getDatabaseLoader().addFriend(friend);
+		
+		friend = new Friend(111, "Xala", "Kavács",
+				"+36207664321", "bala@gmail.com", "1117 Budspest, Irinyi Jyzsef St 42 ",
+				null);
+		friend.lendItem(1);
+		//PhotoToolsApplication.getDatabaseLoader().addFriend(friend);
 
 		// Getting screen dimensions
 		Display display = getWindowManager().getDefaultDisplay();
@@ -95,13 +153,13 @@ public class MainActivity extends Activity {
 		imageViewCamera_ = (ImageView) findViewById(R.id.imageViewCamera);
 		imageButtonMainMenu_ = (ImageButton) findViewById(R.id.imageButtonMainMenu);
 		imageButtonMainMenu_.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				openOptionsMenu();
 			}
 		});
-		
+
 		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/DotsAllForNow.ttf");
 		orientation_ = getResources().getConfiguration().orientation;
 
@@ -149,7 +207,6 @@ public class MainActivity extends Activity {
 		textViewFriends_ = (TextView) findViewById(R.id.TextViewFriends);
 		textViewFriends_.setTypeface(font);
 
-
 		textViewFriendsOld_ = (TextView) findViewById(R.id.textViewFriendsOld);
 		textViewFriendsOld_.setTypeface(font);
 		layoutFriendsOld_.setVisibility(View.GONE);
@@ -169,10 +226,10 @@ public class MainActivity extends Activity {
 		// Pop-out animation (translation) by orientation
 		// Only available on past Honeycomb devices
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			
+
 			// Hide the action bar
 			getActionBar().hide();
-			
+
 			// Show menu button if there is no hardware menu button
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 				if (!ViewConfiguration.get(MainActivity.this).hasPermanentMenuKey()) {
@@ -206,14 +263,14 @@ public class MainActivity extends Activity {
 					locationsMenuSelected();
 				}
 			});
-			
+
 			imageButtonDeadlines_.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					deadlinesMenuSelected();
 				}
 			});
-			
+
 			imageButtonEquipment_.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -307,8 +364,7 @@ public class MainActivity extends Activity {
 	// Pop-out animations
 	@SuppressLint("NewApi")
 	private void popOut(View view, float x, float y) {
-		view.animate().translationXBy(x).translationYBy(y)
-				.setDuration(ANIMATION_DURATION);
+		view.animate().translationXBy(x).translationYBy(y).setDuration(ANIMATION_DURATION);
 	}
 
 	// Menu selection methods
@@ -323,7 +379,7 @@ public class MainActivity extends Activity {
 		myIntent.setClass(MainActivity.this, DeadlinesActivity.class);
 		startActivity(myIntent);
 	}
-	
+
 	private void equipmentMenuSelected() {
 		Intent myIntent = new Intent();
 		myIntent.setClass(MainActivity.this, EquipmentActivity.class);

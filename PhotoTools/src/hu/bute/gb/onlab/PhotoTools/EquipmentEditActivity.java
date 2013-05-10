@@ -1,8 +1,13 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
+import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentDetailFragment;
+import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.R;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,11 +28,10 @@ import com.actionbarsherlock.view.Window;
 
 public class EquipmentEditActivity extends SherlockActivity {
 
-	private DummyModel model_;
-	private long selectedEquipment_ = 0;
+	public static final String KEY_EDIT = "edit";
+
 	private boolean editMode_ = false;
 	private Equipment equipment_;
-	private Equipment oldEquipment_;
 
 	private LinearLayout linearLayoutSave_;
 	private TextView textViewTitle_;
@@ -35,12 +39,14 @@ public class EquipmentEditActivity extends SherlockActivity {
 	private Spinner spinnerCategory_;
 	private EditText editTextEquipmentNotes_;
 
+	private DatabaseLoader databaseLoader_;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_equipment_edit);
-		model_ = DummyModel.getInstance();
+		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
 
 		linearLayoutSave_ = (LinearLayout) findViewById(R.id.linearLayoutSave);
 		linearLayoutSave_.setOnClickListener(new OnClickListener() {
@@ -63,10 +69,10 @@ public class EquipmentEditActivity extends SherlockActivity {
 
 		editTextEquipmentNotes_ = (EditText) findViewById(R.id.editTextEquipmentNotes);
 
-		if (getIntent().getExtras().getBoolean("edit")) {
+		if (getIntent().getExtras().getBoolean(KEY_EDIT)) {
 			editMode_ = true;
-			selectedEquipment_ = getIntent().getExtras().getLong("index");
-			equipment_ = model_.getEquipmentById(selectedEquipment_);
+			equipment_ = getIntent().getExtras().getParcelable(
+					EquipmentDetailFragment.KEY_EQUIPMENT);
 
 			textViewTitle_.setText("Edit " + equipment_.getName());
 
@@ -110,6 +116,7 @@ public class EquipmentEditActivity extends SherlockActivity {
 		String name = editTextEquipmentName_.getText().toString();
 		String category = spinnerCategory_.getSelectedItem().toString();
 		String notes = editTextEquipmentNotes_.getText().toString();
+		long id = 0;
 
 		// Only save if name field isn't empty
 		if (name.trim().length() == 0) {
@@ -128,19 +135,23 @@ public class EquipmentEditActivity extends SherlockActivity {
 				// Only save if something is changed
 				if (nameChanged || categoryChanged || notesChanged) {
 					// Existing ID
-					long id = equipment_.getID();
-					oldEquipment_ = equipment_;
-					equipment_ = new Equipment(id, name, category, notes, 0);
-					model_.editEquipment(equipment_, oldEquipment_);
+					id = equipment_.getID();
+					equipment_ = new Equipment(id, name, category, notes, 0);;
+					databaseLoader_.editEquipment(equipment_.getID(), equipment_);
 				}
 			}
 			else {
 				// Generate new ID for new entry
-				long id = model_.equipmentId.getAndIncrement();
 				equipment_ = new Equipment(id, name, category, notes, 0);
-				model_.addEquipment(equipment_);
-				Log.d("equipment", "" + id);
+				databaseLoader_.addEquipment(equipment_);
 			}
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra("addedname", name);
+			returnIntent.putExtra("addedid", id);
+			if (editMode_) {
+				returnIntent.putExtra(EquipmentDetailFragment.KEY_EQUIPMENT, equipment_);
+			}
+			setResult(RESULT_OK, returnIntent);
 			finish();
 		}
 	}

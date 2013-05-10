@@ -34,16 +34,15 @@ public class LocationsListFragment extends SherlockListFragment {
 	// Log tag
 	public static final String TAG = "LocationsListFragment";
 	public String searchFilter = null;
+	public LocationsAdapter listAdapter;
 	public boolean isEmpty = true;
 
-	private DummyModel model_;
 	private LocationsActivity activity_;
 	private int selectedPosition_ = 0;
 
 	private ActionMode actionMode_ = null;
 
 	// State
-	public LocationsAdapter listAdapter;
 	private LocalBroadcastManager broadcastManager;
 
 	// DBloader
@@ -54,7 +53,6 @@ public class LocationsListFragment extends SherlockListFragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		activity_ = (LocationsActivity) activity;
-		model_ = DummyModel.getInstance();
 	}
 
 	@Override
@@ -62,19 +60,17 @@ public class LocationsListFragment extends SherlockListFragment {
 		super.onCreate(savedInstanceState);
 		
 		broadcastManager = LocalBroadcastManager.getInstance(getActivity());
-		databaseLoader = PhotoToolsApplication.getTodoDbLoader();
+		databaseLoader = PhotoToolsApplication.getDatabaseLoader();
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
-		/*listAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
-		setListAdapter(listAdapter);
-
-		populateList();
-
+		
 		ListView listView = getListView();
+		listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
+
+		/*		ListView listView = getListView();
 		listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
 		listView.setSelection(selectedPosition_);
 		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -136,10 +132,6 @@ public class LocationsListFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		super.onListItemClick(listView, view, position, id);
-		/*if (!isEmpty && actionMode_ == null) {
-			activity_.showLocationDetails(position);
-			selectedPosition_ = position;
-		}*/
 		if (!isEmpty && actionMode_ == null) {
 			Location selectedLocation = (Location) getListAdapter().getItem(position);
 			activity_.showLocationDetails(selectedLocation);
@@ -161,18 +153,6 @@ public class LocationsListFragment extends SherlockListFragment {
 	public void search(String queryString) {
 		searchFilter = queryString.toLowerCase();
 		refreshList();
-		/*listAdapter.clear();
-		isEmpty = true;
-		for (Location location : model_.locations) {
-			if (location.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
-				listAdapter.add(location.getName());
-				activity_.locationsOnView.add(Long.valueOf(location.getID()));
-				isEmpty = false;
-			}
-		}
-		if (isEmpty) {
-			listAdapter.add(getResources().getString(R.string.search_no_result));
-		}*/
 	}
 
 	public final class SelectActionMode implements ActionMode.Callback {

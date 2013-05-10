@@ -10,8 +10,9 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="20sp"
+        android:paddingLeft="10dp"/>
 
     <ImageView
         android:id="@+id/row_sign"

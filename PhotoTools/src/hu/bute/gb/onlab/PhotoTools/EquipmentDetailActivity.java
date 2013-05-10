@@ -1,9 +1,13 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
+import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeleteEquipmentDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentDetailFragment;
+import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
 import hu.bute.gb.onlab.PhotoTools.R;
 
@@ -21,24 +25,30 @@ import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class EquipmentDetailActivity extends SlidingFragmentActivity {
+	
+	public static final int EQUIPMENT_EDIT = 3;
 
-	private long selectedEquipment_ = 0;
-	MenuListFragment menuFragment;
+	private Equipment selectedEquipment_;
+	private MenuListFragment menuFragment;
+	private EquipmentDetailFragment detailFragment_;
+	private DatabaseLoader databaseLoader_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_equipment_detail);
+		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
 
 		if (getIntent().getExtras() != null && savedInstanceState == null) {
-			selectedEquipment_ = getIntent().getExtras().getLong("index", 0);
-			EquipmentDetailFragment detailFragment = EquipmentDetailFragment
-					.newInstance(getIntent().getExtras());
+			selectedEquipment_ = getIntent().getExtras().getParcelable(
+					EquipmentDetailFragment.KEY_EQUIPMENT);
+			detailFragment_ = EquipmentDetailFragment.newInstance(getIntent().getExtras());
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.EquipmentFragmentContainer, detailFragment).commit();
+					.add(R.id.EquipmentFragmentContainer, detailFragment_).commit();
 		}
 		else if (savedInstanceState != null) {
-			selectedEquipment_ = savedInstanceState.getLong("index");
+			selectedEquipment_ = savedInstanceState
+					.getParcelable(EquipmentDetailFragment.KEY_EQUIPMENT);
 		}
 
 		// Set the Behind View for the SlidingMenu
@@ -69,13 +79,27 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putLong("index", selectedEquipment_);
+		outState.putParcelable(EquipmentDetailFragment.KEY_EQUIPMENT, selectedEquipment_);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		getSlidingMenu().showContent(false);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			switch (requestCode) {
+			case EQUIPMENT_EDIT:
+				if (resultCode == RESULT_OK) {
+					Equipment equipment = data.getParcelableExtra(EquipmentDetailFragment.KEY_EQUIPMENT);
+					detailFragment_.onEquipmentChanged(equipment);
+				}
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -92,9 +116,9 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 		case R.id.action_edit_equipment:
 			Intent editIntent = new Intent();
 			editIntent.setClass(EquipmentDetailActivity.this, EquipmentEditActivity.class);
-			editIntent.putExtra("edit", true);
-			editIntent.putExtra("index", selectedEquipment_);
-			startActivity(editIntent);
+			editIntent.putExtra(EquipmentEditActivity.KEY_EDIT, true);
+			editIntent.putExtra(EquipmentDetailFragment.KEY_EQUIPMENT, selectedEquipment_);
+			startActivityForResult(editIntent, EQUIPMENT_EDIT);
 			return true;
 		case R.id.action_delete_equipment:
 			// Show confirmation dialog
@@ -113,33 +137,11 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem menuItemLend = menu.findItem(R.id.menu_lend_equipment);
-		DummyModel model = DummyModel.getInstance();
-		Equipment equipment = null;
-		for (Map.Entry<String, TreeSet<Equipment>> alphabet : model.equipment.entrySet()) {
-			TreeSet<Equipment> current = alphabet.getValue();
-			for (Equipment e : current) {
-				if (e.getID() == selectedEquipment_) {
-					equipment = e;
-				}
-			}
-		}
-		if (equipment != null && equipment.isLent()) {
-			menuItemLend.setTitle("Equipment is back");
-		}
-		else {
-			menuItemLend.setTitle("Lend this eqipment");
-		}
-
-		return super.onPrepareOptionsMenu(menu);
-	}
-
 	public void deleteEquipment() {
-		DummyModel.getInstance().removeEquipmentById(selectedEquipment_);
+		//DummyModel.getInstance().removeEquipmentById(selectedEquipment_);
+		databaseLoader_.removeEquipment(selectedEquipment_.getID());
 		Intent returnIntent = new Intent();
-		returnIntent.putExtra("deleted", selectedEquipment_);
+		returnIntent.putExtra("deleted", selectedEquipment_.getID());
 		setResult(RESULT_OK, returnIntent);
 		finish();
 	}

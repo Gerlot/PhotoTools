@@ -29,7 +29,6 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 
 	public static final String KEY_EDIT = "edit";
 
-	private DummyModel model_;
 	private boolean editMode_ = false;
 	private Location location_;
 
@@ -51,8 +50,7 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_locations_edit);
-		model_ = DummyModel.getInstance();
-		databaseLoader_ = PhotoToolsApplication.getTodoDbLoader();
+		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
 
 		imageViewMap_ = (ImageView) findViewById(R.id.imageViewMap);
 		imageViewMap_.setOnClickListener(new OnClickListener() {
@@ -142,14 +140,12 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 					id = location_.getID();
 					location_ = new Location(id, name, address, coordinate, carEntry, powerSource,
 							notes);
-					//model_.editLocation(location_);
 					databaseLoader_.editLocation(location_.getID(), location_);
 				}
 			}
 			else {
 				location_ = new Location(id, name, address, coordinate, carEntry, powerSource,
 						notes);
-				//model_.addLocation(location_);
 				databaseLoader_.addLocation(location_);
 			}
 			Intent returnIntent = new Intent();

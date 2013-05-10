@@ -36,19 +36,6 @@ public class LocationsDetailFragment extends SherlockFragment {
 	private CheckBox checkBoxPowerSource_;
 	private TextView textViewNotes_;
 
-	/*
-	 * public static LocationsDetailFragment newInstance (long index){
-	 * LocationsDetailFragment fragment = new LocationsDetailFragment();
-	 * 
-	 * Bundle arguments = new Bundle(); arguments.putLong("index", index);
-	 * fragment.setArguments(arguments);
-	 * 
-	 * return fragment; }
-	 * 
-	 * public static LocationsDetailFragment newInstance (Bundle bundle){ long
-	 * index = bundle.getLong("index", 0); return newInstance(index); }
-	 */
-
 	public static LocationsDetailFragment newInstance(Location location) {
 		LocationsDetailFragment result = new LocationsDetailFragment();
 
@@ -69,7 +56,7 @@ public class LocationsDetailFragment extends SherlockFragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		activity_ = activity;
-		model_ = DummyModel.getInstance();
+		//model_ = DummyModel.getInstance();
 	}
 
 	@Override
@@ -82,11 +69,9 @@ public class LocationsDetailFragment extends SherlockFragment {
 			}
 		}
 		else if (savedInstanceState != null) {
-			location_ = savedInstanceState
-					.getParcelable(LocationsDetailFragment.KEY_LOCATION);
+			location_ = savedInstanceState.getParcelable(KEY_LOCATION);
 		}
 
-		// Set title on the Action Bar on phones
 		tabletSize_ = getResources().getBoolean(R.bool.isTablet);
 	}
 
@@ -101,11 +86,12 @@ public class LocationsDetailFragment extends SherlockFragment {
 		imageViewMap_.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				/*Intent mapIntent = new Intent();
-				mapIntent.setClass(getActivity(), OnMapActivity.class);
-				mapIntent.putExtra("edit", true);
-				mapIntent.putExtra("index", selectedLocationId_);
-				startActivity(mapIntent);*/
+				/*
+				 * Intent mapIntent = new Intent();
+				 * mapIntent.setClass(getActivity(), OnMapActivity.class);
+				 * mapIntent.putExtra("edit", true); mapIntent.putExtra("index",
+				 * selectedLocationId_); startActivity(mapIntent);
+				 */
 			}
 		});
 		textViewAddress_ = (TextView) view.findViewById(R.id.textViewAddress);
@@ -121,31 +107,16 @@ public class LocationsDetailFragment extends SherlockFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		
 		onLocationChanged(location_);
-		
-		/*if (location_ != null) {
-			// Set the activity title on phones
-			if (!tabletSize_) {
-				activity_.setTitle(location_.getName());
-			}
-			textViewAddress_.setText(location_.getAddress());
-			Coordinate coordinate = location_.getCoordinate();
-			textViewLatitude_.setText(Double.toString(coordinate.getLatitude()));
-			textViewLongitude_.setText(Double.toString(coordinate.getLongitude()));
-			checkBoxCarEntry_.setChecked(location_.hasCarEntry());
-			checkBoxPowerSource_.setChecked(location_.hasPowerSource());
-			textViewNotes_.setText(location_.getNotes());
-		}*/
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putParcelable(LocationsDetailFragment.KEY_LOCATION, location_);
+		outState.putParcelable(KEY_LOCATION, location_);
 	}
-	
-	public void onLocationChanged(Location location){
+
+	public void onLocationChanged(Location location) {
 		location_ = location;
 		if (location_ != null) {
 			// Set the activity title on phones

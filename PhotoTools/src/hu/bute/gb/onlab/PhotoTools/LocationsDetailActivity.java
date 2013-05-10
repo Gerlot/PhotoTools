@@ -18,6 +18,8 @@ import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class LocationsDetailActivity extends SlidingFragmentActivity {
+	
+	public static final int LOCATION_EDIT = 3;
 
 	private Location selectedLocation_;
 	private MenuListFragment menuFragment;
@@ -28,7 +30,7 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_locations_detail);
-		databaseLoader_ = PhotoToolsApplication.getTodoDbLoader();
+		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
 
 		if (getIntent().getExtras() != null && savedInstanceState == null) {
 			selectedLocation_ = getIntent().getExtras().getParcelable(
@@ -83,8 +85,7 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data != null) {
 			switch (requestCode) {
-			// Location deleted
-			case 3:
+			case LOCATION_EDIT:
 				if (resultCode == RESULT_OK) {
 					Location location = data.getParcelableExtra(LocationsDetailFragment.KEY_LOCATION);
 					detailFragment_.onLocationChanged(location);
@@ -110,7 +111,7 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 			editIntent.setClass(LocationsDetailActivity.this, LocationsEditActivity.class);
 			editIntent.putExtra(LocationsEditActivity.KEY_EDIT, true);
 			editIntent.putExtra(LocationsDetailFragment.KEY_LOCATION, selectedLocation_);
-			startActivityForResult(editIntent, 3);
+			startActivityForResult(editIntent, LOCATION_EDIT);
 			return true;
 		case R.id.action_delete_location:
 			// Show confirmation dialog

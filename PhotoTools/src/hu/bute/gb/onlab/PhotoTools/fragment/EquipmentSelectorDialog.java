@@ -90,7 +90,7 @@ public class EquipmentSelectorDialog extends DialogFragment{
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
 				convertView = LayoutInflater.from(getContext())
-						.inflate(R.layout.equipmentrow, null);
+						.inflate(R.layout.equipment_row, null);
 			}
 
 			TextView title = (TextView) convertView.findViewById(R.id.row_title);

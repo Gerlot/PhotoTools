@@ -254,15 +254,17 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 		switch (itemPosition) {
 		case 0:
 			if (!friendsListFragment_.isAllSelected) {
-				friendsListFragment_.allFriendsSelected(null);
+				//friendsListFragment_.allFriendsSelected(null);
 				friendsListFragment_.isAllSelected = true;
+				friendsListFragment_.refreshList();
 				return true;
 			}
 			break;
 		case 1:
 			if (friendsListFragment_.isAllSelected) {
-				friendsListFragment_.lentToSelected(null);
+				//friendsListFragment_.lentToSelected(null);
 				friendsListFragment_.isAllSelected = false;
+				friendsListFragment_.refreshList();
 				return true;
 			}
 			break;
@@ -306,7 +308,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 			@Override
 			public void onTextChanged(CharSequence charSequence, int start, int before,
 					int count) {
-				friendsListFragment_.search(charSequence);
+				//friendsListFragment_.search(charSequence);
 			}
 
 			@Override
@@ -329,10 +331,10 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 			public boolean onMenuItemActionCollapse(MenuItem item) {
 				editTextSearch.setText("");
 				if (friendsListFragment_.isAllSelected) {
-					friendsListFragment_.allFriendsSelected(null);
+					//friendsListFragment_.allFriendsSelected(null);
 				}
 				else {
-					friendsListFragment_.lentToSelected(null);
+					//friendsListFragment_.lentToSelected(null);
 				}
 				return true;
 			}

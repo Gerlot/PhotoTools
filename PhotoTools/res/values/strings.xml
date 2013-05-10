@@ -43,7 +43,7 @@
     <string name="show_location_stats">Show Location Stats</string>
     <string name="delete_location_confirmation">Do you really want to delete this location?</string>
     <string name="empty_locationlist">You don\'t have any saved locations. Let\'s go explore and add some!</string>
-    <string name="no_location_name_specified">Please specify a name to this location!</string>
+    <string name="no_location_name_specified">If you want to save a location, give it a name first!</string>
     
     
     <!-- Deadlines -->
@@ -55,7 +55,7 @@
     <string name="delete_deadline">Delete Deadline</string>
     <string name="delete_deadline_confirmation">Do you really want to delete this deadline?</string>
     <string name="empty_deadlinelist">You can have a rest. You don\'t have any upcoming deadline.</string>
-    <string name="no_deadline_name_specified">Please specify a name to this deadline!</string>
+    <string name="no_deadline_name_specified">If you want to save a deadline, give it a name first!</string>
     <string name="deadline_name">Deadline Name</string>
     <string name="when">When:</string>
     <string name="location">Location</string>
@@ -75,7 +75,7 @@
     <string name="lent_to">Lent To</string>
     <string name="lend_equipment">Lend this eqipment</string>
     <string name="delete_equipment_confirmation">Do you really want to delete this equipment?</string>
-    <string name="no_equipment_name_specified">Please specify a name to this equipment!</string>
+    <string name="no_equipment_name_specified">If you want to save an equipment, give it a name first!</string>
     <string name="lend_to">Lend to someone</string>
     <string name="already_lent">Equipment already lent!</string>
     
@@ -96,9 +96,10 @@
     <string name="all_friends">All Friends</string>
     <string name="delete_friend_confirmation">Do you really want to delete this friend?\n</string>
     <string name="delete_friend_note">Note: It will only be deleted from this application, not the phone\'s contact list.</string>
-    <string name="no_friend_name_specified">Please specify a name to this friend!</string>
+    <string name="no_friend_name_specified">If you want to add a friend, give it a name first!</string>
     <string name="lend_equipment">Lend equipment</string>
     <string name="no_lent_to">Huh. No friend has any of your gear!</string>
+    <string name="empty_friendlist">No friends in the database. Import some of your contacts or add new friends!</string>
     
     <!-- Stats -->
     <string name="title_activity_stats">Stats</string>

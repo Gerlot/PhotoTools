@@ -1,9 +1,10 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentListFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.R;
+import hu.bute.gb.onlab.PhotoTools.helpers.EquipmentCategories;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,18 +25,24 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
+import com.actionbarsherlock.widget.SearchView;
+import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class EquipmentActivity extends SherlockFragmentActivity {
 
-	public List<Long> equipmentOnView = new ArrayList<Long>();
+	//public List<Long> equipmentOnView = new ArrayList<Long>();
+	public static final int EQUIPMENT_DELETE = 1;
+	public static final int EQUIPMENT_ADD = 2;
+	public EquipmentCategories categories;
 
+	private MenuItem searchItem_ = null;
 	private ViewGroup fragmentContainer_;
 	private FragmentManager fragmentManager_;
 	private EquipmentListFragment equipmentListFragment_;
+	private SlidingMenu menu;
 
 	private boolean tabletSize_;
-	private SlidingMenu menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +68,12 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		if (getIntent().getExtras() != null) {
+		/*if (getIntent().getExtras() != null) {
 			Bundle arguments = getIntent().getExtras();
 			long index = arguments.getLong("index");
 			equipmentOnView.add(Long.valueOf(index));
 			showEquipmentDetails(0);
-		}
+		}*/
 	}
 
 	@Override
@@ -76,28 +83,15 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 		if (menu != null) {
 			menu.showContent(false);
 		}
-		// Configure the SlidingMenu
-		/*
-		 * menu = new SlidingMenu(this);
-		 * menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		 * menu.setShadowWidthRes(R.dimen.shadow_width);
-		 * menu.setShadowDrawable(R.drawable.shadow);
-		 * menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-		 * menu.setFadeDegree(0.35f); menu.attachToActivity(this,
-		 * SlidingMenu.SLIDING_CONTENT); menu.setMenu(R.layout.menu_frame);
-		 * getSupportFragmentManager().beginTransaction()
-		 * .replace(R.id.menu_frame, MenuListFragment.newInstance(2,
-		 * menu)).commit();
-		 */
 	}
 
-	public void showEquipmentDetails(int index) {
+	public void showEquipmentDetails(Equipment selectedEquipment) {
 		if (fragmentContainer_ != null) {
 			EquipmentDetailFragment detailFragment = (EquipmentDetailFragment) fragmentManager_
 					.findFragmentById(R.id.EquipmentFragmentContainer);
 			if (detailFragment == null
-					|| detailFragment.getSelectedEquipment() != equipmentOnView.get(index)) {
-				detailFragment = EquipmentDetailFragment.newInstance(equipmentOnView.get(index));
+					|| detailFragment.getSelectedEquipmentId() != selectedEquipment.getID()) {
+				detailFragment = EquipmentDetailFragment.newInstance(selectedEquipment);
 				FragmentTransaction fragmentTransaction = fragmentManager_.beginTransaction();
 				fragmentTransaction.replace(R.id.EquipmentFragmentContainer, detailFragment);
 				fragmentTransaction.commit();
@@ -105,8 +99,8 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 		}
 		else {
 			Intent intent = new Intent(this, EquipmentDetailActivity.class);
-			intent.putExtra("index", equipmentOnView.get(index));
-			startActivityForResult(intent, 1);
+			intent.putExtra(EquipmentDetailFragment.KEY_EQUIPMENT, selectedEquipment);
+			startActivityForResult(intent, EQUIPMENT_DELETE); // Listen for delete event
 		}
 	}
 
@@ -115,37 +109,13 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 		if (data != null) {
 			// Location deleted
 			switch (requestCode) {
-			case 1:
+			case EQUIPMENT_DELETE:
 				if (resultCode == RESULT_OK) {
-					// The id of the location to remove
-					Long id = Long.valueOf(data.getLongExtra("deleted", 0));
-					
-					// The location of the removed location in the listView
-					int index = equipmentOnView.indexOf(id);
-					
-					equipmentOnView.remove(id);
-					
-					/*Integer idToRemove = null;
-					for (Integer id : equipmentOnView) {
-						if (id == Integer.valueOf(data.getIntExtra("deleted", 0))) {
-							idToRemove = id;
-							break;
-						}
-					}
-					if (idToRemove != null) {
-						equipmentOnView.remove(idToRemove);
-					}*/
+					equipmentListFragment_.refreshList();
 				}
 				break;
-			case 2:
-				/*if (resultCode == RESULT_OK) {
-					// The id of the location to add
-					Integer id = Integer.valueOf(data.getIntExtra("addedid", 0));
-					
-					locationsOnView.add(id);
-					String toAdd = data.getStringExtra("addedname");
-					locationsListFragment_.listAdapter_.add(toAdd);
-				}*/
+			case EQUIPMENT_ADD:
+				equipmentListFragment_.refreshList();
 				break;
 			}
 		}
@@ -181,13 +151,44 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.equipment, menu);
 		
-		final EditText editTextSearch = (EditText) menu.findItem(R.id.action_search).getActionView();
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setOnQueryTextListener(new OnQueryTextListener() {
+			
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+			
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				equipmentListFragment_.search(newText);
+				return false;
+			}
+		});
+		
+		searchItem_ = (MenuItem) menu.getItem(0);
+		searchItem_.setOnActionExpandListener(new OnActionExpandListener() {
+			
+			@Override
+			public boolean onMenuItemActionExpand(MenuItem item) {
+				return true;
+			}
+			
+			@Override
+			public boolean onMenuItemActionCollapse(MenuItem item) {
+				equipmentListFragment_.searchFilter = null;
+				equipmentListFragment_.refreshList();
+				return true;
+			}
+		});
+		
+		/*final EditText editTextSearch = (EditText) menu.findItem(R.id.action_search).getActionView();
 		editTextSearch.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void onTextChanged(CharSequence charSequence, int start, int before,
 					int count) {
-				equipmentListFragment_.populateList(charSequence);
+				//equipmentListFragment_.populateList(charSequence);
 			}
 
 			@Override
@@ -209,10 +210,10 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 			@Override
 			public boolean onMenuItemActionCollapse(MenuItem item) {
 				editTextSearch.setText("");
-				equipmentListFragment_.populateList(null);
+				//equipmentListFragment_.populateList(null);
 				return true;
 			}
-		});
+		});*/
 		
 		return super.onCreateOptionsMenu(menu);
 	}

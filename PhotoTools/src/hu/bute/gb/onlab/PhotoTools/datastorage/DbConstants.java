@@ -39,8 +39,8 @@ public class DbConstants {
 		public static final String DATABASE_CREATE = "create table if not exists " + DATABASE_TABLE
 				+ " ( " + KEY_ROWID + " integer primary key autoincrement, " + KEY_NAME
 				+ " text not null, " + KEY_ADDRESS + " text, " + KEY_LATITUDE + " text, "
-				+ KEY_LONGITUDE + " text, " + KEY_CARENTRY + " text, " + KEY_POWERSOURCE + " text, "
-				+ KEY_NOTES + " text" + "); ";
+				+ KEY_LONGITUDE + " text, " + KEY_CARENTRY + " text, " + KEY_POWERSOURCE
+				+ " text, " + KEY_NOTES + " text" + "); ";
 
 		// Séma törlõ szktipt
 		public static final String DATABASE_DROP = "drop table if exists " + DATABASE_TABLE + "; ";
@@ -65,8 +65,7 @@ public class DbConstants {
 		public static final String DATABASE_CREATE = "create table if not exists " + DATABASE_TABLE
 				+ " ( " + KEY_ROWID + " integer primary key autoincrement, " + KEY_NAME
 				+ " text not null, " + KEY_STARTTIME + " integer, " + KEY_ENDTIME + " integer, "
-				+ KEY_ISALLDAY + " text, " + KEY_LOCATION + " text, " + KEY_NOTES + " text"
-				+ "); ";
+				+ KEY_ISALLDAY + " text, " + KEY_LOCATION + " text, " + KEY_NOTES + " text" + "); ";
 
 		// Séma törlõ szktipt
 		public static final String DATABASE_DROP = "drop table if exists " + DATABASE_TABLE + "; ";
@@ -104,17 +103,20 @@ public class DbConstants {
 
 		// Oszlopnevek
 		public static final String KEY_ROWID = "_id";
+		public static final String KEY_FULLNAME = "fullName";
 		public static final String KEY_FIRSTNAME = "firstName";
 		public static final String KEY_LASTNAME = "lastName";
 		public static final String KEY_PHONENUMBER = "phoneNumber";
 		public static final String KEY_EMAILADDRESS = "emailAddress";
 		public static final String KEY_ADDRESS = "address";
+		public static final String KEY_HASLENT = "hasLent";
 
 		// Séma létrehozó szkript
 		public static final String DATABASE_CREATE = "create table if not exists " + DATABASE_TABLE
-				+ " ( " + KEY_ROWID + " integer primary key autoincrement, " + KEY_FIRSTNAME
-				+ " text not null, " + KEY_LASTNAME + " text, " + KEY_PHONENUMBER + " text, "
-				+ KEY_EMAILADDRESS + " text, " + KEY_ADDRESS + " text" + "); ";
+				+ " ( " + KEY_ROWID + " integer primary key autoincrement, "
+				+ KEY_FULLNAME + " text not null, " + KEY_FIRSTNAME + " text not null, "
+				+ KEY_LASTNAME + " text, " + KEY_PHONENUMBER + " text, " + KEY_EMAILADDRESS
+				+ " text, " + KEY_ADDRESS + " text, " + KEY_HASLENT + " text" + "); ";
 
 		// Séma törlõ szktipt
 		public static final String DATABASE_DROP = "drop table if exists " + DATABASE_TABLE + "; ";

@@ -1328,14 +1328,14 @@ containing a value of this type.
         public static final int activity_on_map=0x7f030024;
         public static final int activity_stats=0x7f030025;
         public static final int collapsible_edittext=0x7f030026;
-        public static final int deadlinesrow=0x7f030027;
-        public static final int equipmentrow=0x7f030028;
+        public static final int deadlines_row=0x7f030027;
+        public static final int equipment_row=0x7f030028;
         public static final int fragment_deadlines_detail=0x7f030029;
         public static final int fragment_equipment_detail=0x7f03002a;
         public static final int fragment_friends_detail=0x7f03002b;
         public static final int fragment_locations_detail=0x7f03002c;
         public static final int fragment_selector=0x7f03002d;
-        public static final int friendsrow=0x7f03002e;
+        public static final int friends_row=0x7f03002e;
         public static final int lendnew=0x7f03002f;
         public static final int lentitem=0x7f030030;
         public static final int list=0x7f030031;
@@ -1447,6 +1447,7 @@ containing a value of this type.
         public static final int edit_location=0x7f0a0027;
         public static final int email=0x7f0a005b;
         public static final int empty_deadlinelist=0x7f0a003b;
+        public static final int empty_friendlist=0x7f0a0063;
         public static final int empty_locationlist=0x7f0a0032;
         public static final int equipment=0x7f0a0020;
         public static final int equipmentcategory=0x7f0a0049;
@@ -1455,7 +1456,7 @@ containing a value of this type.
         public static final int existing_contact=0x7f0a0059;
         public static final int filters=0x7f0a0015;
         public static final int flashes=0x7f0a0016;
-        public static final int focal_length_stats=0x7f0a0064;
+        public static final int focal_length_stats=0x7f0a0065;
         public static final int friendaddress=0x7f0a005c;
         public static final int friendlent=0x7f0a005d;
         public static final int friends=0x7f0a0021;
@@ -1466,7 +1467,7 @@ containing a value of this type.
         public static final int lent_to=0x7f0a004b;
         public static final int location=0x7f0a003f;
         public static final int location_name=0x7f0a0029;
-        public static final int location_stats=0x7f0a0065;
+        public static final int location_stats=0x7f0a0066;
         public static final int locations=0x7f0a001e;
         public static final int memory_cards_and_readers=0x7f0a0017;
         public static final int nearby_locations=0x7f0a002f;
@@ -1483,27 +1484,27 @@ containing a value of this type.
         public static final int notes=0x7f0a002e;
         public static final int phone=0x7f0a005a;
         public static final int powersource=0x7f0a002d;
-        public static final int pref_default_display_name=0x7f0a006b;
-        public static final int pref_description_social_recommendations=0x7f0a0069;
+        public static final int pref_default_display_name=0x7f0a006c;
+        public static final int pref_description_social_recommendations=0x7f0a006a;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f0a006d;
+        public static final int pref_header_data_sync=0x7f0a006e;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f0a0067;
+        public static final int pref_header_general=0x7f0a0068;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f0a0070;
-        public static final int pref_ringtone_silent=0x7f0a0073;
-        public static final int pref_title_add_friends_to_messages=0x7f0a006c;
-        public static final int pref_title_display_name=0x7f0a006a;
-        public static final int pref_title_new_message_notifications=0x7f0a0071;
-        public static final int pref_title_ringtone=0x7f0a0072;
-        public static final int pref_title_social_recommendations=0x7f0a0068;
-        public static final int pref_title_sync_frequency=0x7f0a006e;
-        public static final int pref_title_system_sync_settings=0x7f0a006f;
-        public static final int pref_title_vibrate=0x7f0a0074;
+        public static final int pref_header_notifications=0x7f0a0071;
+        public static final int pref_ringtone_silent=0x7f0a0074;
+        public static final int pref_title_add_friends_to_messages=0x7f0a006d;
+        public static final int pref_title_display_name=0x7f0a006b;
+        public static final int pref_title_new_message_notifications=0x7f0a0072;
+        public static final int pref_title_ringtone=0x7f0a0073;
+        public static final int pref_title_social_recommendations=0x7f0a0069;
+        public static final int pref_title_sync_frequency=0x7f0a006f;
+        public static final int pref_title_system_sync_settings=0x7f0a0070;
+        public static final int pref_title_vibrate=0x7f0a0075;
         public static final int save=0x7f0a001c;
         public static final int search=0x7f0a0012;
         public static final int search_no_result=0x7f0a0019;
@@ -1532,10 +1533,10 @@ containing a value of this type.
         public static final int title_activity_locations_detail=0x7f0a0024;
         public static final int title_activity_locations_edit=0x7f0a0025;
         public static final int title_activity_on_map=0x7f0a0011;
-        public static final int title_activity_settings=0x7f0a0066;
+        public static final int title_activity_settings=0x7f0a0067;
         /**  Stats 
          */
-        public static final int title_activity_stats=0x7f0a0063;
+        public static final int title_activity_stats=0x7f0a0064;
         public static final int when=0x7f0a003e;
         public static final int yes_delete=0x7f0a001a;
     }

@@ -83,12 +83,11 @@ public class LocationsActivity extends SherlockFragmentActivity {
 				fragmentTransaction.replace(R.id.LocationsFragmentContainer, detailFragment);
 				fragmentTransaction.commit();
 			}
-
 		}
 		else {
 			Intent intent = new Intent(this, LocationsDetailActivity.class);
 			intent.putExtra(LocationsDetailFragment.KEY_LOCATION, selectedLocation);
-			startActivityForResult(intent, 1);
+			startActivityForResult(intent, LOCATION_DELETE); // Listen for delete event
 		}
 	}
 

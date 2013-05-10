@@ -1,7 +1,6 @@
 package hu.bute.gb.onlab.PhotoTools.helpers;
 
 import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.R.layout;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,12 +36,12 @@ public class SeparatedListAdapter extends BaseAdapter {
             Adapter adapter = sections.get(section);  
             int size = adapter.getCount() + 1;  
               
-            // check if position inside this section   
-            if(position == 0) return section;  
+            // check if position inside this section
+            if(position == 0) return section;
             if(position < size) return adapter.getItem(position - 1);
   
-            // otherwise jump into next section  
-            position -= size;  
+            // otherwise jump into next section
+            position -= size;
         }  
         return null;  
     }  
@@ -117,6 +116,21 @@ public class SeparatedListAdapter extends BaseAdapter {
     }
     
     @Override
+    public boolean isEmpty() {
+    	int sectionCount = sections.size();
+    	int nullSections = 0;
+    	for (Adapter adapter : sections.values()) {
+			if (adapter.isEmpty()) {
+				nullSections++;
+			}
+		}
+    	if (sectionCount == nullSections) {
+			return true;
+		}
+    	return false;
+    }
+    
+    @Override
     public void notifyDataSetChanged() {
     	super.notifyDataSetChanged();
     	for (Map.Entry<String, Adapter> entry : sections.entrySet()) {
@@ -128,6 +142,5 @@ public class SeparatedListAdapter extends BaseAdapter {
 				// DO NOTHING
 			}
 		}
-    }
-  
+    }    
 }  

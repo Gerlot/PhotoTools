@@ -16,12 +16,6 @@ public class LocationsAdapter extends CursorAdapter {
 	public LocationsAdapter(Context context, Cursor c) {
 		super(context, c, false);
 	}
-	
-	@Override
-	public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
-		// TODO Auto-generated method stub
-		return super.runQueryOnBackgroundThread(constraint);
-	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
@@ -34,7 +28,6 @@ public class LocationsAdapter extends CursorAdapter {
 	// UI elemek feltöltése
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		
 		TextView text = (TextView) view.findViewById(R.id.row_title);
 		Location location = DatabaseLoader.getLocationByCursor(cursor);
 		text.setText(location.getName());

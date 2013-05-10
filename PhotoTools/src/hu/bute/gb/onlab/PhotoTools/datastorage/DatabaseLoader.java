@@ -1,7 +1,10 @@
 package hu.bute.gb.onlab.PhotoTools.datastorage;
 
+import java.util.ArrayList;
+
 import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
+import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.helpers.Coordinate;
 
@@ -70,7 +73,7 @@ public class DatabaseLoader {
 
 	public Cursor getLocationByFilter(String filter) {
 		// A Location-re mutató cursor
-		String value = "%" + filter.toString() + "%";
+		String value = "%" + filter + "%";
 		Cursor cursor = database_.query(DbConstants.Location.DATABASE_TABLE, new String[] {
 				DbConstants.Location.KEY_ROWID, DbConstants.Location.KEY_NAME,
 				DbConstants.Location.KEY_ADDRESS, DbConstants.Location.KEY_LATITUDE,
@@ -248,7 +251,7 @@ public class DatabaseLoader {
 	}
 
 	// READ
-	// Összes Location lekérése
+	// Összes Equipment lekérése
 	public Cursor getAllEquipment() {
 		// Cursor minden rekordra (where = null)
 		return database_.query(DbConstants.Equipment.DATABASE_TABLE, new String[] {
@@ -258,21 +261,36 @@ public class DatabaseLoader {
 				DbConstants.Equipment.KEY_NAME);
 	}
 
-	public Cursor getEquipmentByFilter(String filter) {
-		String value = "%" + filter.toString() + "%";
-		Cursor cursor = database_.query(DbConstants.Equipment.DATABASE_TABLE, new String[] {
+	public Cursor getEquipmentByCategory(String category) {
+		String value = "%" + category + "%";
+		return database_.query(DbConstants.Equipment.DATABASE_TABLE, new String[] {
 				DbConstants.Equipment.KEY_ROWID, DbConstants.Equipment.KEY_NAME,
 				DbConstants.Equipment.KEY_CATEGORY, DbConstants.Equipment.KEY_NOTES,
-				DbConstants.Equipment.KEY_LENTTO }, DbConstants.Equipment.KEY_NAME + " LIKE ?",
+				DbConstants.Equipment.KEY_LENTTO }, DbConstants.Equipment.KEY_CATEGORY + " LIKE ?",
 				new String[] { value }, null, null, DbConstants.Equipment.KEY_NAME);
-		// Ha van rekord amire a Cursor mutat
-		if (cursor.moveToFirst())
-			return cursor;
-		// Egyébként null-al térünk vissza
-		return null;
 	}
 
-	// Egy Location lekérése
+	public Cursor getEquipmentByCategoryAndFilter(String category, String filter) {
+		String categoryValue = "%" + category + "%";
+		String filterValue = "%" + filter + "%";
+		return database_.query(DbConstants.Equipment.DATABASE_TABLE, new String[] {
+				DbConstants.Equipment.KEY_ROWID, DbConstants.Equipment.KEY_NAME,
+				DbConstants.Equipment.KEY_CATEGORY, DbConstants.Equipment.KEY_NOTES,
+				DbConstants.Equipment.KEY_LENTTO }, DbConstants.Equipment.KEY_CATEGORY
+				+ " LIKE ? AND " + DbConstants.Equipment.KEY_NAME + " LIKE ?", new String[] {
+				categoryValue, filterValue }, null, null, DbConstants.Equipment.KEY_NAME);
+	}
+
+	public Cursor getEquipmentLentTo(long friendId) {
+		return database_.query(DbConstants.Equipment.DATABASE_TABLE, new String[] {
+				DbConstants.Equipment.KEY_ROWID, DbConstants.Equipment.KEY_NAME,
+				DbConstants.Equipment.KEY_CATEGORY, DbConstants.Equipment.KEY_NOTES,
+				DbConstants.Equipment.KEY_LENTTO }, DbConstants.Equipment.KEY_LENTTO + " = ?",
+				new String[] { Long.toString(friendId) }, null, null,
+				DbConstants.Equipment.KEY_NAME);
+	}
+
+	// Egy Equipment lekérése
 	public Equipment getEquipment(long id) {
 		// Az Equipment-re mutató cursor
 		Cursor cursor = database_.query(DbConstants.Equipment.DATABASE_TABLE, new String[] {
@@ -311,9 +329,156 @@ public class DatabaseLoader {
 
 	// DELETE
 	public boolean removeEquipment(long id) {
-		return database_.delete(DbConstants.Equipment.DATABASE_TABLE, DbConstants.Equipment.KEY_ROWID
-				+ "=" + id, null) > 0;
+		return database_.delete(DbConstants.Equipment.DATABASE_TABLE,
+				DbConstants.Equipment.KEY_ROWID + "=" + id, null) > 0;
 	}
 
 	// Friend
+	// CREATE
+	public long addFriend(Friend friend) {
+		ContentValues values = new ContentValues();
+
+		values.put(DbConstants.Friend.KEY_FULLNAME,
+				friend.getFirstName() + " " + friend.getLastName());
+		values.put(DbConstants.Friend.KEY_FIRSTNAME, friend.getFirstName());
+		values.put(DbConstants.Friend.KEY_LASTNAME, friend.getLastName());
+		values.put(DbConstants.Friend.KEY_PHONENUMBER, friend.getPhoneNumber());
+		values.put(DbConstants.Friend.KEY_EMAILADDRESS, friend.getEmailAddress());
+		values.put(DbConstants.Friend.KEY_ADDRESS, friend.getAddress());
+		values.put(DbConstants.Friend.KEY_HASLENT, Boolean.toString(friend.hasLentItems()));
+
+		return database_.insert(DbConstants.Friend.DATABASE_TABLE, null, values);
+	}
+
+	// READ
+	// Összes Equipment lekérése
+	public Cursor getAllFriends() {
+		// Cursor minden rekordra (where = null)
+		return database_.query(DbConstants.Friend.DATABASE_TABLE, new String[] {
+				DbConstants.Friend.KEY_ROWID, DbConstants.Friend.KEY_FULLNAME,
+				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
+				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
+				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT }, null, null, null,
+				null, DbConstants.Friend.KEY_FIRSTNAME);
+	}
+
+	public Cursor getAllFriendsByCategory(String category) {
+		String value = "%" + category + "%";
+		return database_.query(DbConstants.Friend.DATABASE_TABLE, new String[] {
+				DbConstants.Friend.KEY_ROWID, DbConstants.Friend.KEY_FULLNAME,
+				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
+				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
+				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
+				DbConstants.Friend.KEY_FIRSTNAME + " LIKE ?", new String[] { value }, null, null,
+				DbConstants.Friend.KEY_FULLNAME);
+	}
+
+	public Cursor getAllFriendsByCategoryAndFilter(String category, String filter) {
+		String categoryValue = "%" + category + "%";
+		String filterValue = "%" + filter + "%";
+		return database_.query(DbConstants.Friend.DATABASE_TABLE, new String[] {
+				DbConstants.Friend.KEY_ROWID, DbConstants.Friend.KEY_FULLNAME,
+				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
+				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
+				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
+				DbConstants.Friend.KEY_FIRSTNAME + " LIKE ? AND " + DbConstants.Friend.KEY_FULLNAME
+						+ " LIKE ?", new String[] { categoryValue, filterValue }, null, null,
+				DbConstants.Friend.KEY_FULLNAME);
+	}
+
+	public Cursor getFriendsLentToByCategory(String category) {
+		String categoryValue = "%" + category + "%";
+		String lentValue = "%true%";
+		return database_.query(DbConstants.Friend.DATABASE_TABLE, new String[] {
+				DbConstants.Friend.KEY_ROWID, DbConstants.Friend.KEY_FULLNAME,
+				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
+				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
+				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
+				DbConstants.Friend.KEY_FIRSTNAME + " LIKE ? AND " + DbConstants.Friend.KEY_HASLENT
+						+ " LIKE ?", new String[] { categoryValue, lentValue }, null, null,
+				DbConstants.Friend.KEY_FULLNAME);
+	}
+
+	public Cursor getFriendsLentToByCategoryAndFilter(String category, String filter) {
+		String categoryValue = "%" + category + "%";
+		String lentValue = "%true%";
+		String filterValue = "%" + filter + "%";
+		return database_.query(DbConstants.Friend.DATABASE_TABLE, new String[] {
+				DbConstants.Friend.KEY_ROWID, DbConstants.Friend.KEY_FULLNAME,
+				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
+				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
+				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
+				DbConstants.Friend.KEY_FIRSTNAME + " LIKE ? AND " + DbConstants.Friend.KEY_HASLENT
+						+ " LIKE ? AND " + DbConstants.Friend.KEY_FULLNAME + " LIKE ?",
+				new String[] { categoryValue, lentValue, filterValue }, null, null,
+				DbConstants.Friend.KEY_FULLNAME);
+	}
+
+	public ArrayList<String> getUsedCharacters() {
+		ArrayList<String> result = null;
+		Cursor cursor = getAllFriends();
+		while (cursor.moveToNext()) {
+			if (result == null) {
+				result = new ArrayList<String>();
+			}
+			String first = cursor
+					.getString(cursor.getColumnIndex(DbConstants.Friend.KEY_FIRSTNAME)).substring(
+							0, 1);
+			if (!result.contains(first)) {
+				result.add(first);
+			}
+		}
+		cursor.close();
+		return result;
+	}
+
+	// Egy Friend lekérése
+	public Friend getFriend(long id) {
+		// Az Equipment-re mutató cursor
+		Cursor cursor = database_.query(DbConstants.Friend.DATABASE_TABLE, new String[] {
+				DbConstants.Friend.KEY_ROWID, DbConstants.Friend.KEY_FULLNAME,
+				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
+				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
+				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
+				DbConstants.Friend.KEY_ROWID + "=" + id, null, null, null,
+				DbConstants.Friend.KEY_FULLNAME);
+		// Ha van rekord amire a Cursor mutat
+		if (cursor.moveToFirst())
+			return getFriendByCursor(cursor);
+		// Egyébként null-al térünk vissza
+		return null;
+	}
+
+	public static Friend getFriendByCursor(Cursor c) {
+		return new Friend(c.getLong(c.getColumnIndex(DbConstants.Friend.KEY_ROWID)), // id
+				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_FIRSTNAME)), // firstName
+				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_LASTNAME)), // lastName
+				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_PHONENUMBER)), // phoneNumber
+				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_EMAILADDRESS)), // emailAddress
+				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_ADDRESS)), // address
+				null);
+	}
+
+	// UPDATE
+	public boolean editFriend(long id, Friend friend) {
+		ContentValues values = new ContentValues();
+
+		values.put(DbConstants.Friend.KEY_FULLNAME,
+				friend.getFirstName() + " " + friend.getLastName());
+		values.put(DbConstants.Friend.KEY_FIRSTNAME, friend.getFirstName());
+		values.put(DbConstants.Friend.KEY_LASTNAME, friend.getLastName());
+		values.put(DbConstants.Friend.KEY_PHONENUMBER, friend.getPhoneNumber());
+		values.put(DbConstants.Friend.KEY_EMAILADDRESS, friend.getEmailAddress());
+		values.put(DbConstants.Friend.KEY_ADDRESS, friend.getAddress());
+		values.put(DbConstants.Friend.KEY_HASLENT, Boolean.toString(friend.hasLentItems()));
+
+		return database_.update(DbConstants.Friend.DATABASE_TABLE, values,
+				DbConstants.Friend.KEY_ROWID + "=" + id, null) > 0;
+	}
+
+	// DELETE
+	public boolean removeFriend(long id) {
+		return database_.delete(DbConstants.Friend.DATABASE_TABLE, DbConstants.Friend.KEY_ROWID
+				+ "=" + id, null) > 0;
+	}
 }
