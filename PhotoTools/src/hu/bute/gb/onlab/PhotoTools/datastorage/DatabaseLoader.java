@@ -338,6 +338,7 @@ public class DatabaseLoader {
 	public long addFriend(Friend friend) {
 		ContentValues values = new ContentValues();
 
+		values.put(DbConstants.Friend.KEY_FIRSTCHAR, friend.getFirstName().substring(0, 1));
 		values.put(DbConstants.Friend.KEY_FULLNAME,
 				friend.getFirstName() + " " + friend.getLastName());
 		values.put(DbConstants.Friend.KEY_FIRSTNAME, friend.getFirstName());
@@ -369,7 +370,7 @@ public class DatabaseLoader {
 				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
 				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
 				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
-				DbConstants.Friend.KEY_FIRSTNAME + " LIKE ?", new String[] { value }, null, null,
+				DbConstants.Friend.KEY_FIRSTCHAR + " LIKE ?", new String[] { value }, null, null,
 				DbConstants.Friend.KEY_FULLNAME);
 	}
 
@@ -381,7 +382,7 @@ public class DatabaseLoader {
 				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
 				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
 				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
-				DbConstants.Friend.KEY_FIRSTNAME + " LIKE ? AND " + DbConstants.Friend.KEY_FULLNAME
+				DbConstants.Friend.KEY_FIRSTCHAR + " LIKE ? AND " + DbConstants.Friend.KEY_FULLNAME
 						+ " LIKE ?", new String[] { categoryValue, filterValue }, null, null,
 				DbConstants.Friend.KEY_FULLNAME);
 	}
@@ -394,7 +395,7 @@ public class DatabaseLoader {
 				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
 				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
 				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
-				DbConstants.Friend.KEY_FIRSTNAME + " LIKE ? AND " + DbConstants.Friend.KEY_HASLENT
+				DbConstants.Friend.KEY_FIRSTCHAR + " LIKE ? AND " + DbConstants.Friend.KEY_HASLENT
 						+ " LIKE ?", new String[] { categoryValue, lentValue }, null, null,
 				DbConstants.Friend.KEY_FULLNAME);
 	}
@@ -408,7 +409,7 @@ public class DatabaseLoader {
 				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
 				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
 				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
-				DbConstants.Friend.KEY_FIRSTNAME + " LIKE ? AND " + DbConstants.Friend.KEY_HASLENT
+				DbConstants.Friend.KEY_FIRSTCHAR + " LIKE ? AND " + DbConstants.Friend.KEY_HASLENT
 						+ " LIKE ? AND " + DbConstants.Friend.KEY_FULLNAME + " LIKE ?",
 				new String[] { categoryValue, lentValue, filterValue }, null, null,
 				DbConstants.Friend.KEY_FULLNAME);
@@ -450,19 +451,22 @@ public class DatabaseLoader {
 	}
 
 	public static Friend getFriendByCursor(Cursor c) {
-		return new Friend(c.getLong(c.getColumnIndex(DbConstants.Friend.KEY_ROWID)), // id
+		Friend result = new Friend(c.getLong(c.getColumnIndex(DbConstants.Friend.KEY_ROWID)), // id
 				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_FIRSTNAME)), // firstName
 				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_LASTNAME)), // lastName
 				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_PHONENUMBER)), // phoneNumber
 				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_EMAILADDRESS)), // emailAddress
 				c.getString(c.getColumnIndex(DbConstants.Friend.KEY_ADDRESS)), // address
-				null);
+				null, Boolean.parseBoolean(c.getString(c
+						.getColumnIndex(DbConstants.Friend.KEY_HASLENT)))); // lent
+		return result;
 	}
 
 	// UPDATE
 	public boolean editFriend(long id, Friend friend) {
 		ContentValues values = new ContentValues();
 
+		values.put(DbConstants.Friend.KEY_FIRSTCHAR, friend.getFirstName().substring(0, 1));
 		values.put(DbConstants.Friend.KEY_FULLNAME,
 				friend.getFirstName() + " " + friend.getLastName());
 		values.put(DbConstants.Friend.KEY_FIRSTNAME, friend.getFirstName());

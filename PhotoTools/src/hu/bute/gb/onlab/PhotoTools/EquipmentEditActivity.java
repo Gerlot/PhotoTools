@@ -74,7 +74,8 @@ public class EquipmentEditActivity extends SherlockActivity {
 			equipment_ = getIntent().getExtras().getParcelable(
 					EquipmentDetailFragment.KEY_EQUIPMENT);
 
-			textViewTitle_.setText("Edit " + equipment_.getName());
+			textViewTitle_.setText(getResources().getString(R.string.edit_space)
+					+ equipment_.getName());
 
 			editTextEquipmentName_.setText(equipment_.getName());
 
@@ -136,12 +137,11 @@ public class EquipmentEditActivity extends SherlockActivity {
 				if (nameChanged || categoryChanged || notesChanged) {
 					// Existing ID
 					id = equipment_.getID();
-					equipment_ = new Equipment(id, name, category, notes, 0);;
+					equipment_ = new Equipment(id, name, category, notes, 0);
 					databaseLoader_.editEquipment(equipment_.getID(), equipment_);
 				}
 			}
 			else {
-				// Generate new ID for new entry
 				equipment_ = new Equipment(id, name, category, notes, 0);
 				databaseLoader_.addEquipment(equipment_);
 			}

@@ -8,16 +8,17 @@ import android.os.Parcelable;
 
 public class Friend implements Comparable<Friend>, Parcelable {
 
-	public long ID_;
-	public String firstName_;
-	public String lastName_;
-	public String phoneNumber_;
-	public String emailAddress_;
-	public String address_;
-	public List<Long> lentItems_ = null;
+	private long ID_;
+	private String firstName_;
+	private String lastName_;
+	private String phoneNumber_;
+	private String emailAddress_;
+	private String address_;
+	private boolean hasLentItems_ = false;
+	private List<Long> lentItems_ = null;
 
 	public Friend(long ID, String firstName, String lastName, String phoneNumber,
-			String emailAddress, String address, ArrayList<Long> lentItems) {
+			String emailAddress, String address, List<Long> lentItems, boolean hasLentItems) {
 		ID_ = ID;
 		firstName_ = firstName;
 		lastName_ = lastName;
@@ -25,9 +26,15 @@ public class Friend implements Comparable<Friend>, Parcelable {
 		emailAddress_ = emailAddress;
 		address_ = address;
 		lentItems_ = lentItems;
+		if (lentItems != null) {
+			hasLentItems_ = true;
+		}
+		else {
+			hasLentItems_ = hasLentItems;
+		}
 	}
-	
-	public Friend(Parcel in){
+
+	public Friend(Parcel in) {
 		ID_ = in.readLong();
 		firstName_ = in.readString();
 		lastName_ = in.readString();
@@ -35,11 +42,13 @@ public class Friend implements Comparable<Friend>, Parcelable {
 		emailAddress_ = in.readString();
 		address_ = in.readString();
 		lentItems_ = new ArrayList<Long>();
-		long[] lentArray = null;
-		in.readLongArray(lentArray);
-		for (long l : lentArray) {
-			lentItems_.add(Long.valueOf(l));
+		long[] lentArray = in.createLongArray();
+		if (lentArray != null) {
+			for (long l : lentArray) {
+				lentItems_.add(Long.valueOf(l));
+			}
 		}
+		hasLentItems_ = Boolean.parseBoolean(in.readString());
 	}
 
 	public void addLentItem(Long equipmentName) {
@@ -57,13 +66,13 @@ public class Friend implements Comparable<Friend>, Parcelable {
 	public void setID(long ID) {
 		ID_ = ID;
 	}
-	
-	public String getFullNameFirstLast(){
+
+	public String getFullNameFirstLast() {
 		String fullName = firstName_ + " " + lastName_;
 		return fullName;
 	}
-	
-	public String getFullNameLastFirst(){
+
+	public String getFullNameLastFirst() {
 		String fullName = lastName_ + " " + firstName_;
 		return fullName;
 	}
@@ -115,17 +124,18 @@ public class Friend implements Comparable<Friend>, Parcelable {
 	public void setLentItems(List<Long> lentItems) {
 		lentItems_ = lentItems;
 	}
-	
-	public void lendItem(long id){
+
+	public void lendItem(long id) {
 		// Initialize list if this is the first item
 		if (lentItems_ == null) {
 			lentItems_ = new ArrayList<Long>();
 		}
 		lentItems_.add(Long.valueOf(id));
+		hasLentItems_ = true;
 	}
-	
-	public boolean hasLentItems(){
-		return (lentItems_ != null);
+
+	public boolean hasLentItems() {
+		return hasLentItems_;
 	}
 
 	@Override
@@ -148,13 +158,17 @@ public class Friend implements Comparable<Friend>, Parcelable {
 		dest.writeString(phoneNumber_);
 		dest.writeString(emailAddress_);
 		dest.writeString(address_);
-		long[] lentArray = new long[lentItems_.size()];
-		for (int i = 0; i < lentArray.length; i++) {
-			lentArray[i] = lentItems_.get(i).longValue();
+		long[] lentArray = null;
+		if (lentItems_ != null) {
+			lentArray = new long[lentItems_.size()];
+			for (int i = 0; i < lentArray.length; i++) {
+				lentArray[i] = lentItems_.get(i).longValue();
+			}
+			dest.writeLongArray(lentArray);
 		}
-		dest.writeLongArray(lentArray);
+		dest.writeString(Boolean.toString(hasLentItems_));
 	}
-	
+
 	public static final Parcelable.Creator<Friend> CREATOR = new Parcelable.Creator<Friend>() {
 		public Friend createFromParcel(Parcel in) {
 			return new Friend(in);

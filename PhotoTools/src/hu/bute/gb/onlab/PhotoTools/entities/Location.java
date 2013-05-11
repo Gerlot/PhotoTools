@@ -7,7 +7,7 @@ import android.os.Parcelable;
 
 public class Location implements Parcelable {
 	
-	public long ID_;
+	private long ID_;
 	private String name_;
 	private String address_;
 	private Coordinate coordinate_;

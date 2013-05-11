@@ -95,6 +95,7 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 			case EQUIPMENT_EDIT:
 				if (resultCode == RESULT_OK) {
 					Equipment equipment = data.getParcelableExtra(EquipmentDetailFragment.KEY_EQUIPMENT);
+					selectedEquipment_ = equipment;
 					detailFragment_.onEquipmentChanged(equipment);
 				}
 				break;
@@ -138,7 +139,6 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 	}
 
 	public void deleteEquipment() {
-		//DummyModel.getInstance().removeEquipmentById(selectedEquipment_);
 		databaseLoader_.removeEquipment(selectedEquipment_.getID());
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("deleted", selectedEquipment_.getID());

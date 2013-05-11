@@ -37,16 +37,19 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
+import com.actionbarsherlock.widget.SearchView;
+import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class FriendsActivity extends SherlockFragmentActivity implements OnNavigationListener {
 
 	public List<Long> friendsOnView = new ArrayList<Long>();
 
-	private static final int SHOW_DETAILS = 1;
-	private static final int ADD_FRIEND = 2;
-	private static final int IMPORT_CONTACT = 3;
+	private static final int FRIEND_DELETE = 1;
+	private static final int FRIEND_ADD = 2;
+	private static final int IMPORT_CONTACT = 4;
 
+	private MenuItem searchItem_ = null;
 	private ViewGroup fragmentContainer_;
 	private FragmentManager fragmentManager_;
 	private FriendsListFragment friendsListFragment_;
@@ -90,7 +93,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 			Bundle arguments = getIntent().getExtras();
 			long index = arguments.getLong("index");
 			friendsOnView.add(Long.valueOf(index));
-			showFriendDetails(0);
+			// showFriendDetails(0);
 		}
 
 	}
@@ -104,13 +107,13 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 		}
 	}
 
-	public void showFriendDetails(int index) {
+	public void showFriendDetails(Friend selectedFriend) {
 		if (fragmentContainer_ != null) {
 			FriendsDetailFragment detailFragment = (FriendsDetailFragment) fragmentManager_
 					.findFragmentById(R.id.FriendsFragmentContainer);
 			if (detailFragment == null
-					|| detailFragment.getSelectedFriend() != friendsOnView.get(index)) {
-				detailFragment = FriendsDetailFragment.newInstance(friendsOnView.get(index));
+					|| detailFragment.getSelectedFriendId() != selectedFriend.getID()) {
+				detailFragment = FriendsDetailFragment.newInstance(selectedFriend);
 				FragmentTransaction fragmentTransaction = fragmentManager_.beginTransaction();
 				fragmentTransaction.replace(R.id.FriendsFragmentContainer, detailFragment);
 				fragmentTransaction.commit();
@@ -118,8 +121,9 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 		}
 		else {
 			Intent intent = new Intent(this, FriendsDetailActivity.class);
-			intent.putExtra("index", friendsOnView.get(index));
-			startActivityForResult(intent, SHOW_DETAILS);
+			intent.putExtra(FriendsDetailFragment.KEY_FRIEND, selectedFriend);
+			startActivityForResult(intent, FRIEND_DELETE); // Listen for delete
+															// event
 		}
 	}
 
@@ -127,9 +131,15 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data != null) {
 			switch (requestCode) {
-			case SHOW_DETAILS:
+			case FRIEND_DELETE:
+				if (resultCode == RESULT_OK) {
+					friendsListFragment_.refreshList();
+				}
 				break;
-			case ADD_FRIEND:
+			case FRIEND_ADD:
+				if (resultCode == RESULT_OK) {
+					friendsListFragment_.refreshList();
+				}
 				break;
 			case IMPORT_CONTACT:
 				if (resultCode == Activity.RESULT_OK) {
@@ -145,7 +155,8 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 					// Query for name
 					Cursor nameCursor = contentResolver.query(
 							ContactsContract.Contacts.CONTENT_URI, null,
-							ContactsContract.Contacts._ID + " = ?", new String[] { contactId }, null);
+							ContactsContract.Contacts._ID + " = ?", new String[] { contactId },
+							null);
 					if (nameCursor.moveToFirst()) {
 						fullname = nameCursor.getString(nameCursor
 								.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
@@ -183,6 +194,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 						email = emailCursor.getString(emailCursor.getColumnIndex(Email.DATA));
 					}
 
+					// Query for address
 					String where = ContactsContract.Data.CONTACT_ID + " = ? AND "
 							+ ContactsContract.Data.MIMETYPE + " = ?";
 					String[] whereParameters = new String[] { contactId,
@@ -227,11 +239,11 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 					// Add friend
 					Friend firendToAdd = new Friend(
 							DummyModel.getInstance().friendId.getAndIncrement(), firstName,
-							lastName, number, email, address, null);
-					DummyModel.getInstance().addFriend(firendToAdd);
+							lastName, number, email, address, null, false);
+					// TODO add friend
+					// DummyModel.getInstance().addFriend(firendToAdd);
 				}
 				break;
-
 			}
 		}
 	}
@@ -245,7 +257,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 		Intent newIntent = new Intent();
 		newIntent.setClass(FriendsActivity.this, FriendsEditActivity.class);
 		newIntent.putExtra("edit", false);
-		startActivityForResult(newIntent, ADD_FRIEND);
+		startActivityForResult(newIntent, FRIEND_ADD);
 	}
 
 	@Override
@@ -254,7 +266,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 		switch (itemPosition) {
 		case 0:
 			if (!friendsListFragment_.isAllSelected) {
-				//friendsListFragment_.allFriendsSelected(null);
+				// friendsListFragment_.allFriendsSelected(null);
 				friendsListFragment_.isAllSelected = true;
 				friendsListFragment_.refreshList();
 				return true;
@@ -262,7 +274,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 			break;
 		case 1:
 			if (friendsListFragment_.isAllSelected) {
-				//friendsListFragment_.lentToSelected(null);
+				// friendsListFragment_.lentToSelected(null);
 				friendsListFragment_.isAllSelected = false;
 				friendsListFragment_.refreshList();
 				return true;
@@ -288,7 +300,7 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 			return true;
 		case R.id.action_search:
 			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+			manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 			return true;
 		case R.id.action_add_friend:
 			AddFriendMethodDialog dialog = AddFriendMethodDialog.newInstance(FriendsActivity.this);
@@ -302,44 +314,77 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.friends, menu);
 		
-		final EditText editTextSearch = (EditText) menu.findItem(R.id.action_search).getActionView();
-		editTextSearch.addTextChangedListener(new TextWatcher() {
-
+		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setOnQueryTextListener(new OnQueryTextListener() {
+			
 			@Override
-			public void onTextChanged(CharSequence charSequence, int start, int before,
-					int count) {
-				//friendsListFragment_.search(charSequence);
+			public boolean onQueryTextSubmit(String query) {
+				return false;
 			}
-
+			
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-			@Override
-			public void afterTextChanged(Editable s) {}
+			public boolean onQueryTextChange(String newText) {
+				friendsListFragment_.search(newText);
+				return false;
+			}
 		});
 		
-		MenuItem searchItem = (MenuItem) menu.getItem(0);
-		searchItem.setOnActionExpandListener(new OnActionExpandListener() {
+		searchItem_ = (MenuItem) menu.getItem(0);
+		searchItem_.setOnActionExpandListener(new OnActionExpandListener() {
 			
 			@Override
 			public boolean onMenuItemActionExpand(MenuItem item) {
-				editTextSearch.requestFocus();
 				return true;
 			}
 			
 			@Override
 			public boolean onMenuItemActionCollapse(MenuItem item) {
-				editTextSearch.setText("");
-				if (friendsListFragment_.isAllSelected) {
-					//friendsListFragment_.allFriendsSelected(null);
-				}
-				else {
-					//friendsListFragment_.lentToSelected(null);
-				}
+				friendsListFragment_.searchFilter = null;
+				friendsListFragment_.refreshList();
 				return true;
 			}
 		});
-		
+
+		/*final EditText editTextSearch = (EditText) menu.findItem(R.id.action_search)
+				.getActionView();
+		editTextSearch.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+				// friendsListFragment_.search(charSequence);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
+
+		MenuItem searchItem = (MenuItem) menu.getItem(0);
+		searchItem.setOnActionExpandListener(new OnActionExpandListener() {
+
+			@Override
+			public boolean onMenuItemActionExpand(MenuItem item) {
+				editTextSearch.requestFocus();
+				return true;
+			}
+
+			@Override
+			public boolean onMenuItemActionCollapse(MenuItem item) {
+				editTextSearch.setText("");
+				if (friendsListFragment_.isAllSelected) {
+					// friendsListFragment_.allFriendsSelected(null);
+				}
+				else {
+					// friendsListFragment_.lentToSelected(null);
+				}
+				return true;
+			}
+		});*/
+
 		return super.onCreateOptionsMenu(menu);
 	}
 

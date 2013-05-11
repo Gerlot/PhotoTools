@@ -128,12 +128,12 @@ public class MainActivity extends Activity {
 
 		Friend friend = new Friend(111, "Bala", "Kavács",
 				"+36207664321", "bala@gmail.com", "1117 Budspest, Irinyi Jyzsef St 42 ",
-				null);
+				null, false);
 		//PhotoToolsApplication.getDatabaseLoader().addFriend(friend);
 		
 		friend = new Friend(111, "Xala", "Kavács",
 				"+36207664321", "bala@gmail.com", "1117 Budspest, Irinyi Jyzsef St 42 ",
-				null);
+				null, false);
 		friend.lendItem(1);
 		//PhotoToolsApplication.getDatabaseLoader().addFriend(friend);
 

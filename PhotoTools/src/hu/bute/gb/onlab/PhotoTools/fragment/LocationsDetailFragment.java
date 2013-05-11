@@ -112,8 +112,8 @@ public class LocationsDetailFragment extends SherlockFragment {
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
 		outState.putParcelable(KEY_LOCATION, location_);
+		super.onSaveInstanceState(outState);
 	}
 
 	public void onLocationChanged(Location location) {

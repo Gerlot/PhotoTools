@@ -1,11 +1,18 @@
 package hu.bute.gb.onlab.PhotoTools.helpers;
 
 import hu.bute.gb.onlab.PhotoTools.R;
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DbConstants;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +43,35 @@ public class FriendsAdapter extends CursorAdapter {
 
 		if (cursor != null) {
 			Friend friend = DatabaseLoader.getFriendByCursor(cursor);
+			if (friend.getLentItems() == null) {
+				Log.d("friend", friend.getFullNameFirstLast() + "null");
+			}
 			title.setText(friend.getFullNameFirstLast());
 			if (friend.getLentItems() != null) {
 				sign.setVisibility(View.VISIBLE);
 			}
 		}
+	}
+
+	@Override
+	public Object getItem(int position) {
+		getCursor().moveToPosition(position);
+		Friend result = DatabaseLoader.getFriendByCursor(getCursor());
+		// Getting lent items
+		List<Long> lentItems = null;
+		if (result.hasLentItems()) {
+			Cursor c = PhotoToolsApplication.getDatabaseLoader().getEquipmentLentTo(
+					result.getID());
+			while (c.moveToNext()) {
+				if (lentItems == null) {
+					 lentItems = new ArrayList<Long>();
+				}
+				lentItems.add(c.getLong(c.getColumnIndex(DbConstants.Equipment.KEY_ROWID)));
+			}
+			c.close();
+		}
+		result.setLentItems(lentItems);
+		return result;
 	}
 
 }

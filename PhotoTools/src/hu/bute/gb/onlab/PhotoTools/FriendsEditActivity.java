@@ -1,11 +1,15 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
+import hu.bute.gb.onlab.PhotoTools.fragment.FriendsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.R;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,8 +29,8 @@ import com.actionbarsherlock.view.Window;
 
 public class FriendsEditActivity extends SherlockActivity {
 
-	private DummyModel model_;
-	private long selectedFriend_ = 0;
+	public static final String KEY_EDIT = "edit";
+
 	private boolean editMode_ = false;
 	private Friend friend_;
 
@@ -38,13 +42,15 @@ public class FriendsEditActivity extends SherlockActivity {
 	private EditText editTextEmail_;
 	private EditText editTextAddress_;
 
+	private DatabaseLoader databaseLoader_;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_friends_edit);
-		model_ = DummyModel.getInstance();
-		
+		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
+
 		linearLayoutSave_ = (LinearLayout) findViewById(R.id.linearLayoutSave);
 		linearLayoutSave_.setOnClickListener(new OnClickListener() {
 
@@ -61,13 +67,12 @@ public class FriendsEditActivity extends SherlockActivity {
 		editTextEmail_ = (EditText) findViewById(R.id.editTextEmail);
 		editTextAddress_ = (EditText) findViewById(R.id.editTextAddress);
 
-		if (getIntent().getExtras().getBoolean("edit")) {
+		if (getIntent().getExtras().getBoolean(KEY_EDIT)) {
 			editMode_ = true;
-			selectedFriend_ = getIntent().getExtras().getLong("index");
-			Log.d("friend", "" + selectedFriend_);
-			friend_ = model_.getFriendById(selectedFriend_);
-			textViewTitle_.setText("Edit " + friend_.getFullNameFirstLast());
+			friend_ = getIntent().getExtras().getParcelable(FriendsDetailFragment.KEY_FRIEND);
 
+			textViewTitle_.setText(getResources().getString(R.string.edit_space)
+					+ friend_.getFullNameFirstLast());
 			editTextName_.setText(friend_.getFullNameFirstLast());
 			editTextPhoneNumber_.setText(friend_.getPhoneNumber());
 			editTextEmail_.setText(friend_.getEmailAddress());
@@ -93,18 +98,50 @@ public class FriendsEditActivity extends SherlockActivity {
 		String phoneNumber = editTextPhoneNumber_.getText().toString();
 		String emailAddress = editTextEmail_.getText().toString();
 		String address = editTextAddress_.getText().toString();
-		List<Integer> lentItems = null;
-		/*
-		 * if (friend_.getLentItems() != null) { lentItems =
-		 * friend_.getLentItems(); }
-		 */
-		
+		List<Long> lentItems = null;
+		long id = 0;
+
 		if (name.length == 0 || firstName == null || firstName.trim().length() == 0) {
 			Toast.makeText(FriendsEditActivity.this,
-					getResources().getString(R.string.no_friend_name_specified),
-					Toast.LENGTH_LONG).show();
+					getResources().getString(R.string.no_friend_name_specified), Toast.LENGTH_LONG)
+					.show();
 		}
 		else {
+			if (editMode_) {
+				boolean firstNameChanged = (!friend_.getFirstName().equals(firstName)) ? true
+						: false;
+				boolean lastNameChanged = (!friend_.getLastName().equals(lastName)) ? true : false;
+				boolean phoneNumberChanged = (!friend_.getPhoneNumber().equals(phoneNumber)) ? true
+						: false;
+				boolean emailAddressChanged = (!friend_.getAddress().equals(emailAddress)) ? true
+						: false;
+				boolean addressChanged = (!friend_.getAddress().equals(address)) ? true : false;
+				if (friend_.getLentItems() != null) {
+					lentItems = friend_.getLentItems();
+				}
+
+				// Only save if something is changed
+				if (firstNameChanged || lastNameChanged || phoneNumberChanged
+						|| emailAddressChanged || addressChanged) {
+					// Existing ID
+					id = friend_.getID();
+					friend_ = new Friend(id, firstName, lastName, phoneNumber, emailAddress,
+						address, lentItems, false);
+					databaseLoader_.editFriend(friend_.getID(), friend_);
+				}
+			}
+			else {
+				Friend friend = new Friend(id, firstName, lastName, phoneNumber, emailAddress,
+						address, null, false);
+				databaseLoader_.addFriend(friend);
+			}
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra("addedname", name);
+			returnIntent.putExtra("addedid", id);
+			if (editMode_) {
+				returnIntent.putExtra(FriendsDetailFragment.KEY_FRIEND, friend_);
+			}
+			setResult(RESULT_OK, returnIntent);
 			finish();
 		}
 	}

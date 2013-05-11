@@ -26,7 +26,6 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	private boolean tabletSize_;
 	private DummyModel model_;
 	private Activity activity_;
-	private long selectedEquipment_ = 0;
 	private Equipment equipment_;
 
 	private TextView textViewEquipmentName_;
@@ -58,12 +57,12 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		activity_ = activity;
-		//model_ = DummyModel.getInstance();
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		tabletSize_ = getResources().getBoolean(R.bool.isTablet);
 		
 		if (savedInstanceState == null) {
 			if (getArguments() != null) {
@@ -73,11 +72,6 @@ public class EquipmentDetailFragment extends SherlockFragment {
 		else if (savedInstanceState != null) {
 			equipment_ = savedInstanceState.getParcelable(KEY_EQUIPMENT);
 		}
-		
-		tabletSize_ = getResources().getBoolean(R.bool.isTablet);
-
-		//selectedEquipment_ = getArguments().getLong("index", 0);
-		//equipment_ = model_.getEquipmentById(selectedEquipment_);
 	}
 
 	@Override
@@ -124,8 +118,8 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
 		outState.putParcelable(KEY_EQUIPMENT, equipment_);
+		super.onSaveInstanceState(outState);
 	}
 	
 	public void onEquipmentChanged(Equipment equipment){

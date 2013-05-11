@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class Equipment implements Comparable<Equipment>, Parcelable {
 
-	public long ID_;
+	private long ID_;
 	private String name_;
 	private String category_;
 	private String notes_;

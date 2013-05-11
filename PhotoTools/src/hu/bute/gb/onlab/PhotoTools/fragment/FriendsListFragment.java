@@ -120,45 +120,6 @@ public class FriendsListFragment extends SherlockListFragment {
 		}
 	}
 
-	/*private class FriendItem {
-		public String tag;
-		public boolean hasLentItem = false;
-		public int iconRes;
-
-		public FriendItem(String tag, boolean hasLentItem, int iconRes) {
-			this.tag = tag;
-			this.hasLentItem = hasLentItem;
-			this.iconRes = iconRes;
-		}
-	}
-
-	public class FriendAdapter extends ArrayAdapter<FriendItem> {
-
-		public FriendAdapter(Context context) {
-			super(context, 0);
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent) {
-			if (convertView == null) {
-				convertView = LayoutInflater.from(getContext()).inflate(R.layout.friendsrow, null);
-			}
-			TextView title = (TextView) convertView.findViewById(R.id.row_title);
-			title.setText(getItem(position).tag);
-
-			// Only put up sign if has lent item(s)
-			ImageView sign = (ImageView) convertView.findViewById(R.id.row_sign);
-			if (!getItem(position).hasLentItem) {
-				sign.setVisibility(View.INVISIBLE);
-			}
-
-			ImageView icon = (ImageView) convertView.findViewById(R.id.row_icon);
-			icon.setImageResource(getItem(position).iconRes);
-
-			return convertView;
-		}
-
-	}*/
-
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -169,8 +130,8 @@ public class FriendsListFragment extends SherlockListFragment {
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		super.onListItemClick(listView, view, position, id);
 		if (!isEmpty) {
-			activity_.showFriendDetails(position);
-			selectedPosition_ = position;
+			Friend friend = (Friend) listAdapter.getItem(position);
+			activity_.showFriendDetails(friend);
 		}
 	}
 
@@ -180,20 +141,9 @@ public class FriendsListFragment extends SherlockListFragment {
 		activity_ = null;
 	}
 
-	public void search(CharSequence searchFilter) {
-		if (isAllSelected) {
-			//allFriendsSelected(searchFilter);
-		}
-		else {
-			//lentToSelected(searchFilter);
-		}
-
-		if (isEmpty) {
-			ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(),
-					android.R.layout.simple_list_item_1);
-			emptyAdapter.add(getResources().getString(R.string.search_no_result));
-			setListAdapter(emptyAdapter);
-		}
+	public void search(String queryString) {
+		searchFilter = queryString.toLowerCase();
+		refreshList();
 	}
 
 	public void refreshList() {
@@ -206,10 +156,8 @@ public class FriendsListFragment extends SherlockListFragment {
 				listAdapter.addSection(character, friendAdapter);
 			}
 			setListAdapter(listAdapter);
-			
-			if (getAllTask == null) {
-				getAllTask = new GetAllTask[usedCharacters_.size()];
-			}
+
+			getAllTask = new GetAllTask[usedCharacters_.size()];
 			
 			for (int i = 0; i < getAllTask.length; i++) {
 				GetAllTask task = getAllTask[i];
@@ -314,96 +262,4 @@ public class FriendsListFragment extends SherlockListFragment {
 			refreshList();
 		}
 	};
-
-	/*public void allFriendsSelected(CharSequence searchFilter) {
-		activity_.friendsOnView.clear();
-		isEmpty = true;
-
-		// Create the friend list with custom adapter
-		SeparatedListAdapter adapter = new SeparatedListAdapter(getActivity());
-		for (Map.Entry<String, TreeSet<Friend>> alphabet : model_.friends.entrySet()) {
-
-			FriendAdapter friendAdapter = new FriendAdapter(getActivity());
-
-			TreeSet<Friend> current = alphabet.getValue();
-			boolean addedFriend = false;
-			activity_.friendsOnView.add(Long.valueOf(0));
-			for (Friend friend : current) {
-
-				// Filter by search term if searched
-				if (searchFilter == null
-						|| friend.getFullNameFirstLast().toLowerCase()
-								.contains(searchFilter.toString().toLowerCase())) {
-					// Put warning sign if has lent items
-					if (friend.getLentItems() != null) {
-						friendAdapter.add(new FriendItem(friend.getFirstName() + " "
-								+ friend.getLastName(), true, R.drawable.android_contact));
-						activity_.friendsOnView.add(Long.valueOf(friend.getID()));
-					}
-					else {
-						friendAdapter.add(new FriendItem(friend.getFirstName() + " "
-								+ friend.getLastName(), false, R.drawable.android_contact));
-						activity_.friendsOnView.add(Long.valueOf(friend.getID()));
-					}
-					addedFriend = true;
-				}
-			}
-			// Only add section, if has child items
-			if (addedFriend) {
-				adapter.addSection(alphabet.getKey(), friendAdapter);
-				isEmpty = false;
-			}
-			else {
-				activity_.friendsOnView.remove(activity_.friendsOnView.size() - 1);
-			}
-		}
-		setListAdapter(adapter);
-	}
-
-	public void lentToSelected(CharSequence searchFilter) {
-		activity_.friendsOnView.clear();
-		isEmpty = true;
-
-		// Create the friend list with custom adapter
-		SeparatedListAdapter adapter = new SeparatedListAdapter(getActivity());
-		for (Map.Entry<String, TreeSet<Friend>> alphabet : model_.friends.entrySet()) {
-
-			FriendAdapter friendAdapter = new FriendAdapter(getActivity());
-
-			TreeSet<Friend> current = alphabet.getValue();
-			boolean addedFriend = false;
-			activity_.friendsOnView.add(Long.valueOf(0));
-			for (Friend friend : current) {
-
-				// Only add friends with lent items
-				// Filter by search term if searched
-				if ((searchFilter == null || friend.getFullNameFirstLast().toLowerCase()
-						.contains(searchFilter.toString().toLowerCase()))
-						&& friend.getLentItems() != null) {
-					friendAdapter.add(new FriendItem(friend.getFirstName() + " "
-							+ friend.getLastName(), false, R.drawable.android_contact));
-					activity_.friendsOnView.add(Long.valueOf(friend.getID()));
-					addedFriend = true;
-				}
-
-			}
-			if (addedFriend) {
-				adapter.addSection(alphabet.getKey(), friendAdapter);
-				isEmpty = false;
-			}
-			else {
-				activity_.friendsOnView.remove(activity_.friendsOnView.size() - 1);
-			}
-		}
-		if (!isEmpty) {
-			setListAdapter(adapter);
-		}
-		else {
-			ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(),
-					android.R.layout.simple_list_item_1);
-			emptyAdapter.add(getResources().getString(R.string.no_lent_to));
-			setListAdapter(emptyAdapter);
-		}
-
-	}*/
 }

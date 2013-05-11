@@ -88,6 +88,7 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 			case LOCATION_EDIT:
 				if (resultCode == RESULT_OK) {
 					Location location = data.getParcelableExtra(LocationsDetailFragment.KEY_LOCATION);
+					selectedLocation_ = location;
 					detailFragment_.onLocationChanged(location);
 				}
 				break;

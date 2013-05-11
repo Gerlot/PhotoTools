@@ -1418,126 +1418,127 @@ containing a value of this type.
         public static final int accessories=0x7f0a0018;
         /**  MainActivity 
          */
-        public static final int action_settings=0x7f0a001d;
-        public static final int add_friend=0x7f0a0055;
-        public static final int address=0x7f0a002a;
-        public static final int all_friends=0x7f0a005e;
-        public static final int already_lent=0x7f0a0050;
+        public static final int action_settings=0x7f0a001e;
+        public static final int add_friend=0x7f0a0056;
+        public static final int address=0x7f0a002b;
+        public static final int all_friends=0x7f0a005f;
+        public static final int already_lent=0x7f0a0051;
         /**  App-wide 
          */
         public static final int app_name=0x7f0a000f;
         public static final int camera=0x7f0a0013;
-        public static final int carentry=0x7f0a002c;
-        public static final int coordinates=0x7f0a002b;
-        public static final int deadline_name=0x7f0a003d;
-        public static final int deadlinenotes=0x7f0a0040;
-        public static final int deadlines=0x7f0a001f;
-        public static final int delete_deadline=0x7f0a0039;
-        public static final int delete_deadline_confirmation=0x7f0a003a;
-        public static final int delete_equipment=0x7f0a0047;
-        public static final int delete_equipment_confirmation=0x7f0a004d;
-        public static final int delete_friend=0x7f0a0057;
-        public static final int delete_friend_confirmation=0x7f0a005f;
-        public static final int delete_friend_note=0x7f0a0060;
-        public static final int delete_location=0x7f0a0028;
-        public static final int delete_location_confirmation=0x7f0a0031;
-        public static final int edit_deadline=0x7f0a0038;
-        public static final int edit_equipment=0x7f0a0046;
-        public static final int edit_friend=0x7f0a0056;
-        public static final int edit_location=0x7f0a0027;
-        public static final int email=0x7f0a005b;
-        public static final int empty_deadlinelist=0x7f0a003b;
-        public static final int empty_friendlist=0x7f0a0063;
-        public static final int empty_locationlist=0x7f0a0032;
-        public static final int equipment=0x7f0a0020;
-        public static final int equipmentcategory=0x7f0a0049;
-        public static final int equipmentname=0x7f0a0048;
-        public static final int equipmentnotes=0x7f0a004a;
-        public static final int existing_contact=0x7f0a0059;
+        public static final int carentry=0x7f0a002d;
+        public static final int coordinates=0x7f0a002c;
+        public static final int deadline_name=0x7f0a003e;
+        public static final int deadlinenotes=0x7f0a0041;
+        public static final int deadlines=0x7f0a0020;
+        public static final int delete_deadline=0x7f0a003a;
+        public static final int delete_deadline_confirmation=0x7f0a003b;
+        public static final int delete_equipment=0x7f0a0048;
+        public static final int delete_equipment_confirmation=0x7f0a004e;
+        public static final int delete_friend=0x7f0a0058;
+        public static final int delete_friend_confirmation=0x7f0a0060;
+        public static final int delete_friend_note=0x7f0a0061;
+        public static final int delete_location=0x7f0a0029;
+        public static final int delete_location_confirmation=0x7f0a0032;
+        public static final int edit_deadline=0x7f0a0039;
+        public static final int edit_equipment=0x7f0a0047;
+        public static final int edit_friend=0x7f0a0057;
+        public static final int edit_location=0x7f0a0028;
+        public static final int edit_space=0x7f0a001d;
+        public static final int email=0x7f0a005c;
+        public static final int empty_deadlinelist=0x7f0a003c;
+        public static final int empty_friendlist=0x7f0a0064;
+        public static final int empty_locationlist=0x7f0a0033;
+        public static final int equipment=0x7f0a0021;
+        public static final int equipmentcategory=0x7f0a004a;
+        public static final int equipmentname=0x7f0a0049;
+        public static final int equipmentnotes=0x7f0a004b;
+        public static final int existing_contact=0x7f0a005a;
         public static final int filters=0x7f0a0015;
         public static final int flashes=0x7f0a0016;
-        public static final int focal_length_stats=0x7f0a0065;
-        public static final int friendaddress=0x7f0a005c;
-        public static final int friendlent=0x7f0a005d;
-        public static final int friends=0x7f0a0021;
+        public static final int focal_length_stats=0x7f0a0066;
+        public static final int friendaddress=0x7f0a005d;
+        public static final int friendlent=0x7f0a005e;
+        public static final int friends=0x7f0a0022;
         public static final int hello_world=0x7f0a0010;
-        public static final int lend_equipment=0x7f0a004c;
-        public static final int lend_to=0x7f0a004f;
+        public static final int lend_equipment=0x7f0a004d;
+        public static final int lend_to=0x7f0a0050;
         public static final int lenses=0x7f0a0014;
-        public static final int lent_to=0x7f0a004b;
-        public static final int location=0x7f0a003f;
-        public static final int location_name=0x7f0a0029;
-        public static final int location_stats=0x7f0a0066;
-        public static final int locations=0x7f0a001e;
+        public static final int lent_to=0x7f0a004c;
+        public static final int location=0x7f0a0040;
+        public static final int location_name=0x7f0a002a;
+        public static final int location_stats=0x7f0a0067;
+        public static final int locations=0x7f0a001f;
         public static final int memory_cards_and_readers=0x7f0a0017;
-        public static final int nearby_locations=0x7f0a002f;
-        public static final int new_deadline=0x7f0a0037;
-        public static final int new_equipment=0x7f0a0045;
-        public static final int new_friend=0x7f0a0058;
-        public static final int new_location=0x7f0a0026;
+        public static final int nearby_locations=0x7f0a0030;
+        public static final int new_deadline=0x7f0a0038;
+        public static final int new_equipment=0x7f0a0046;
+        public static final int new_friend=0x7f0a0059;
+        public static final int new_location=0x7f0a0027;
         public static final int no_cancel=0x7f0a001b;
-        public static final int no_deadline_name_specified=0x7f0a003c;
-        public static final int no_equipment_name_specified=0x7f0a004e;
-        public static final int no_friend_name_specified=0x7f0a0061;
-        public static final int no_lent_to=0x7f0a0062;
-        public static final int no_location_name_specified=0x7f0a0033;
-        public static final int notes=0x7f0a002e;
-        public static final int phone=0x7f0a005a;
-        public static final int powersource=0x7f0a002d;
-        public static final int pref_default_display_name=0x7f0a006c;
-        public static final int pref_description_social_recommendations=0x7f0a006a;
+        public static final int no_deadline_name_specified=0x7f0a003d;
+        public static final int no_equipment_name_specified=0x7f0a004f;
+        public static final int no_friend_name_specified=0x7f0a0062;
+        public static final int no_lent_to=0x7f0a0063;
+        public static final int no_location_name_specified=0x7f0a0034;
+        public static final int notes=0x7f0a002f;
+        public static final int phone=0x7f0a005b;
+        public static final int powersource=0x7f0a002e;
+        public static final int pref_default_display_name=0x7f0a006d;
+        public static final int pref_description_social_recommendations=0x7f0a006b;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f0a006e;
+        public static final int pref_header_data_sync=0x7f0a006f;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f0a0068;
+        public static final int pref_header_general=0x7f0a0069;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f0a0071;
-        public static final int pref_ringtone_silent=0x7f0a0074;
-        public static final int pref_title_add_friends_to_messages=0x7f0a006d;
-        public static final int pref_title_display_name=0x7f0a006b;
-        public static final int pref_title_new_message_notifications=0x7f0a0072;
-        public static final int pref_title_ringtone=0x7f0a0073;
-        public static final int pref_title_social_recommendations=0x7f0a0069;
-        public static final int pref_title_sync_frequency=0x7f0a006f;
-        public static final int pref_title_system_sync_settings=0x7f0a0070;
-        public static final int pref_title_vibrate=0x7f0a0075;
+        public static final int pref_header_notifications=0x7f0a0072;
+        public static final int pref_ringtone_silent=0x7f0a0075;
+        public static final int pref_title_add_friends_to_messages=0x7f0a006e;
+        public static final int pref_title_display_name=0x7f0a006c;
+        public static final int pref_title_new_message_notifications=0x7f0a0073;
+        public static final int pref_title_ringtone=0x7f0a0074;
+        public static final int pref_title_social_recommendations=0x7f0a006a;
+        public static final int pref_title_sync_frequency=0x7f0a0070;
+        public static final int pref_title_system_sync_settings=0x7f0a0071;
+        public static final int pref_title_vibrate=0x7f0a0076;
         public static final int save=0x7f0a001c;
         public static final int search=0x7f0a0012;
         public static final int search_no_result=0x7f0a0019;
-        public static final int select_equipment=0x7f0a0044;
-        public static final int select_friend=0x7f0a0054;
-        public static final int show_location_stats=0x7f0a0030;
-        public static final int stats=0x7f0a0022;
+        public static final int select_equipment=0x7f0a0045;
+        public static final int select_friend=0x7f0a0055;
+        public static final int show_location_stats=0x7f0a0031;
+        public static final int stats=0x7f0a0023;
         /**  Deadlines 
          */
-        public static final int title_activity_deadlines=0x7f0a0034;
-        public static final int title_activity_deadlines_detail=0x7f0a0035;
-        public static final int title_activity_deadlines_edit=0x7f0a0036;
+        public static final int title_activity_deadlines=0x7f0a0035;
+        public static final int title_activity_deadlines_detail=0x7f0a0036;
+        public static final int title_activity_deadlines_edit=0x7f0a0037;
         /**  Equipment 
          */
-        public static final int title_activity_equipment=0x7f0a0041;
-        public static final int title_activity_equipment_detail=0x7f0a0042;
-        public static final int title_activity_equipment_edit=0x7f0a0043;
+        public static final int title_activity_equipment=0x7f0a0042;
+        public static final int title_activity_equipment_detail=0x7f0a0043;
+        public static final int title_activity_equipment_edit=0x7f0a0044;
         /**  Friends 
          */
-        public static final int title_activity_friends=0x7f0a0051;
-        public static final int title_activity_friends_detail=0x7f0a0052;
-        public static final int title_activity_friends_edit=0x7f0a0053;
+        public static final int title_activity_friends=0x7f0a0052;
+        public static final int title_activity_friends_detail=0x7f0a0053;
+        public static final int title_activity_friends_edit=0x7f0a0054;
         /**  Locations 
          */
-        public static final int title_activity_locations=0x7f0a0023;
-        public static final int title_activity_locations_detail=0x7f0a0024;
-        public static final int title_activity_locations_edit=0x7f0a0025;
+        public static final int title_activity_locations=0x7f0a0024;
+        public static final int title_activity_locations_detail=0x7f0a0025;
+        public static final int title_activity_locations_edit=0x7f0a0026;
         public static final int title_activity_on_map=0x7f0a0011;
-        public static final int title_activity_settings=0x7f0a0067;
+        public static final int title_activity_settings=0x7f0a0068;
         /**  Stats 
          */
-        public static final int title_activity_stats=0x7f0a0064;
-        public static final int when=0x7f0a003e;
+        public static final int title_activity_stats=0x7f0a0065;
+        public static final int when=0x7f0a003f;
         public static final int yes_delete=0x7f0a001a;
     }
     public static final class style {

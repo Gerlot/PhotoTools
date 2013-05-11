@@ -23,11 +23,12 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class FriendsDetailFragment extends SherlockFragment {
+	
+	public static final String KEY_FRIEND = "friend";
 
 	private boolean tabletSize_;
 	private DummyModel model_;
 	private Activity activity_;
-	private long selectedFriend_ = 0;
 	private Friend friend_;
 
 	private RelativeLayout realtiveLayoutPhone_;
@@ -40,35 +41,41 @@ public class FriendsDetailFragment extends SherlockFragment {
 	private LinearLayout linearLayoutLentEquipment_;
 	private LayoutInflater inflater_;
 
-	public static FriendsDetailFragment newInstance(long index) {
-		FriendsDetailFragment fragment = new FriendsDetailFragment();
+	public static FriendsDetailFragment newInstance(Friend friend) {
+		FriendsDetailFragment result = new FriendsDetailFragment();
 
 		Bundle arguments = new Bundle();
-		arguments.putLong("index", index);
-		fragment.setArguments(arguments);
+		arguments.putParcelable(KEY_FRIEND, friend);
+		result.setArguments(arguments);
 
-		return fragment;
+		return result;
 	}
 
 	public static FriendsDetailFragment newInstance(Bundle bundle) {
-		long index = bundle.getLong("index", 0);
-		return newInstance(index);
+		FriendsDetailFragment result = new FriendsDetailFragment();
+		result.setArguments(bundle);
+		return result;
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		activity_ = activity;
-		model_ = DummyModel.getInstance();
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		tabletSize_ = getResources().getBoolean(R.bool.isTablet);
-
-		selectedFriend_ = getArguments().getLong("index", 0);
-		friend_ = model_.getFriendById(selectedFriend_);
+		
+		if (savedInstanceState == null) {
+			if (getArguments() != null) {
+				friend_ = getArguments().getParcelable(KEY_FRIEND);
+			}
+		}
+		else if (savedInstanceState != null) {
+			friend_ = savedInstanceState.getParcelable(KEY_FRIEND);
+		}
 	}
 
 	@Override
@@ -136,6 +143,17 @@ public class FriendsDetailFragment extends SherlockFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		onFriendChanged(friend_);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putParcelable(KEY_FRIEND, friend_);
+		super.onSaveInstanceState(outState);
+	}
+	
+	public void onFriendChanged(Friend friend){
+		friend_ = friend;
 		if (!tabletSize_) {
 			activity_.setTitle(friend_.getFirstName() + " " + friend_.getLastName());
 			textViewFriendName_.setVisibility(View.GONE);
@@ -147,9 +165,9 @@ public class FriendsDetailFragment extends SherlockFragment {
 		textViewFriendEmail_.setText(friend_.getEmailAddress());
 		textViewFriendAddress_.setText(friend_.getAddress());
 	}
-
-	public long getSelectedFriend() {
-		return selectedFriend_;
+	
+	public long getSelectedFriendId(){
+		return friend_.getID();
 	}
 
 	public void lendEquipment(long equipmentId) {

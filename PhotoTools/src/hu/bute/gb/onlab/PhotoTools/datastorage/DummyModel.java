@@ -148,19 +148,19 @@ public class DummyModel {
 		for (int i = 0; i < 3; i++) {
 			Friend friend = new Friend(friendId.getAndIncrement(), "Béla" + i, "Kovács",
 					"+36207654321", "bela" + i + "@gmail.com",
-					"1117 Budapest, Irinyi József St 42 ", null);
+					"1117 Budapest, Irinyi József St 42 ", null, false);
 			addFriend(friend);
 		}
 		for (int i = 0; i < 4; i++) {
 			Friend friend = new Friend(friendId.getAndIncrement(), "Céla" + i, "Kovács",
 					"+36207654321", "cela" + i + "@gmail.com",
-					"1117 Budapest, Irinyi József St 42 ", null);
+					"1117 Budapest, Irinyi József St 42 ", null, false);
 			addFriend(friend);
 		}
 		ArrayList<Long> aladarHas = new ArrayList<Long>();
 		aladarHas.add(Long.valueOf(7));
 		Friend friend = new Friend(friendId.getAndIncrement(), "Aladár", "Kovács", "+36207654321",
-				"aladar@outlook.com", "1117 Budapest, Irinyi József St 42 ", aladarHas);
+				"aladar@outlook.com", "1117 Budapest, Irinyi József St 42 ", aladarHas, true);
 		addFriend(friend);
 
 		// Testing database for debugging

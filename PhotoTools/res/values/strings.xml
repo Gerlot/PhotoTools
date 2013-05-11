@@ -17,6 +17,7 @@
     <string name="yes_delete">Yes, Delete</string>
     <string name="no_cancel">No, Cancel</string>
     <string name="save">Save</string>
+    <string name="edit_space">Edit </string>
     
     <!-- MainActivity -->
     <string name="action_settings">Settings</string>
