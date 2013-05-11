@@ -85,8 +85,7 @@ public class EquipmentListFragment extends SherlockListFragment {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				if (actionMode_ == null) {
-					actionMode_ = getSherlockActivity().startActionMode(new SelectActionMode());
-					//populateList(null);
+					//actionMode_ = getSherlockActivity().startActionMode(new SelectActionMode());
 					return true;
 				}
 				return false;

@@ -31,7 +31,6 @@ import com.slidingmenu.lib.SlidingMenu;
 
 public class EquipmentActivity extends SherlockFragmentActivity {
 
-	//public List<Long> equipmentOnView = new ArrayList<Long>();
 	public static final int EQUIPMENT_DELETE = 1;
 	public static final int EQUIPMENT_ADD = 2;
 	public EquipmentCategories categories;
@@ -40,9 +39,9 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 	private ViewGroup fragmentContainer_;
 	private FragmentManager fragmentManager_;
 	private EquipmentListFragment equipmentListFragment_;
-	private SlidingMenu menu;
 
 	private boolean tabletSize_;
+	private SlidingMenu menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -132,15 +131,11 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 			startActivity(myIntent);
 			finish();
 			return true;
-		case R.id.action_search:
-			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-			return true;
 		case R.id.action_new_equipment:
 			Intent newIntent = new Intent();
 			newIntent.setClass(EquipmentActivity.this, EquipmentEditActivity.class);
-			newIntent.putExtra("edit", false);
-			startActivityForResult(newIntent, 2);
+			newIntent.putExtra(EquipmentEditActivity.KEY_EDIT, false);
+			startActivityForResult(newIntent, EQUIPMENT_ADD);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

@@ -1,5 +1,6 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeadlinesDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeadlinesListFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
@@ -23,8 +24,10 @@ import com.slidingmenu.lib.SlidingMenu;
 
 public class DeadlinesActivity extends SherlockFragmentActivity {
 
-	public List<Long> deadlinesOnView = new ArrayList<Long>();
-
+	//public List<Long> deadlinesOnView = new ArrayList<Long>();
+	public static final int DEADLINE_DELETE = 1;
+	public static final int DEADLINE_ADD = 2;
+	
 	private ViewGroup fragmentContainer_;
 	private FragmentManager fragmentManager_;
 	private DeadlinesListFragment deadlinesListFragment_;
@@ -69,13 +72,13 @@ public class DeadlinesActivity extends SherlockFragmentActivity {
 		}
 	}
 
-	public void showDeadlineDetails(int index) {
+	public void showDeadlineDetails(Deadline selectedDeadline) {
 		if (fragmentContainer_ != null) {
 			DeadlinesDetailFragment detailFragment = (DeadlinesDetailFragment) fragmentManager_
 					.findFragmentById(R.id.DeadlinesFragmentContainer);
 			if (detailFragment == null
-					|| detailFragment.getSelectedDeadline() != deadlinesOnView.get(index)) {
-				detailFragment = DeadlinesDetailFragment.newInstance(deadlinesOnView.get(index));
+					|| detailFragment.getSelectedDeadlineId() != selectedDeadline.getID()) {
+				detailFragment = DeadlinesDetailFragment.newInstance(selectedDeadline);
 				FragmentTransaction fragmentTransaction = fragmentManager_.beginTransaction();
 				fragmentTransaction.replace(R.id.DeadlinesFragmentContainer, detailFragment);
 				fragmentTransaction.commit();
@@ -83,8 +86,8 @@ public class DeadlinesActivity extends SherlockFragmentActivity {
 		}
 		else {
 			Intent intent = new Intent(this, DeadlinesDetailActivity.class);
-			intent.putExtra("index", deadlinesOnView.get(index));
-			startActivityForResult(intent, 1);
+			intent.putExtra(DeadlinesDetailFragment.KEY_DEADLINE, selectedDeadline);
+			startActivityForResult(intent, DEADLINE_DELETE); // Listen for delete event
 		}
 	}
 
@@ -93,52 +96,15 @@ public class DeadlinesActivity extends SherlockFragmentActivity {
 		if (data != null) {
 			switch (requestCode) {
 			// Location deleted
-			case 1:
+			case DEADLINE_DELETE:
 				if (resultCode == RESULT_OK) {
-					// The id of the location to remove
-					/*Integer id = Integer.valueOf(data.getIntExtra("deleted", 0));
-
-					// The index of the location to remove in the listView
-					int index = deadlinesOnView.indexOf(id);
-					// The index of the location to remove in its category
-					int lastZero = 1;
-					Log.d("deadline", "size: " + deadlinesOnView.size());
-					Log.d("deadline", "index: " + index);
-					for (int i = 0; i < deadlinesOnView.size(); i++) {
-						Log.d("deadline", "" + deadlinesOnView.get(i).intValue());
-						if (i >= index) {
-							break;
-						}
-						if (deadlinesOnView.get(i).intValue() == 0) {
-							lastZero = i+1;
-						}
-					}
-
-					// Getting the deadline to remove, and its category
-					Deadline deadlineToRemove = DummyModel.getInstance().getDeadlineById(id);
-					DeadlineDay category = new DeadlineDay(deadlineToRemove.getStartTime());
-					
-					// Get, and remove the deadline from the list
-					DeadlineAdapter categoryAdapter = (DeadlineAdapter) deadlinesListFragment_.listAdapter
-							.getSectionAdapter(category.toString());
-					int indexInCategory = index - lastZero;
-					Log.d("deadline", "indexincat: " + indexInCategory);
-					DeadlineItem toRemove = categoryAdapter.getItem(indexInCategory);
-					categoryAdapter.remove(toRemove);
-					
-					DummyModel.getInstance().removeDeadlineById(id);
-					deadlinesOnView.remove(id);*/
+					deadlinesListFragment_.refreshList();
 				}
 				break;
 			// Location added
-			case 2:
+			case DEADLINE_ADD:
 				if (resultCode == RESULT_OK) {
-					// The id of the location to add
-					Long id = Long.valueOf(data.getIntExtra("addedid", 0));
-
-					deadlinesOnView.add(id);
-					String toAdd = data.getStringExtra("addedname");
-					// deadlinesListFragment_.listAdapter.add(toAdd);
+					deadlinesListFragment_.refreshList();
 				}
 				break;
 			}
@@ -159,8 +125,8 @@ public class DeadlinesActivity extends SherlockFragmentActivity {
 		case R.id.action_new_deadline:
 			Intent newIntent = new Intent();
 			newIntent.setClass(DeadlinesActivity.this, DeadlinesEditActivity.class);
-			newIntent.putExtra("edit", false);
-			startActivityForResult(newIntent, 2);
+			newIntent.putExtra(DeadlinesEditActivity.KEY_EDIT, false);
+			startActivityForResult(newIntent, DEADLINE_ADD);
 		}
 		return super.onOptionsItemSelected(item);
 	}

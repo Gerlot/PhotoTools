@@ -53,5 +53,4 @@ public class EquipmentAdapter extends CursorAdapter {
 		getCursor().moveToPosition(position);
 		return DatabaseLoader.getEquipmentByCursor(getCursor());
 	}
-
 }

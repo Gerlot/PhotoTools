@@ -61,6 +61,7 @@
     <string name="when">When:</string>
     <string name="location">Location</string>
     <string name="deadlinenotes">Notes</string>
+    <string name="today">Today</string>
     
     <!-- Equipment -->
     <string name="title_activity_equipment">Equipment</string>

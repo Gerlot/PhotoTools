@@ -2,52 +2,79 @@ package hu.bute.gb.onlab.PhotoTools.fragment;
 
 import hu.bute.gb.onlab.PhotoTools.DeadlinesActivity;
 import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DbConstants;
 import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import hu.bute.gb.onlab.PhotoTools.helpers.DeadlineDay;
+import hu.bute.gb.onlab.PhotoTools.helpers.DeadlinesAdapter;
 import hu.bute.gb.onlab.PhotoTools.helpers.SeparatedListAdapter;
 
-import java.util.Map;
-
-import org.apache.commons.collections15.bag.TreeBag;
+import java.util.ArrayList;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
-import org.joda.time.Days;
-
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-
 import com.actionbarsherlock.app.SherlockListFragment;
 
 public class DeadlinesListFragment extends SherlockListFragment {
 
 	// Log tag
 	public static final String TAG = "DeadlinesListFragment";
+	public String searchFilter = null;
 	public SeparatedListAdapter listAdapter = null;
 	public boolean isEmpty = true;
 
-	private DummyModel model_;
+	private ArrayList<String> usedDateStrings_;
+	private ArrayList<DeadlineDay> usedDates_;
 	private DeadlinesActivity activity_;
 	private int selectedPosition_ = 0;
+
+	private DateMidnight today_;
+	private DateMidnight displayAfterThis_;
+	private DateMidnight displayBeforeThis_;
+
+	// State
+	private LocalBroadcastManager broadcastManager;
+
+	// DBloader
+	private DatabaseLoader databaseLoader;
+
+	private GetAllTask[] getAllTask;
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		activity_ = (DeadlinesActivity) activity;
-		model_ = DummyModel.getInstance();
-
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		today_ = (new DateTime()).toDateMidnight();
+		if (savedInstanceState != null) {
+			displayAfterThis_ = new DateMidnight(savedInstanceState.getLong("after"));
+			displayBeforeThis_ = new DateMidnight(savedInstanceState.getLong("before"));
+		}
+		else {
+			displayAfterThis_ = today_;
+			displayBeforeThis_ = today_.plusDays(7);
+		}
+
+		broadcastManager = LocalBroadcastManager.getInstance(getActivity());
+		databaseLoader = PhotoToolsApplication.getDatabaseLoader();
 	}
 
 	@Override
@@ -58,72 +85,44 @@ public class DeadlinesListFragment extends SherlockListFragment {
 		listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
 		listView.setSelection(selectedPosition_);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		//listAdapter.notifyDataSetChanged();
-		populateList();
-		
+		// Kódból regisztraljuk az adatbazis modosulasara figyelmezteto
+		// Receiver-t
+		IntentFilter filter = new IntentFilter(DbConstants.ACTION_DATABASE_CHANGED);
+		broadcastManager.registerReceiver(updateDatabaseReceiver, filter);
+		// Frissitjuk a lista tartalmat, ha visszater a user
+		refreshList();
 	}
-
-	public class DeadlineItem {
-		public String tag;
-		public String date;
-		public boolean isSoon = false;
-		public int daysLeft;
-
-		public DeadlineItem(String tag, String date, boolean isSoon, int daysLeft) {
-			this.tag = tag;
-			this.date = date;
-			this.isSoon = isSoon;
-			this.daysLeft = daysLeft;
-		}
-	}
-
-	public class DeadlineAdapter extends ArrayAdapter<DeadlineItem> {
-
-		public DeadlineAdapter(Context context) {
-			super(context, 0);
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent) {
-			if (convertView == null) {
-				convertView = LayoutInflater.from(getContext())
-						.inflate(R.layout.deadlines_row, null);
-			}
-			TextView title = (TextView) convertView.findViewById(R.id.row_title);
-			title.setText(getItem(position).tag);
-
-			TextView date = (TextView) convertView.findViewById(R.id.row_date);
-			date.setText(getItem(position).date);
-
-			TextView left = (TextView) convertView.findViewById(R.id.row_left);
-			// Hide how many days left if deadline is not soon
-			if (!getItem(position).isSoon) {
-				left.setVisibility(View.GONE);
-			}
-			// Show indicator if deadline is soon
-			else {
-				switch (getItem(position).daysLeft) {
-				case 3:
-					left.setText("3 days left");
-					left.setTextColor(getResources().getColor(R.color.orange));
-					break;
-				case 2:
-					left.setText("2 days left");
-					left.setTextColor(getResources().getColor(R.color.orange));
-					break;
-				case 1:
-					left.setText("Only 1 day left!");
-					break;
-				default:
-					left.setText("It's today!");
-					break;
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		// Kiregisztraljuk az adatbazis modosulasara figyelmezteto Receiver-t
+		broadcastManager.unregisterReceiver(updateDatabaseReceiver);
+		if (getAllTask != null) {
+			for (GetAllTask task : getAllTask) {
+				if (task != null) {
+					task.cancel(false);
 				}
 			}
-
-			return convertView;
+		}
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		// Ha van Cursor rendelve az Adapterhez, lezarjuk
+		if (listAdapter != null) {
+			for (String date : usedDateStrings_) {
+				DeadlinesAdapter adapter = (DeadlinesAdapter) listAdapter
+						.getSectionAdapter(date);
+				if (adapter != null && adapter.getCursor() != null) {
+					adapter.getCursor().close();
+				}
+			}
 		}
 	}
 
@@ -131,14 +130,17 @@ public class DeadlinesListFragment extends SherlockListFragment {
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putInt("selectedDeadline", selectedPosition_);
+		outState.putLong("after", displayAfterThis_.getMillis());
+		outState.putLong("before", displayBeforeThis_.getMillis());
 	}
 
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		super.onListItemClick(listView, view, position, id);
 		if (!isEmpty) {
-			activity_.showDeadlineDetails(position);
-			selectedPosition_ = position;
+			Deadline selectedDeadline = (Deadline) getListAdapter().getItem(position);
+			activity_.showDeadlineDetails(selectedDeadline);
+			//selectedPosition_ = position;
 		}
 	}
 
@@ -148,63 +150,117 @@ public class DeadlinesListFragment extends SherlockListFragment {
 		activity_ = null;
 	}
 
-	private void populateList() {
-		activity_.deadlinesOnView.clear();
-		listAdapter = new SeparatedListAdapter(getActivity());
-		isEmpty = true;
-		for (Map.Entry<DeadlineDay, TreeBag<Deadline>> day : model_.deadlines.entrySet()) {
-
-			DeadlineAdapter deadlineAdapter = new DeadlineAdapter(getActivity());
-
-			TreeBag<Deadline> current = day.getValue();
-			boolean addedDeadline = false;
-			activity_.deadlinesOnView.add(Long.valueOf(0));
-			for (Deadline deadline : current) {
-				boolean isSoon = false;
-				DateMidnight today = (new DateTime()).toDateMidnight();
-				DateMidnight startDate = deadline.getStartTime().toDateMidnight();
-				int daysBetween = Days.daysBetween(today, deadline.getStartTime()).getDays();
-				if (startDate.isAfter(today) && daysBetween <= 3) {
-					isSoon = true;
+	public void refreshList() {
+		usedDateStrings_ = databaseLoader.getUsedDateStrings(displayAfterThis_.getMillis(),
+				displayBeforeThis_.getMillis());
+		usedDates_ = databaseLoader.getUsedDates(displayAfterThis_.getMillis(),
+				displayBeforeThis_.getMillis());
+		if (usedDateStrings_ != null) {
+			listAdapter = new SeparatedListAdapter(getActivity());
+			for (String date : usedDateStrings_) {
+				DeadlinesAdapter deadlinesAdapter = new DeadlinesAdapter(getActivity()
+						.getApplicationContext(), null, getResources().getColor(R.color.orange));
+				// In case of today, display label as "Today"
+				String dateString = date;
+				if (date.equals(today_.toString("yyyy. MMM dd., EEEE"))) {
+					dateString = getResources().getString(R.string.today);
 				}
-
-				if (!deadline.isAllDay() && deadline.getEndTime() != null) {
-					deadlineAdapter.add(new DeadlineItem(deadline.getName(), deadline
-							.getStartTime().toLocalTime().toString("HH:mm")
-							+ " - " + deadline.getEndTime().toLocalTime().toString("HH:mm"),
-							isSoon, daysBetween));
-				}
-				else if (!deadline.isAllDay()) {
-					deadlineAdapter.add(new DeadlineItem(deadline.getName(), deadline
-							.getStartTime().toLocalTime().toString("HH:mm"), isSoon, daysBetween));
-				}
-				else {
-					deadlineAdapter.add(new DeadlineItem(deadline.getName(), "", isSoon,
-							daysBetween));
-				}
-
-				activity_.deadlinesOnView.add(Long.valueOf(deadline.getID()));
-				addedDeadline = true;
-
+				listAdapter.addSection(dateString, deadlinesAdapter);
 			}
-			// Only add section, if has child items
-			if (addedDeadline) {
-				listAdapter.addSection(day.getKey().toString(), deadlineAdapter);
-				isEmpty = false;
-			}
-			else {
-				activity_.deadlinesOnView.remove(activity_.deadlinesOnView.size() - 1);
-			}
-		}
-		if (!isEmpty) {
 			setListAdapter(listAdapter);
+
+			getAllTask = new GetAllTask[usedDateStrings_.size()];
+
+			for (int i = 0; i < getAllTask.length; i++) {
+				GetAllTask task = getAllTask[i];
+				if (task != null) {
+					task.cancel(false);
+				}
+				task = new GetAllTask(i, usedDateStrings_.get(i), usedDates_.get(i));
+				task.execute();
+			}
 		}
 		else {
+			isEmpty = true;
 			ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(),
 					android.R.layout.simple_list_item_1);
-			emptyAdapter.add(getResources().getString(R.string.empty_deadlinelist));
 			setListAdapter(emptyAdapter);
+			listAdapter = null;
 		}
 	}
+
+	private class GetAllTask extends AsyncTask<Void, Void, Cursor> {
+		private static final String TAG = "GetAllTask";
+		private int index_;
+		private String category_;
+		private DeadlineDay date_;
+
+		public GetAllTask(int index, String category, DeadlineDay date) {
+			index_ = index;
+			category_ = category;
+			date_ = date;
+		}
+
+		@Override
+		protected Cursor doInBackground(Void... params) {
+			try {
+				DateMidnight dateMidnight = date_.getDateInDateTime();
+				Cursor result = databaseLoader.getDeadlinesBetweenDays(
+						dateMidnight.getMillis(), dateMidnight.plusDays(1).getMillis());
+				if (!isCancelled()) {
+					return result;
+				}
+				else {
+					Log.d(TAG, "Cancelled, closing cursor");
+					if (result != null) {
+						result.close();
+					}
+					return null;
+				}
+			}
+			catch (Exception e) {
+				return null;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Cursor result) {
+			super.onPostExecute(result);
+			Log.d(TAG, "Fetch completed, displaying cursor results!");
+			if (result != null) {
+				isEmpty = false;
+				try {
+					// In case of today, the displayed label is "today"
+					String categoryString = category_;
+					if (category_.equals(today_.toString("yyyy. MMM dd., EEEE"))) {
+						categoryString = getResources().getString(R.string.today);
+					}
+					DeadlinesAdapter deadlinesAdapter = (DeadlinesAdapter) listAdapter
+							.getSectionAdapter(categoryString);
+					deadlinesAdapter.changeCursor(result);
+					deadlinesAdapter.notifyDataSetChanged();
+					setListAdapter(listAdapter);
+					getAllTask[index_] = null;
+				}
+				catch (Exception e) {
+					Log.d("friend", "hiba!");
+				}
+			}
+			/*
+			 * if (listAdapter.isEmpty()) { isEmpty = true; ArrayAdapter<String>
+			 * emptyAdapter = new ArrayAdapter<String>(getActivity(),
+			 * android.R.layout.simple_list_item_1);
+			 * emptyAdapter.add(getResources().getString(R.string.no_lent_to));
+			 * setListAdapter(emptyAdapter); // listAdapter = null; }
+			 */
+		}
+	}
+
+	private BroadcastReceiver updateDatabaseReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			refreshList();
+		}
+	};
 
 }

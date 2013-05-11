@@ -13,10 +13,11 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class DeadlinesDetailFragment extends SherlockFragment {
+	
+	public static final String KEY_DEADLINE = "deadline";
 
-	private DummyModel model_;
+	//private DummyModel model_;
 	private Activity activity_;
-	private long selectedDeadline_ = 0;
 	private Deadline deadline_;
 
 	private TextView textViewDeadlineName_;
@@ -26,33 +27,40 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 	private TextView textViewDeadlineLocation_;
 	private TextView textViewDeadlineNotes_;
 
-	public static DeadlinesDetailFragment newInstance(long index) {
-		DeadlinesDetailFragment fragment = new DeadlinesDetailFragment();
+	public static DeadlinesDetailFragment newInstance(Deadline deadline) {
+		DeadlinesDetailFragment result = new DeadlinesDetailFragment();
 
 		Bundle arguments = new Bundle();
-		arguments.putLong("index", index);
-		fragment.setArguments(arguments);
+		arguments.putParcelable(KEY_DEADLINE, deadline);
+		result.setArguments(arguments);
 
-		return fragment;
+		return result;
 	}
 
 	public static DeadlinesDetailFragment newInstance(Bundle bundle) {
-		long index = bundle.getLong("index", 0);
-		return newInstance(index);
+		DeadlinesDetailFragment result = new DeadlinesDetailFragment();
+		result.setArguments(bundle);
+		return result;
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		activity_ = activity;
-		model_ = DummyModel.getInstance();
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		selectedDeadline_ = getArguments().getLong("index", 0);
-		deadline_ = model_.getDeadlineById(selectedDeadline_);
+		
+		if (savedInstanceState == null) {
+			if (getArguments() != null) {
+				deadline_ = getArguments().getParcelable(KEY_DEADLINE);
+			}
+		}
+		else if (savedInstanceState != null) {
+			deadline_ = savedInstanceState.getParcelable(KEY_DEADLINE);
+		}
 	}
 
 	@Override
@@ -76,9 +84,20 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-
+		onDeadlineChanged(deadline_);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putParcelable(KEY_DEADLINE, deadline_);
+		super.onSaveInstanceState(outState);
+	}
+	
+	public void onDeadlineChanged(Deadline deadline){
+		deadline_ = deadline;
 		textViewDeadlineName_.setText(deadline_.getName());
 
+		textViewDeadlineTime_.setVisibility(View.VISIBLE);
 		if (!deadline_.isAllDay()) {
 			if (deadline_.getEndTime() == null) {
 				textViewDeadlineTime_.setText(deadline_.getStartTime().toLocalDateTime()
@@ -96,6 +115,8 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 		textViewDeadlineDate_.setText(deadline_.getStartTime().toLocalDateTime()
 				.toString("yyyy. MMMM dd., EEEE"));
 
+		textViewDeadlineLocationLabel_.setVisibility(View.VISIBLE);
+		textViewDeadlineLocation_.setVisibility(View.VISIBLE);
 		if (!deadline_.getLocation().equals("")) {
 			textViewDeadlineLocation_.setText(deadline_.getLocation());
 		}
@@ -111,8 +132,8 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 		}
 	}
 
-	public long getSelectedDeadline() {
-		return selectedDeadline_;
+	public long getSelectedDeadlineId() {
+		return deadline_.getID();
 	}
 
 }

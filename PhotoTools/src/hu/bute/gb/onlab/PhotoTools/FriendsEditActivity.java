@@ -33,6 +33,7 @@ public class FriendsEditActivity extends SherlockActivity {
 
 	private boolean editMode_ = false;
 	private Friend friend_;
+	private DatabaseLoader databaseLoader_;
 
 	private LinearLayout linearLayoutSave_;
 	private TextView textViewTitle_;
@@ -41,8 +42,6 @@ public class FriendsEditActivity extends SherlockActivity {
 	private EditText editTextPhoneNumber_;
 	private EditText editTextEmail_;
 	private EditText editTextAddress_;
-
-	private DatabaseLoader databaseLoader_;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

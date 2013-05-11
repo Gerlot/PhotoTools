@@ -31,6 +31,7 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 
 	private boolean editMode_ = false;
 	private Location location_;
+	private DatabaseLoader databaseLoader_;
 
 	private LinearLayout linearLayoutSave_;
 	private TextView textViewTitle_;
@@ -42,8 +43,6 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 	private CheckBox checkBoxCarEntry_;
 	private CheckBox checkBoxPowerSource_;
 	private EditText editTextNotes_;
-
-	private DatabaseLoader databaseLoader_;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

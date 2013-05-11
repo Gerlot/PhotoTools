@@ -29,7 +29,7 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 	public static final int EQUIPMENT_EDIT = 3;
 
 	private Equipment selectedEquipment_;
-	private MenuListFragment menuFragment;
+	private MenuListFragment menuFragment_;
 	private EquipmentDetailFragment detailFragment_;
 	private DatabaseLoader databaseLoader_;
 
@@ -54,13 +54,13 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 		// Set the Behind View for the SlidingMenu
 		setBehindContentView(R.layout.menu_frame);
 		if (savedInstanceState == null) {
-			menuFragment = MenuListFragment.newInstance(9, getSlidingMenu());
+			menuFragment_ = MenuListFragment.newInstance(9, getSlidingMenu());
 			FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
-			t.replace(R.id.menu_frame, menuFragment);
+			t.replace(R.id.menu_frame, menuFragment_);
 			t.commit();
 		}
 		else {
-			menuFragment = (MenuListFragment) this.getSupportFragmentManager().findFragmentById(
+			menuFragment_ = (MenuListFragment) this.getSupportFragmentManager().findFragmentById(
 					R.id.menu_frame);
 		}
 

@@ -1,8 +1,13 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
+import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeadlinesDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeleteDeadlineDialog;
+import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
 import hu.bute.gb.onlab.PhotoTools.R;
 import android.content.Intent;
@@ -17,35 +22,41 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class DeadlinesDetailActivity extends SlidingFragmentActivity {
 
-	private long selectedDeadline_ = 0;
-	MenuListFragment menuFragment;
+	public static final int DEADLINE_EDIT = 3;
+
+	private Deadline selectedDeadline_;
+	private MenuListFragment menuFragment_;
+	private DeadlinesDetailFragment detailFragment_;
+	private DatabaseLoader databaseLoader_;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_deadlines_detail);
+		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
 
 		if (getIntent().getExtras() != null && savedInstanceState == null) {
-			selectedDeadline_ = getIntent().getExtras().getLong("index", 0);
-			DeadlinesDetailFragment detailFragment = DeadlinesDetailFragment
-					.newInstance(getIntent().getExtras());
+			selectedDeadline_ = getIntent().getExtras().getParcelable(
+					DeadlinesDetailFragment.KEY_DEADLINE);
+			detailFragment_ = DeadlinesDetailFragment.newInstance(getIntent().getExtras());
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.DeadlinesFragmentContainer, detailFragment).commit();
+					.add(R.id.DeadlinesFragmentContainer, detailFragment_).commit();
 		}
 		else if (savedInstanceState != null) {
-			selectedDeadline_ = savedInstanceState.getLong("index");
+			selectedDeadline_ = savedInstanceState
+					.getParcelable(DeadlinesDetailFragment.KEY_DEADLINE);
 		}
 
 		// Set the Behind View for the SlidingMenu
 		setBehindContentView(R.layout.menu_frame);
 		if (savedInstanceState == null) {
-			menuFragment = MenuListFragment.newInstance(9, getSlidingMenu());
+			menuFragment_ = MenuListFragment.newInstance(9, getSlidingMenu());
 			FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
-			t.replace(R.id.menu_frame, menuFragment);
+			t.replace(R.id.menu_frame, menuFragment_);
 			t.commit();
 		}
 		else {
-			menuFragment = (MenuListFragment) this.getSupportFragmentManager().findFragmentById(
+			menuFragment_ = (MenuListFragment) this.getSupportFragmentManager().findFragmentById(
 					R.id.menu_frame);
 		}
 
@@ -64,13 +75,29 @@ public class DeadlinesDetailActivity extends SlidingFragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putLong("index", selectedDeadline_);
+		outState.putParcelable(DeadlinesDetailFragment.KEY_DEADLINE, selectedDeadline_);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		getSlidingMenu().showContent(false);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			switch (requestCode) {
+			case DEADLINE_EDIT:
+				if (resultCode == RESULT_OK) {
+					Deadline deadline = data
+							.getParcelableExtra(DeadlinesDetailFragment.KEY_DEADLINE);
+					selectedDeadline_ = deadline;
+					detailFragment_.onDeadlineChanged(deadline);
+				}
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -87,9 +114,9 @@ public class DeadlinesDetailActivity extends SlidingFragmentActivity {
 		case R.id.action_edit_deadline:
 			Intent editIntent = new Intent();
 			editIntent.setClass(DeadlinesDetailActivity.this, DeadlinesEditActivity.class);
-			editIntent.putExtra("edit", true);
-			editIntent.putExtra("index", selectedDeadline_);
-			startActivity(editIntent);
+			editIntent.putExtra(DeadlinesEditActivity.KEY_EDIT, true);
+			editIntent.putExtra(DeadlinesDetailFragment.KEY_DEADLINE, selectedDeadline_);
+			startActivityForResult(editIntent, DEADLINE_EDIT);
 			return true;
 		case R.id.action_delete_deadline:
 			// Show confirmation dialog
@@ -109,9 +136,9 @@ public class DeadlinesDetailActivity extends SlidingFragmentActivity {
 	}
 
 	public void deleteDeadline() {
-		DummyModel.getInstance().removeDeadlineById(selectedDeadline_);
+		databaseLoader_.removeDeadline(selectedDeadline_.getID());
 		Intent returnIntent = new Intent();
-		returnIntent.putExtra("deleted", selectedDeadline_);
+		returnIntent.putExtra("deleted", selectedDeadline_.getID());
 		setResult(RESULT_OK, returnIntent);
 		finish();
 	}

@@ -140,6 +140,7 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	}
 	
 	public void lendEquipment(long friendId){
+		// TODO lend equipment
 		model_.lendEquipment(equipment_.getID(), friendId);
 		showFriendLentTo();
 	}

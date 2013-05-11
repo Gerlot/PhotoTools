@@ -18,6 +18,7 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -115,11 +116,11 @@ public class MainActivity extends Activity {
 			PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
 		}*/
 
-		DateTime start = new DateTime(2013, 4, 26, 15, 0);
-		DateTime end = new DateTime(2013, 4, 26, 15, 0);
+		DateTime start = new DateTime(2013, 5, 14, 15, 0);
+		DateTime end = new DateTime(2013, 5, 14, 15, 0);
 		Deadline deadline = new Deadline(111, "Finish the Model Shoot Retouch", start, end, true,
 				"", "");
-		// PhotoToolsApplication.getDatabaseLoader().addDeadline(deadline);
+		//PhotoToolsApplication.getDatabaseLoader().addDeadline(deadline);
 
 		String note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam justo dui, elementum quis sollicitudin sit ametxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 		Location location = new Location(111, "something", "1117 Budapest, Irinyi József St 42",

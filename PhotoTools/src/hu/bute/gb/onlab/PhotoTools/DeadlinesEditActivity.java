@@ -1,13 +1,18 @@
 package hu.bute.gb.onlab.PhotoTools;
 
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import hu.bute.gb.onlab.PhotoTools.fragment.DatePickerFragment;
+import hu.bute.gb.onlab.PhotoTools.fragment.DeadlinesDetailFragment;
+import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.TimePickerFragment;
 import hu.bute.gb.onlab.PhotoTools.R;
 
 import org.joda.time.DateTime;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
@@ -25,12 +30,12 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
 
 public class DeadlinesEditActivity extends SherlockFragmentActivity {
+	
+	public static final String KEY_EDIT = "edit";
 
-	private DummyModel model_;
-	private long selectedDeadline_ = 0;
 	private boolean editMode_ = false;
 	private Deadline deadline_;
-	private Deadline oldDeadline_;
+	private DatabaseLoader databaseLoader_;
 
 	private LinearLayout linearLayoutSave_;
 	private TextView textViewTitle_;
@@ -51,7 +56,7 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_deadlines_edit);
-		model_ = DummyModel.getInstance();
+		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
 
 		linearLayoutSave_ = (LinearLayout) findViewById(R.id.linearLayoutSave);
 		linearLayoutSave_.setOnClickListener(new OnClickListener() {
@@ -89,10 +94,10 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 		editTextLocation_ = (EditText) findViewById(R.id.editTextDeadlineLocation);
 		editTextDeadlineNotes_ = (EditText) findViewById(R.id.editTextDeadlineNotes);
 
-		if (getIntent().getExtras().getBoolean("edit")) {
+		if (getIntent().getExtras().getBoolean(KEY_EDIT)) {
 			editMode_ = true;
-			selectedDeadline_ = getIntent().getExtras().getLong("index");
-			deadline_ = model_.getDeadlineById(selectedDeadline_);
+			deadline_ = getIntent().getExtras().getParcelable(DeadlinesDetailFragment.KEY_DEADLINE);
+			
 			textViewTitle_.setText("Edit " + deadline_.getName());
 
 			selectedDate_ = deadline_.getStartTime();
@@ -199,6 +204,7 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 		boolean isAllDay = checkBoxAllDay_.isChecked();
 		String location = editTextLocation_.getText().toString();
 		String notes = editTextDeadlineNotes_.getText().toString();
+		long id = 0;
 
 		// Only save if name field isn't empty
 		if (name.trim().length() == 0) {
@@ -225,21 +231,25 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 				if (nameChanged || startTimeChanged || endTimeChanged || allDayChanged
 						|| locationChanged || notesChanged) {
 					// Existing ID
-					long id = deadline_.getID();
-					oldDeadline_ = deadline_;
+					id = deadline_.getID();
 					deadline_ = new Deadline(id, name, selectedStartTime_, selectedEndTime_,
 							isAllDay, location, notes);
-					model_.editDeadline(deadline_, oldDeadline_);
+					databaseLoader_.editDeadline(deadline_.getID(), deadline_);
 				}
 			}
 			else {
-				// Generate new ID for new entry
-				long id = model_.deadlineId.getAndIncrement();
 				deadline_ = new Deadline(id, name, selectedStartTime_, selectedEndTime_, isAllDay,
 						location, notes);
-				model_.addDeadline(deadline_);
+				databaseLoader_.addDeadline(deadline_);
 
 			}
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra("addedname", name);
+			returnIntent.putExtra("addedid", id);
+			if (editMode_) {
+				returnIntent.putExtra(DeadlinesDetailFragment.KEY_DEADLINE, deadline_);
+			}
+			setResult(RESULT_OK, returnIntent);
 			finish();
 		}
 	}

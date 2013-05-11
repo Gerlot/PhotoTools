@@ -32,14 +32,13 @@ public class EquipmentEditActivity extends SherlockActivity {
 
 	private boolean editMode_ = false;
 	private Equipment equipment_;
+	private DatabaseLoader databaseLoader_;
 
 	private LinearLayout linearLayoutSave_;
 	private TextView textViewTitle_;
 	private EditText editTextEquipmentName_;
 	private Spinner spinnerCategory_;
 	private EditText editTextEquipmentNotes_;
-
-	private DatabaseLoader databaseLoader_;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

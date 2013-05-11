@@ -53,6 +53,7 @@
             android:layout_marginRight="10dp"
             android:text="@string/new_deadline"
             android:textColor="@color/white"
+            android:singleLine="true"
             android:textSize="20sp"/>
     </LinearLayout>
 

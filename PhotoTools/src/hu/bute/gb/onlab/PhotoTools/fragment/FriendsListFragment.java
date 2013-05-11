@@ -43,7 +43,6 @@ public class FriendsListFragment extends SherlockListFragment {
 	public boolean isAllSelected = true;
 	public boolean isEmpty = true;
 
-	private DummyModel model_;
 	private ArrayList<String> usedCharacters_;
 	private FriendsActivity activity_;
 	private int selectedPosition_ = 0;
@@ -60,7 +59,6 @@ public class FriendsListFragment extends SherlockListFragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		activity_ = (FriendsActivity) activity;
-		model_ = DummyModel.getInstance();
 	}
 
 	@Override
@@ -251,7 +249,6 @@ public class FriendsListFragment extends SherlockListFragment {
 						android.R.layout.simple_list_item_1);
 				emptyAdapter.add(getResources().getString(R.string.no_lent_to));
 				setListAdapter(emptyAdapter);
-				//listAdapter = null;
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.helpers.Coordinate;
+import hu.bute.gb.onlab.PhotoTools.helpers.DeadlineDay;
 
 import org.joda.time.DateTime;
 
@@ -15,6 +16,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DatabaseLoader {
 
@@ -172,14 +174,15 @@ public class DatabaseLoader {
 				DbConstants.Deadline.KEY_NAME);
 	}
 
-	public Cursor getDeadlineByFilter(String filter) {
-		String value = "%" + filter.toString() + "%";
+	public Cursor getDeadlinesBetweenDays(long datesAfter, long datesBefore) {
 		Cursor cursor = database_.query(DbConstants.Deadline.DATABASE_TABLE, new String[] {
 				DbConstants.Deadline.KEY_ROWID, DbConstants.Deadline.KEY_NAME,
 				DbConstants.Deadline.KEY_STARTTIME, DbConstants.Deadline.KEY_ENDTIME,
 				DbConstants.Deadline.KEY_ISALLDAY, DbConstants.Deadline.KEY_LOCATION,
-				DbConstants.Deadline.KEY_NOTES }, DbConstants.Deadline.KEY_NAME + " LIKE ?",
-				new String[] { value }, null, null, DbConstants.Deadline.KEY_NAME);
+				DbConstants.Deadline.KEY_NOTES }, DbConstants.Deadline.KEY_STARTTIME + " >= ? AND "
+				+ DbConstants.Deadline.KEY_STARTTIME + " <= ?",
+				new String[] { Long.toString(datesAfter), Long.toString(datesBefore) }, null, null,
+				DbConstants.Deadline.KEY_NAME);
 		// Ha van rekord amire a Cursor mutat
 		if (cursor.moveToFirst())
 			return cursor;
@@ -203,12 +206,50 @@ public class DatabaseLoader {
 		return null;
 	}
 
+	public ArrayList<String> getUsedDateStrings(long datesAfter, long datesBefore) {
+		ArrayList<String> result = null;
+		Cursor cursor = getDeadlinesBetweenDays(datesAfter, datesBefore);
+		if (cursor != null) {
+			while (cursor.moveToNext()) {
+				if (result == null) {
+					result = new ArrayList<String>();
+				}
+				DeadlineDay day = new DeadlineDay(new DateTime(cursor.getLong(cursor
+						.getColumnIndex(DbConstants.Deadline.KEY_STARTTIME))));
+				String first = day.toString();
+				if (!result.contains(first)) {
+					result.add(first);
+				}
+			}
+			cursor.close();
+		}
+		return result;
+	}
+	
+	public ArrayList<DeadlineDay> getUsedDates(long datesAfter, long datesBefore) {
+		ArrayList<DeadlineDay> result = null;
+		Cursor cursor = getDeadlinesBetweenDays(datesAfter, datesBefore);
+		if (cursor != null) {
+			while (cursor.moveToNext()) {
+				if (result == null) {
+					result = new ArrayList<DeadlineDay>();
+				}
+				DeadlineDay day = new DeadlineDay(new DateTime(cursor.getLong(cursor
+						.getColumnIndex(DbConstants.Deadline.KEY_STARTTIME))));
+				if (!result.contains(day)) {
+					result.add(day);
+				}
+			}
+			cursor.close();
+		}
+		return result;
+	}
+
 	public static Deadline getDeadlineByCursor(Cursor c) {
-		return new Deadline(
-				c.getLong(c.getColumnIndex(DbConstants.Deadline.KEY_ROWID)), // id
+		return new Deadline(c.getLong(c.getColumnIndex(DbConstants.Deadline.KEY_ROWID)), // id
 				c.getString(c.getColumnIndex(DbConstants.Deadline.KEY_NAME)), // name
-				new DateTime((long) c.getInt(c.getColumnIndex(DbConstants.Deadline.KEY_STARTTIME))), // startTime
-				new DateTime((long) c.getInt(c.getColumnIndex(DbConstants.Deadline.KEY_ENDTIME))), // endTime
+				new DateTime(c.getLong(c.getColumnIndex(DbConstants.Deadline.KEY_STARTTIME))), // startTime
+				new DateTime(c.getLong(c.getColumnIndex(DbConstants.Deadline.KEY_ENDTIME))), // endTime
 				Boolean.parseBoolean(c.getString(c
 						.getColumnIndex(DbConstants.Deadline.KEY_ISALLDAY))), // isAllDay
 				c.getString(c.getColumnIndex(DbConstants.Deadline.KEY_LOCATION)), // location

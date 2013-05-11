@@ -298,10 +298,6 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 			startActivity(myIntent);
 			finish();
 			return true;
-		case R.id.action_search:
-			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-			return true;
 		case R.id.action_add_friend:
 			AddFriendMethodDialog dialog = AddFriendMethodDialog.newInstance(FriendsActivity.this);
 			dialog.show(fragmentManager_, "Add Friend Method");
