@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class FriendsAdapter extends CursorAdapter {
+	
+	public boolean showSign = true;
 
 	public FriendsAdapter(Context context, Cursor c) {
 		super(context, c, false);
@@ -47,7 +49,7 @@ public class FriendsAdapter extends CursorAdapter {
 				Log.d("friend", friend.getFullNameFirstLast() + "null");
 			}
 			title.setText(friend.getFullNameFirstLast());
-			if (friend.getLentItems() != null) {
+			if (friend.hasLentItems() && showSign) {
 				sign.setVisibility(View.VISIBLE);
 			}
 		}

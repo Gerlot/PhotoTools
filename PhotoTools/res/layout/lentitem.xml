@@ -2,14 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <TextView 
+    android:background="@color/listitem_colors"
+    android:orientation="horizontal" >
+
+    <TextView
         android:id="@+id/textViewLentEquipment"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:padding="10dp"
-        android:background="@color/listitem_colors"
-        android:textSize="20sp"/>
-    
+        android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/imageButtonBack"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:src="@android:drawable/stat_sys_download" />
+
 </LinearLayout>

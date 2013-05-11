@@ -206,7 +206,7 @@ public class DatabaseLoader {
 		// Egyébként null-al térünk vissza
 		return null;
 	}
-	
+
 	public ArrayList<DeadlineDay> getUsedDates(long datesAfter, long datesBefore) {
 		ArrayList<DeadlineDay> result = null;
 		Cursor cursor = getDeadlinesBetweenDays(datesAfter, datesBefore);
@@ -350,6 +350,20 @@ public class DatabaseLoader {
 				DbConstants.Equipment.KEY_ROWID + "=" + id, null) > 0;
 	}
 
+	public boolean lendEquipment(Equipment equipment, long friendId) {
+		if (equipment.isLent()) {
+			return false;
+		}
+		equipment.setLentTo(friendId);
+		editEquipment(equipment.getID(), equipment);
+		return true;
+	}
+	
+	public void equipmentBack(Equipment equipment){
+		equipment.setLentTo(0);
+		editEquipment(equipment.getID(), equipment);
+	}
+
 	// DELETE
 	public boolean removeEquipment(long id) {
 		return database_.delete(DbConstants.Equipment.DATABASE_TABLE,
@@ -384,6 +398,17 @@ public class DatabaseLoader {
 				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
 				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT }, null, null, null,
 				null, DbConstants.Friend.KEY_FIRSTNAME);
+	}
+
+	public Cursor getFriendsLentTo() {
+		String lentValue = "%true%";
+		return database_.query(DbConstants.Friend.DATABASE_TABLE, new String[] {
+				DbConstants.Friend.KEY_ROWID, DbConstants.Friend.KEY_FULLNAME,
+				DbConstants.Friend.KEY_FIRSTNAME, DbConstants.Friend.KEY_LASTNAME,
+				DbConstants.Friend.KEY_PHONENUMBER, DbConstants.Friend.KEY_EMAILADDRESS,
+				DbConstants.Friend.KEY_ADDRESS, DbConstants.Friend.KEY_HASLENT },
+				DbConstants.Friend.KEY_HASLENT + " LIKE ?", new String[] { lentValue }, null, null,
+				DbConstants.Friend.KEY_FULLNAME);
 	}
 
 	public Cursor getAllFriendsByCategory(String category) {
@@ -438,9 +463,15 @@ public class DatabaseLoader {
 				DbConstants.Friend.KEY_FULLNAME);
 	}
 
-	public ArrayList<String> getUsedCharacters() {
+	public ArrayList<String> getUsedCharacters(boolean isAll) {
 		ArrayList<String> result = null;
-		Cursor cursor = getAllFriends();
+		Cursor cursor = null;
+		if (isAll) {
+			cursor = getAllFriends();
+		}
+		else {
+			cursor = getFriendsLentTo();
+		}
 		while (cursor.moveToNext()) {
 			if (result == null) {
 				result = new ArrayList<String>();

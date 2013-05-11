@@ -115,7 +115,7 @@ public class FriendsEditActivity extends SherlockActivity {
 				boolean emailAddressChanged = (!friend_.getAddress().equals(emailAddress)) ? true
 						: false;
 				boolean addressChanged = (!friend_.getAddress().equals(address)) ? true : false;
-				if (friend_.getLentItems() != null) {
+				if (friend_.hasLentItems()) {
 					lentItems = friend_.getLentItems();
 				}
 

@@ -131,13 +131,6 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.equipment_detail, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
 	public void deleteEquipment() {
 		databaseLoader_.removeEquipment(selectedEquipment_.getID());
 		Intent returnIntent = new Intent();

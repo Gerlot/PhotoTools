@@ -18,6 +18,9 @@ public class Equipment implements Comparable<Equipment>, Parcelable {
 		category_ = category;
 		notes_ = notes;
 		lentTo_ = lentTo;
+		if (lentTo_ != 0) {
+			isLent_ = true;
+		}
 	}
 	
 	public Equipment(Parcel in){

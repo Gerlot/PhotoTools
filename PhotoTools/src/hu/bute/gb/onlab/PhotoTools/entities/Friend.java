@@ -42,21 +42,8 @@ public class Friend implements Comparable<Friend>, Parcelable {
 		emailAddress_ = in.readString();
 		address_ = in.readString();
 		lentItems_ = new ArrayList<Long>();
-		long[] lentArray = in.createLongArray();
-		if (lentArray != null) {
-			for (long l : lentArray) {
-				lentItems_.add(Long.valueOf(l));
-			}
-		}
+		in.readList(lentItems_, Long.class.getClassLoader());
 		hasLentItems_ = Boolean.parseBoolean(in.readString());
-	}
-
-	public void addLentItem(Long equipmentName) {
-		if (lentItems_ == null) {
-			lentItems_ = new ArrayList<Long>();
-		}
-
-		lentItems_.add(equipmentName);
 	}
 
 	public long getID() {
@@ -133,6 +120,19 @@ public class Friend implements Comparable<Friend>, Parcelable {
 		lentItems_.add(Long.valueOf(id));
 		hasLentItems_ = true;
 	}
+	
+	public void removeLentItem(long id){
+		if (lentItems_ != null && lentItems_.contains(Long.valueOf(id))) {
+			lentItems_.remove(Long.valueOf(id));
+		}
+		if (lentItems_.isEmpty()) {
+			hasLentItems_ = false;
+		}
+	}
+	
+	public void setLentItems(boolean hasLentItems){
+		hasLentItems_ = hasLentItems;
+	}
 
 	public boolean hasLentItems() {
 		return hasLentItems_;
@@ -158,14 +158,7 @@ public class Friend implements Comparable<Friend>, Parcelable {
 		dest.writeString(phoneNumber_);
 		dest.writeString(emailAddress_);
 		dest.writeString(address_);
-		long[] lentArray = null;
-		if (lentItems_ != null) {
-			lentArray = new long[lentItems_.size()];
-			for (int i = 0; i < lentArray.length; i++) {
-				lentArray[i] = lentItems_.get(i).longValue();
-			}
-			dest.writeLongArray(lentArray);
-		}
+		dest.writeList(lentItems_);
 		dest.writeString(Boolean.toString(hasLentItems_));
 	}
 

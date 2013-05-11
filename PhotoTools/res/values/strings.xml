@@ -85,6 +85,8 @@
     <string name="no_equipment_name_specified">If you want to save an equipment, give it a name first!</string>
     <string name="lend_to">Lend to someone</string>
     <string name="already_lent">Equipment already lent!</string>
+    <string name="equipment_back">is back in your inventory.</string>
+    <string name="equipment_lent">is now lent to</string>
     
     <!-- Friends -->
     <string name="title_activity_friends"></string>

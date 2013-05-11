@@ -67,12 +67,11 @@ public class EquipmentActivity extends SherlockFragmentActivity {
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		/*if (getIntent().getExtras() != null) {
+		if (getIntent().getExtras() != null) {
 			Bundle arguments = getIntent().getExtras();
-			long index = arguments.getLong("index");
-			equipmentOnView.add(Long.valueOf(index));
-			showEquipmentDetails(0);
-		}*/
+			Equipment equipment = arguments.getParcelable(EquipmentDetailFragment.KEY_EQUIPMENT);
+			showEquipmentDetails(equipment);
+		}
 	}
 
 	@Override

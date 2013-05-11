@@ -3,6 +3,8 @@ package hu.bute.gb.onlab.PhotoTools.fragment;
 import hu.bute.gb.onlab.PhotoTools.FriendsActivity;
 import hu.bute.gb.onlab.PhotoTools.FriendsDetailActivity;
 import hu.bute.gb.onlab.PhotoTools.R;
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
@@ -16,11 +18,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class EquipmentDetailFragment extends SherlockFragment {
-	
+
 	public static final String KEY_EQUIPMENT = "equipment";
 
 	private boolean tabletSize_;
@@ -36,6 +39,8 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	private TextView textViewLentTo_;
 	private ImageView imageViewLentTo_;
 	private LinearLayout linearLayoutLend_;
+
+	private DatabaseLoader databaseLoader_;
 
 	public static EquipmentDetailFragment newInstance(Equipment equipment) {
 		EquipmentDetailFragment result = new EquipmentDetailFragment();
@@ -63,7 +68,8 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		tabletSize_ = getResources().getBoolean(R.bool.isTablet);
-		
+		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
+
 		if (savedInstanceState == null) {
 			if (getArguments() != null) {
 				equipment_ = getArguments().getParcelable(KEY_EQUIPMENT);
@@ -89,23 +95,6 @@ public class EquipmentDetailFragment extends SherlockFragment {
 		textViewLentTo_ = (TextView) view.findViewById(R.id.textViewLentTo);
 		imageViewLentTo_ = (ImageView) view.findViewById(R.id.imageViewLentTo);
 		linearLayoutLend_ = (LinearLayout) view.findViewById(R.id.linearLayoutLend);
-		
-		final EquipmentDetailFragment fragment = this;
-
-		if (equipment_.getLentTo() == 0) {
-			linearLayoutLentTo_.setVisibility(View.GONE);
-			linearLayoutLend_.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					FriendSelectorDialog dialog = FriendSelectorDialog.newInstance(fragment);
-					dialog.show(getFragmentManager(), "Select Friend");
-				}
-			});
-		}
-		else {
-			showFriendLentTo();
-		}
 
 		return view;
 	}
@@ -113,16 +102,18 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		// Lent status may changed, needs update
+		equipment_ = databaseLoader_.getEquipment(equipment_.getID());
 		onEquipmentChanged(equipment_);
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putParcelable(KEY_EQUIPMENT, equipment_);
 		super.onSaveInstanceState(outState);
 	}
-	
-	public void onEquipmentChanged(Equipment equipment){
+
+	public void onEquipmentChanged(Equipment equipment) {
 		equipment_ = equipment;
 		if (!tabletSize_) {
 			activity_.setTitle(equipment_.getName());
@@ -133,41 +124,61 @@ public class EquipmentDetailFragment extends SherlockFragment {
 		}
 		textViewCategory_.setText(equipment_.getCategory());
 		textViewNotes_.setText(equipment_.getNotes());
+
+		showFriendLentTo();
 	}
 
 	public long getSelectedEquipmentId() {
 		return equipment_.getID();
 	}
-	
-	public void lendEquipment(long friendId){
-		// TODO lend equipment
-		model_.lendEquipment(equipment_.getID(), friendId);
+
+	public void lendEquipment(Friend friend) {
+		databaseLoader_.lendEquipment(equipment_, friend.getID());
+		friend.lendItem(equipment_.getID());
+		databaseLoader_.editFriend(friend.getID(), friend);
+		Toast.makeText(
+				getActivity(),
+				equipment_.getName() + " " + getResources().getString(R.string.equipment_lent)
+						+ " " + friend.getFullNameFirstLast(), Toast.LENGTH_SHORT).show();
 		showFriendLentTo();
 	}
-	
-	private void showFriendLentTo(){
-		Friend friend = model_.getFriendById(equipment_.getLentTo());
-		linearLayoutLend_.setVisibility(View.GONE);
-		linearLayoutLentTo_.setVisibility(View.VISIBLE);
-		textViewLentTo_.setText(friend.getFirstName() + " " + friend.getLastName());
-		imageViewLentTo_.setImageResource(R.drawable.android_contact);
 
-		textViewLentTo_.setOnClickListener(new OnClickListener() {
+	private void showFriendLentTo() {
+		if (equipment_.getLentTo() == 0) {
+			final EquipmentDetailFragment fragment = this;
+			linearLayoutLentTo_.setVisibility(View.GONE);
+			linearLayoutLend_.setVisibility(View.VISIBLE);
+			linearLayoutLend_.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				long index = equipment_.getLentTo();
-				Intent myIntent = new Intent();
-				if (!tabletSize_) {
-					myIntent.setClass(getActivity(), FriendsDetailActivity.class);
+				@Override
+				public void onClick(View v) {
+					FriendSelectorDialog dialog = FriendSelectorDialog.newInstance(fragment);
+					dialog.show(getFragmentManager(), "Select Friend");
 				}
-				else {
-					myIntent.setClass(getActivity(), FriendsActivity.class);
+			});
+		}
+		else {
+			final Friend friend = databaseLoader_.getFriend(equipment_.getLentTo());
+			linearLayoutLend_.setVisibility(View.GONE);
+			linearLayoutLentTo_.setVisibility(View.VISIBLE);
+			textViewLentTo_.setText(friend.getFirstName() + " " + friend.getLastName());
+			imageViewLentTo_.setImageResource(R.drawable.android_contact);
+
+			textViewLentTo_.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Intent showIntent = new Intent();
+					if (!tabletSize_) {
+						showIntent.setClass(getActivity(), FriendsDetailActivity.class);
+					}
+					else {
+						showIntent.setClass(getActivity(), FriendsActivity.class);
+					}
+					showIntent.putExtra(FriendsDetailFragment.KEY_FRIEND, friend);
+					startActivity(showIntent);
 				}
-				myIntent.putExtra("showafriend", true);
-				myIntent.putExtra("index", index);
-				startActivity(myIntent);
-			}
-		});
+			});
+		}
 	}
 }

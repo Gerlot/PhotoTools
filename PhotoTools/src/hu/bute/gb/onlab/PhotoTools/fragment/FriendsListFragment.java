@@ -145,7 +145,7 @@ public class FriendsListFragment extends SherlockListFragment {
 	}
 
 	public void refreshList() {
-		usedCharacters_ = databaseLoader.getUsedCharacters();
+		usedCharacters_ = databaseLoader.getUsedCharacters(isAllSelected);
 		if (usedCharacters_ != null) {
 			listAdapter = new SeparatedListAdapter(getActivity());
 			for (String character : usedCharacters_) {
@@ -234,6 +234,13 @@ public class FriendsListFragment extends SherlockListFragment {
 				
 					FriendsAdapter friendAdapter = (FriendsAdapter) listAdapter
 							.getSectionAdapter(category_);
+					// Only show lent to sign if all friends showing
+					if (isAllSelected) {
+						friendAdapter.showSign = true;
+					}
+					else {
+						friendAdapter.showSign = false;
+					}
 					friendAdapter.changeCursor(result);
 					friendAdapter.notifyDataSetChanged();
 					setListAdapter(listAdapter);
