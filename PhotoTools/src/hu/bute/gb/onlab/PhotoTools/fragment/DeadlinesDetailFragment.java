@@ -13,10 +13,10 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class DeadlinesDetailFragment extends SherlockFragment {
-	
+
 	public static final String KEY_DEADLINE = "deadline";
 
-	//private DummyModel model_;
+	// private DummyModel model_;
 	private Activity activity_;
 	private Deadline deadline_;
 
@@ -52,7 +52,7 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		if (savedInstanceState == null) {
 			if (getArguments() != null) {
 				deadline_ = getArguments().getParcelable(KEY_DEADLINE);
@@ -86,14 +86,14 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 		super.onResume();
 		onDeadlineChanged(deadline_);
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putParcelable(KEY_DEADLINE, deadline_);
 		super.onSaveInstanceState(outState);
 	}
-	
-	public void onDeadlineChanged(Deadline deadline){
+
+	public void onDeadlineChanged(Deadline deadline) {
 		deadline_ = deadline;
 		textViewDeadlineName_.setText(deadline_.getName());
 
@@ -125,6 +125,9 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 			textViewDeadlineLocation_.setVisibility(View.GONE);
 		}
 
+		textViewDeadlineNotes_.setText(getResources().getString(R.string.no_deadline_notes));
+		textViewDeadlineNotes_.setTextColor(getResources().getColor(
+				R.color.abs__bright_foreground_disabled_holo_light));
 		if (!deadline_.getNotes().equals("")) {
 			textViewDeadlineNotes_.setText(deadline_.getNotes());
 			textViewDeadlineNotes_.setTextColor(getResources().getColor(

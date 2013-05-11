@@ -1,6 +1,7 @@
 package hu.bute.gb.onlab.PhotoTools.datastorage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
@@ -182,7 +183,7 @@ public class DatabaseLoader {
 				DbConstants.Deadline.KEY_NOTES }, DbConstants.Deadline.KEY_STARTTIME + " >= ? AND "
 				+ DbConstants.Deadline.KEY_STARTTIME + " <= ?",
 				new String[] { Long.toString(datesAfter), Long.toString(datesBefore) }, null, null,
-				DbConstants.Deadline.KEY_NAME);
+				DbConstants.Deadline.KEY_STARTTIME);
 		// Ha van rekord amire a Cursor mutat
 		if (cursor.moveToFirst())
 			return cursor;
@@ -205,26 +206,6 @@ public class DatabaseLoader {
 		// Egyébként null-al térünk vissza
 		return null;
 	}
-
-	public ArrayList<String> getUsedDateStrings(long datesAfter, long datesBefore) {
-		ArrayList<String> result = null;
-		Cursor cursor = getDeadlinesBetweenDays(datesAfter, datesBefore);
-		if (cursor != null) {
-			while (cursor.moveToNext()) {
-				if (result == null) {
-					result = new ArrayList<String>();
-				}
-				DeadlineDay day = new DeadlineDay(new DateTime(cursor.getLong(cursor
-						.getColumnIndex(DbConstants.Deadline.KEY_STARTTIME))));
-				String first = day.toString();
-				if (!result.contains(first)) {
-					result.add(first);
-				}
-			}
-			cursor.close();
-		}
-		return result;
-	}
 	
 	public ArrayList<DeadlineDay> getUsedDates(long datesAfter, long datesBefore) {
 		ArrayList<DeadlineDay> result = null;
@@ -240,6 +221,7 @@ public class DatabaseLoader {
 					result.add(day);
 				}
 			}
+			Collections.sort(result);
 			cursor.close();
 		}
 		return result;

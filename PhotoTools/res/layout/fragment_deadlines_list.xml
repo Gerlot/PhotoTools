@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    tools:context=".DeadlinesActivity" >
+
+    <Button
+        android:id="@+id/buttonMoreBefore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Showing deadlines since 2013. 05. 11. Press for more..." />
+
+    <Button
+        android:id="@+id/buttonMoreAfter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:text="Showing deadlines until 2013. 05. 18. Press for more..." />
+
+    <ListView
+        android:id="@+id/listViewDeadlines"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonMoreAfter"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/buttonMoreBefore" >
+    </ListView>
+
+</RelativeLayout>

@@ -28,5 +28,23 @@ public class DeadlineDay implements Comparable<DeadlineDay>{
 	public int compareTo(DeadlineDay anotherDeadlineDay) {
 		return dateInDateTime_.compareTo(anotherDeadlineDay.getDateInDateTime());
 	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (object == this) {
+			return true;
+		}
+		if (object == null || object.getClass() != this.getClass()) {
+            return false;
+        }
+
+		DeadlineDay other = (DeadlineDay) object;
+		return this.dateInDateTime_.equals(other.getDateInDateTime());
+	}
+	
+	@Override
+	public int hashCode() {
+		return dateInDateTime_.hashCode();
+	}
 
 }

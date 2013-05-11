@@ -30,7 +30,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
 
 public class DeadlinesEditActivity extends SherlockFragmentActivity {
-	
+
 	public static final String KEY_EDIT = "edit";
 
 	private boolean editMode_ = false;
@@ -79,6 +79,12 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
+					// Set start time to midnight if all day selected
+					DateTime day = deadline_.getStartTime();
+					deadline_.setStartTime(new DateTime(day.getYear(), day.getMonthOfYear(), day
+							.getDayOfMonth(), 0, 0));
+					selectedStartTime_ = deadline_.getStartTime();
+
 					buttonStartTime_.setVisibility(View.GONE);
 					textViewSeparator_.setVisibility(View.GONE);
 					buttonEndTime_.setVisibility(View.GONE);
@@ -87,6 +93,8 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 					buttonStartTime_.setVisibility(View.VISIBLE);
 					textViewSeparator_.setVisibility(View.VISIBLE);
 					buttonEndTime_.setVisibility(View.VISIBLE);
+					buttonStartTime_
+							.setText(selectedStartTime_.toLocalDateTime().toString("HH:mm"));
 				}
 			}
 		});
@@ -97,7 +105,7 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 		if (getIntent().getExtras().getBoolean(KEY_EDIT)) {
 			editMode_ = true;
 			deadline_ = getIntent().getExtras().getParcelable(DeadlinesDetailFragment.KEY_DEADLINE);
-			
+
 			textViewTitle_.setText("Edit " + deadline_.getName());
 
 			selectedDate_ = deadline_.getStartTime();

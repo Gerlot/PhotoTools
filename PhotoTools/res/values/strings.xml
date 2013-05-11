@@ -60,8 +60,13 @@
     <string name="deadline_name">Deadline Name</string>
     <string name="when">When:</string>
     <string name="location">Location</string>
+    <string name="location_p">Location:</string>
     <string name="deadlinenotes">Notes</string>
     <string name="today">Today</string>
+    <string name="showing_since">Showing deadlines since</string>
+    <string name="showing_until">Showing deadlines until</string>
+    <string name="press_for_more">Press for more&#8230;</string>
+    <string name="no_deadline_notes">(No notes for this deadline)</string>
     
     <!-- Equipment -->
     <string name="title_activity_equipment">Equipment</string>

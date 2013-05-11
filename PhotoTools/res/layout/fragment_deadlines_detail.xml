@@ -16,7 +16,6 @@
             android:id="@+id/textViewDeadlineName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Model Shoot"
             android:textColor="@color/abs__holo_blue_light"
             android:textSize="25sp" />
 
@@ -27,7 +26,6 @@
             android:layout_alignLeft="@+id/textViewDeadlineName"
             android:layout_below="@+id/textViewDeadlineName"
             android:layout_marginTop="10dp"
-            android:text="08:00-10:00"
             android:textSize="15sp" />
 
         <TextView
@@ -37,7 +35,6 @@
             android:layout_alignLeft="@+id/textViewDeadlineName"
             android:layout_below="@+id/textViewDeadlineTime"
             android:layout_marginTop="10dp"
-            android:text="2013. May 10., Friday"
             android:textSize="15sp" />
 
         <TextView
@@ -47,7 +44,7 @@
             android:layout_alignLeft="@+id/textViewDeadlineName"
             android:layout_below="@+id/textViewDeadlineDate"
             android:layout_marginTop="10dp"
-            android:text="Location:"
+            android:text="@string/location_p"
             android:textSize="15sp" />
 
         <TextView
@@ -57,7 +54,6 @@
             android:layout_alignBaseline="@+id/textViewDeadlineLocationLabel"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/textViewDeadlineLocationLabel"
-            android:text="SPOT Studio, Schönherz Dormitory"
             android:textSize="15sp" />
 
         <View
@@ -75,7 +71,7 @@
             android:layout_alignLeft="@+id/textViewDeadlineName"
             android:layout_below="@+id/separator"
             android:layout_marginTop="10dp"
-            android:text="Notes:"
+            android:text="@string/notes"
             android:textSize="15sp" />
 
         <TextView
@@ -85,8 +81,6 @@
             android:layout_alignLeft="@+id/textViewDeadlineName"
             android:layout_below="@+id/textViewDeadlineNotesLabel"
             android:layout_marginTop="10dp"
-            android:text="(No notes for this deadline)"
-            android:textColor="@color/abs__bright_foreground_disabled_holo_light"
             android:textSize="15sp" />
     </RelativeLayout>
 

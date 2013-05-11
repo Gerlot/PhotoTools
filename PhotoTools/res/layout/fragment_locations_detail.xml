@@ -38,7 +38,6 @@
             android:layout_alignBaseline="@+id/textViewAddressLabel"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/textViewAddressLabel"
-            android:text=" "
             android:textSize="15sp" />
 
         <TextView
