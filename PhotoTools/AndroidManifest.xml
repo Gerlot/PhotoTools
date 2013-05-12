@@ -91,7 +91,7 @@
             android:label="@string/title_activity_deadlines_detail" >
         </activity>
         <activity
-            android:name="hu.bute.gb.onlab.PhotoTools.OnMapActivity"
+            android:name="hu.bute.gb.onlab.PhotoTools.LocationsMapActivity"
             android:label="@string/title_activity_on_map" >
         </activity>
         <activity

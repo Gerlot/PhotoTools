@@ -5,14 +5,11 @@ import hu.bute.gb.onlab.PhotoTools.R;
 import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DbConstants;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import hu.bute.gb.onlab.PhotoTools.helpers.FriendsAdapter;
 import hu.bute.gb.onlab.PhotoTools.helpers.SeparatedListAdapter;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeSet;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -24,13 +21,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 

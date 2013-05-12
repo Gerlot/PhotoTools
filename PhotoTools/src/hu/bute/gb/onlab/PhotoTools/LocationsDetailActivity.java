@@ -2,7 +2,6 @@ package hu.bute.gb.onlab.PhotoTools;
 
 import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeleteLocationDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
@@ -132,7 +131,6 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 	}
 
 	public void deleteLocation() {
-		// DummyModel.getInstance().removeLocationById(selectedLocation_);
 		databaseLoader_.removeLocation(selectedLocation_.getID());
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("deleted", selectedLocation_.getID());

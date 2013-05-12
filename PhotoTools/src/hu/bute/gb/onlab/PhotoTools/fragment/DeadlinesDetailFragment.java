@@ -1,7 +1,6 @@
 package hu.bute.gb.onlab.PhotoTools.fragment;
 
 import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ public class DeadlinesDetailFragment extends SherlockFragment {
 
 	public static final String KEY_DEADLINE = "deadline";
 
-	// private DummyModel model_;
 	private Activity activity_;
 	private Deadline deadline_;
 

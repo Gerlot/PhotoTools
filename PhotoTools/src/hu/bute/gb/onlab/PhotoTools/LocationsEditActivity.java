@@ -2,27 +2,27 @@ package hu.bute.gb.onlab.PhotoTools;
 
 import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
+import hu.bute.gb.onlab.PhotoTools.fragment.LocationsMapFragment;
 import hu.bute.gb.onlab.PhotoTools.helpers.Coordinate;
-import hu.bute.gb.onlab.PhotoTools.R;
+
+import java.util.ArrayList;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
 public class LocationsEditActivity extends SherlockFragmentActivity {
@@ -35,7 +35,6 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 
 	private LinearLayout linearLayoutSave_;
 	private TextView textViewTitle_;
-	private ImageView imageViewMap_;
 	private EditText editTextName_;
 	private EditText editTextAddress_;
 	private EditText editTextLatitude_;
@@ -43,6 +42,10 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 	private CheckBox checkBoxCarEntry_;
 	private CheckBox checkBoxPowerSource_;
 	private EditText editTextNotes_;
+	
+	private ViewGroup fragmentContainer_;
+	private FragmentManager fragmentManager_;
+	private LocationsMapFragment locationsMapFragment_;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +54,8 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 		setContentView(R.layout.activity_locations_edit);
 		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
 
-		imageViewMap_ = (ImageView) findViewById(R.id.imageViewMap);
-		imageViewMap_.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent mapIntent = new Intent();
-				mapIntent.setClass(LocationsEditActivity.this, OnMapActivity.class);
-				mapIntent.putExtra("new", true);
-				startActivity(mapIntent);
-			}
-		});
+		fragmentContainer_ = (ViewGroup) findViewById(R.id.mapFragmentContainer);
+		fragmentManager_ = getSupportFragmentManager();
 
 		linearLayoutSave_ = (LinearLayout) findViewById(R.id.linearLayoutSave);
 		linearLayoutSave_.setOnClickListener(new OnClickListener() {
@@ -80,13 +75,16 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 		checkBoxPowerSource_ = (CheckBox) findViewById(R.id.checkBoxPowerSource);
 		editTextNotes_ = (EditText) findViewById(R.id.editTextNotes);
 
+		ArrayList<Location> locations = null;
 		if (getIntent().getExtras().getBoolean(KEY_EDIT)) {
 			editMode_ = true;
 			location_ = getIntent().getExtras().getParcelable(
 					LocationsDetailFragment.KEY_LOCATION);
 			textViewTitle_.setText("Edit " + location_.getName());
+			
+			locations = new ArrayList<Location>();
+			locations.add(location_);
 
-			imageViewMap_.setImageResource(R.drawable.map);
 			editTextName_.setText(location_.getName());
 			editTextAddress_.setText(location_.getAddress());
 			editTextLatitude_.setText(Double.toString(location_.getCoordinate().getLatitude()));
@@ -95,6 +93,11 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 			checkBoxPowerSource_.setChecked(location_.hasPowerSource());
 			editTextNotes_.setText(location_.getNotes());
 		}
+		
+		locationsMapFragment_ = LocationsMapFragment.newInstance(false, locations);
+		FragmentTransaction fragmentTransaction = fragmentManager_.beginTransaction();
+		fragmentTransaction.replace(R.id.mapFragmentContainer, locationsMapFragment_);
+		fragmentTransaction.commit();
 
 	}
 

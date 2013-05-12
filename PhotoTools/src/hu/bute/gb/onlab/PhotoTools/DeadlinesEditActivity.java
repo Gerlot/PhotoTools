@@ -2,13 +2,10 @@ package hu.bute.gb.onlab.PhotoTools;
 
 import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import hu.bute.gb.onlab.PhotoTools.fragment.DatePickerFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeadlinesDetailFragment;
-import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.TimePickerFragment;
-import hu.bute.gb.onlab.PhotoTools.R;
 
 import org.joda.time.DateTime;
 

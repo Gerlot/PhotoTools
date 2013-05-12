@@ -51,9 +51,9 @@
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:singleLine="true"
             android:text="@string/new_location"
             android:textColor="@color/white"
-            android:singleLine="true"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -69,21 +69,17 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin" >
 
-            <ImageView
-                android:id="@+id/imageViewMap"
+            <FrameLayout
+                android:id="@+id/mapFragmentContainer"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/empty_map" />
+                android:layout_height="140dp" />
 
             <TextView
                 android:id="@+id/textViewNameLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/imageViewMap"
-                android:layout_below="@+id/imageViewMap"
+                android:layout_alignLeft="@+id/mapFragmentContainer"
+                android:layout_below="@+id/mapFragmentContainer"
                 android:layout_marginTop="14dp"
                 android:text="@string/location_name"
                 android:textSize="17sp" />
@@ -195,7 +191,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/textViewNotesLabel"
-                android:layout_alignRight="@+id/imageViewMap"
+                android:layout_alignRight="@+id/mapFragmentContainer"
                 android:layout_below="@+id/textViewNotesLabel"
                 android:layout_marginTop="10dp"
                 android:ems="10"

@@ -6,14 +6,12 @@ import hu.bute.gb.onlab.PhotoTools.fragment.AddFriendMethodDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.FriendsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.FriendsListFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -22,12 +20,8 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;

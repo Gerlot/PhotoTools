@@ -5,7 +5,6 @@ import hu.bute.gb.onlab.PhotoTools.FriendsDetailActivity;
 import hu.bute.gb.onlab.PhotoTools.R;
 import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import android.app.Activity;
@@ -27,7 +26,6 @@ public class EquipmentDetailFragment extends SherlockFragment {
 	public static final String KEY_EQUIPMENT = "equipment";
 
 	private boolean tabletSize_;
-	private DummyModel model_;
 	private Activity activity_;
 	private Equipment equipment_;
 

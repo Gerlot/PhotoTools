@@ -11,8 +11,6 @@ import hu.bute.gb.onlab.PhotoTools.helpers.DeadlinesAdapter;
 import hu.bute.gb.onlab.PhotoTools.helpers.SeparatedListAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;

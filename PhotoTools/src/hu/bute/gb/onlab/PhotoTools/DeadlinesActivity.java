@@ -5,9 +5,6 @@ import hu.bute.gb.onlab.PhotoTools.fragment.DeadlinesDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeadlinesListFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joda.time.DateTime;
 
 import android.content.Intent;

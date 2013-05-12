@@ -1,9 +1,6 @@
 package hu.bute.gb.onlab.PhotoTools.fragment;
 
 import hu.bute.gb.onlab.PhotoTools.DeadlinesEditActivity;
-
-import java.util.Calendar;
-
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;

@@ -12,20 +12,17 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin" >
 
-        <ImageView
-            android:id="@+id/imageViewMap"
-            android:layout_width="260dp"
-            android:layout_height="140dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:src="@drawable/map" />
+        <FrameLayout
+            android:id="@+id/mapFragmentContainer"
+            android:layout_width="250dp"
+            android:layout_height="170dp" />
 
         <TextView
             android:id="@+id/textViewAddressLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/imageViewMap"
+            android:layout_toRightOf="@+id/mapFragmentContainer"
             android:text="@string/address"
             android:textSize="17sp" />
 
@@ -35,7 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/textViewAddressLabel"
             android:layout_below="@+id/textViewAddressLabel"
-            android:text=" "
             android:textSize="15sp" />
 
         <TextView
@@ -43,8 +39,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/textViewAddress"
-            android:layout_below="@+id/textViewAddressLabel"
-            android:layout_marginTop="35dp"
+            android:layout_below="@+id/textViewAddress"
+            android:layout_marginTop="10dp"
             android:text="@string/coordinates"
             android:textSize="17sp" />
 
@@ -89,8 +85,8 @@
             android:id="@+id/textViewNotesLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/imageViewMap"
-            android:layout_below="@+id/imageViewMap"
+            android:layout_alignLeft="@+id/mapFragmentContainer"
+            android:layout_below="@+id/mapFragmentContainer"
             android:layout_marginTop="10dp"
             android:text="@string/notes"
             android:textSize="17sp" />

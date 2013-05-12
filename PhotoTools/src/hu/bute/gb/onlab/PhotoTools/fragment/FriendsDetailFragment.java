@@ -1,23 +1,22 @@
 package hu.bute.gb.onlab.PhotoTools.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import hu.bute.gb.onlab.PhotoTools.EquipmentActivity;
 import hu.bute.gb.onlab.PhotoTools.EquipmentDetailActivity;
 import hu.bute.gb.onlab.PhotoTools.R;
 import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DbConstants;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,7 +34,6 @@ public class FriendsDetailFragment extends SherlockFragment {
 	public static final String KEY_FRIEND = "friend";
 
 	private boolean tabletSize_;
-	private DummyModel model_;
 	private Activity activity_;
 	private Friend friend_;
 

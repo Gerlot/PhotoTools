@@ -4,14 +4,11 @@ import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsListFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.KeyEvent;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -128,7 +125,7 @@ public class LocationsActivity extends SherlockFragmentActivity {
 			return true;
 		case R.id.action_nearby_locations:
 			Intent mapIntent = new Intent();
-			mapIntent.setClass(LocationsActivity.this, OnMapActivity.class);
+			mapIntent.setClass(LocationsActivity.this, LocationsMapActivity.class);
 			mapIntent.putExtra("edit", false);
 			startActivity(mapIntent);
 			return true;

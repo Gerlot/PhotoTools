@@ -1,15 +1,12 @@
 package hu.bute.gb.onlab.PhotoTools;
 
-import org.joda.time.DateTime;
-
-import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
-import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.helpers.Coordinate;
-import hu.bute.gb.onlab.PhotoTools.R;
+
+import org.joda.time.DateTime;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -18,16 +15,11 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnHoverListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -85,36 +77,6 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		// DummyModel.getInstance();
-		/*
-		 * Equipment equipment = new Equipment(1, "Camera", "Camera",
-		 * "My first DSLR", 0);
-		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
-		 * 
-		 * equipment = new Equipment(1, "Lenses", "Lenses", "My first DSLR", 0);
-		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
-		 * 
-		 * equipment = new Equipment(1, "Filter", "Filter", "My first DSLR", 0);
-		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
-		 * 
-		 * equipment = new Equipment(1, "Flashes", "Flashes", "My first DSLR",
-		 * 0);
-		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
-		 * 
-		 * equipment = new Equipment(1, "Memory Cards & Readers",
-		 * "Memory Cards & Readers", "My first DSLR", 0);
-		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
-		 * 
-		 * equipment = new Equipment(1, "Accessories", "Accessories",
-		 * "My first DSLR", 0);
-		 * PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
-		 */
-		
-		/*for (int i = 0; i < 1000; i++) {
-			Equipment equipment = new Equipment(1, "Lenses", "Lenses", "My first DSLR", 0);
-			PhotoToolsApplication.getDatabaseLoader().addEquipment(equipment);
-		}*/
 
 		DateTime start = new DateTime(2013, 5, 14, 15, 0);
 		DateTime end = new DateTime(2013, 5, 14, 15, 0);

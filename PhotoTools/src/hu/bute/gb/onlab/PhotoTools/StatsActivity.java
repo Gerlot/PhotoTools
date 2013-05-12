@@ -1,10 +1,8 @@
 package hu.bute.gb.onlab.PhotoTools;
 
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.R;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 

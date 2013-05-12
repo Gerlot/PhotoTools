@@ -2,13 +2,10 @@ package hu.bute.gb.onlab.PhotoTools;
 
 import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
-import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeleteFriendDialog;
-import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.FriendsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;

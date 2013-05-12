@@ -2,24 +2,14 @@ package hu.bute.gb.onlab.PhotoTools;
 
 import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
 import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
-import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeleteEquipmentDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.EquipmentDetailFragment;
-import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
-import hu.bute.gb.onlab.PhotoTools.R;
-
-import java.util.Map;
-import java.util.TreeSet;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;

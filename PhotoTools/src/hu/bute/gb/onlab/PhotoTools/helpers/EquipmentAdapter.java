@@ -6,7 +6,6 @@ import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

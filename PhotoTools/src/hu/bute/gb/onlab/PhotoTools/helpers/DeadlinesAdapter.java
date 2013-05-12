@@ -1,12 +1,13 @@
 package hu.bute.gb.onlab.PhotoTools.helpers;
 
+import hu.bute.gb.onlab.PhotoTools.R;
+import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
+import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
+
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
-import hu.bute.gb.onlab.PhotoTools.R;
-import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
-import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
