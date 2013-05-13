@@ -16,6 +16,7 @@ import android.util.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -96,12 +97,6 @@ public class LocationsMapFragment extends SupportMapFragment {
 			getAllTask_.cancel(false);
 		}
 	}
-	
-	public void changeLocation(Location location){
-		if (locations_ != null && locations_.size() == 1) {
-			locations_.set(0, location);
-		}
-	}
 
 	private void refreshMap() {
 		if (locations_ != null) {
@@ -117,8 +112,10 @@ public class LocationsMapFragment extends SupportMapFragment {
 				for (Location location : locations_) {
 					Coordinate coordinate = location.getCoordinate();
 					map_.addMarker(
-							new MarkerOptions().position(new LatLng(coordinate.getLatitude(),
-									coordinate.getLongitude()))).setTitle(location.getName());
+							new MarkerOptions()
+							.position(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()))
+							.title(location.getName())
+							.snippet(location.getAddress()));
 				}
 			}
 		}

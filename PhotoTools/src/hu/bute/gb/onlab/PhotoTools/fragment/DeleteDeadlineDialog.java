@@ -19,7 +19,6 @@ public class DeleteDeadlineDialog extends DialogFragment {
 	
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.delete_deadline_confirmation)
                .setPositiveButton(R.string.yes_delete, new DialogInterface.OnClickListener() {
@@ -32,7 +31,7 @@ public class DeleteDeadlineDialog extends DialogFragment {
                        dialog.dismiss();
                    }
                });
-        // Create the AlertDialog object and return it
+        
         return builder.create();
     }
 }

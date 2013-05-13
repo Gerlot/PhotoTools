@@ -18,7 +18,7 @@
     <string name="no_cancel">No, Cancel</string>
     <string name="save">Save</string>
     <string name="edit_space">Edit </string>
-    
+
     <!-- MainActivity -->
     <string name="action_settings">Settings</string>
     <string name="locations">Locations</string>
@@ -26,7 +26,7 @@
     <string name="equipment">Equipment</string>
     <string name="friends">Friends</string>
     <string name="stats">Stats</string>
-    
+
     <!-- Locations -->
     <string name="title_activity_locations">Locations</string>
     <string name="title_activity_locations_detail">Locations</string>
@@ -45,8 +45,7 @@
     <string name="delete_location_confirmation">Do you really want to delete this location?</string>
     <string name="empty_locationlist">You don\'t have any saved locations. Let\'s go explore and add some!</string>
     <string name="no_location_name_specified">If you want to save a location, give it a name first!</string>
-    
-    
+
     <!-- Deadlines -->
     <string name="title_activity_deadlines">Deadlines</string>
     <string name="title_activity_deadlines_detail">Deadline Details</string>
@@ -67,7 +66,7 @@
     <string name="showing_until">Showing deadlines until</string>
     <string name="press_for_more">Press for more&#8230;</string>
     <string name="no_deadline_notes">(No notes for this deadline)</string>
-    
+
     <!-- Equipment -->
     <string name="title_activity_equipment">Equipment</string>
     <string name="title_activity_equipment_detail">Equipment Details</string>
@@ -87,7 +86,7 @@
     <string name="already_lent">Equipment already lent!</string>
     <string name="equipment_back">is back in your inventory.</string>
     <string name="equipment_lent">is now lent to</string>
-    
+
     <!-- Friends -->
     <string name="title_activity_friends"></string>
     <string name="title_activity_friends_detail">Friends</string>
@@ -109,10 +108,16 @@
     <string name="lend_equipment">Lend equipment</string>
     <string name="no_lent_to">Huh. No friend has any of your gear!</string>
     <string name="empty_friendlist">No friends in the database. Import some of your contacts or add new friends!</string>
-    
+
     <!-- Stats -->
     <string name="title_activity_stats">Stats</string>
     <string name="focal_length_stats">Focal Length Stats</string>
     <string name="location_stats">Location Stats</string>
+    <string name="googledrive_sign_in">Sign in to Google Drive</string>
+    <string name="need_to_sign_in">You need to sign to view the stats about stored Photos.</string>
+    <string name="sign_in">Sign in</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_activity_focal_length_stats">FocalLengthStatsActivity</string>
+    <string name="title_activity_location_stats">LocationStatsActivity</string>
 
 </resources>

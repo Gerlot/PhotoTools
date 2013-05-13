@@ -34,6 +34,12 @@ public class LocationsMapActivity extends SherlockFragmentActivity {
 			if (singleLocation_) {
 				location_ = getIntent().getExtras().getParcelable(
 						LocationsDetailFragment.KEY_LOCATION);
+				if (location_ != null) {
+					setTitle(location_.getName());
+				}
+				else {
+					setTitle("Select on map");
+				}
 			}
 		}
 		else if (savedInstanceState != null) {

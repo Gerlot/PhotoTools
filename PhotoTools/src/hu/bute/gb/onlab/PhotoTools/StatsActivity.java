@@ -1,6 +1,8 @@
 package hu.bute.gb.onlab.PhotoTools;
 
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
+import hu.bute.gb.onlab.PhotoTools.fragment.SignInRequiredDialog;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -8,12 +10,21 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class StatsActivity extends SherlockFragmentActivity {
+	
+	public static final int REQUEST_ACCOUNT_PICKER = 1;
 
 	private SlidingMenu menu;
 	private ListView list;
+	private static Drive service;
+	private GoogleAccountCredential credential;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +50,10 @@ public class StatsActivity extends SherlockFragmentActivity {
 				.replace(R.id.menu_frame, MenuListFragment.newInstance(4, menu)).commit();
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		SignInRequiredDialog dialog = SignInRequiredDialog.newInstance(this);
+		dialog.show(getSupportFragmentManager(), "Sign in to Google Drive required");
+		
 	}
 
 	@Override
@@ -47,6 +62,24 @@ public class StatsActivity extends SherlockFragmentActivity {
 		// Close Sliding menu if it was open
 		if (menu != null) {
 			menu.showContent(false);
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			switch (requestCode) {
+			 case REQUEST_ACCOUNT_PICKER:
+				 if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
+				        String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+				        if (accountName != null) {
+				          credential.setSelectedAccountName(accountName);
+				          service = getDriveService(credential);
+				        }
+				 }
+				 break;
+			
+			}
 		}
 	}
 
@@ -64,5 +97,15 @@ public class StatsActivity extends SherlockFragmentActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	public void signIn(){
+		credential = GoogleAccountCredential.usingOAuth2(this, DriveScopes.DRIVE);
+		startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+	}
+	
+	private Drive getDriveService(GoogleAccountCredential credential) {
+	    return new Drive.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential)
+	        .build();
+	  }
 
 }

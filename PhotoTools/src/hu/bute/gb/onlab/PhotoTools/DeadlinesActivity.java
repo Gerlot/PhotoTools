@@ -21,7 +21,6 @@ import com.slidingmenu.lib.SlidingMenu;
 
 public class DeadlinesActivity extends SherlockFragmentActivity {
 
-	//public List<Long> deadlinesOnView = new ArrayList<Long>();
 	public static final int DEADLINE_DELETE = 1;
 	public static final int DEADLINE_ADD = 2;
 	

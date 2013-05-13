@@ -143,6 +143,10 @@ public class LocationsDetailFragment extends SherlockFragment {
 			checkBoxCarEntry_.setChecked(location_.hasCarEntry());
 			checkBoxPowerSource_.setChecked(location_.hasPowerSource());
 			textViewNotes_.setText(location_.getNotes());
+			
+			ArrayList<Location> locations = new ArrayList<Location>();
+			locations.add(location_);
+			locationsMapFragment_ = LocationsMapFragment.newInstance(false, false, locations);
 		}
 	}
 

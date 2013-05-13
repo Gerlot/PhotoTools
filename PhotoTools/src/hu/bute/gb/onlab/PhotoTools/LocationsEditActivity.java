@@ -140,6 +140,12 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 			geocodeTask_.cancel(false);
 		}
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		//locationsMapFragment_ = LocationsMapFragment.newInstance(false, false, locations);
+	}
 
 	private void saveLocation() {
 
@@ -243,6 +249,22 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 						.show();
 				editTextLatitude_.setText(Double.toString(latitude));
 				editTextLongitude_.setText(Double.toString(longitude));
+				ArrayList<Location> locations = new ArrayList<Location>();
+				Location location = null;
+				if (location_ != null) {
+					location = location_;
+				}
+				else {
+					location = new Location(100, "", "", null, false, false, "");
+				}
+				location.setCoordinate(new Coordinate(latitude, longitude));
+				locations.add(location);
+				locationsMapFragment_ = LocationsMapFragment.newInstance(false, false, locations);
+			}
+			else {
+				Toast.makeText(LocationsEditActivity.this,
+						"Can't get coordinates.", Toast.LENGTH_SHORT)
+						.show();
 			}
 
 			geocodeTask_ = null;
