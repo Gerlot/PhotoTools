@@ -86,10 +86,12 @@ public class DeadlinesDetailActivity extends SlidingFragmentActivity {
 			switch (requestCode) {
 			case DEADLINE_EDIT:
 				if (resultCode == RESULT_OK) {
-					Deadline deadline = data
-							.getParcelableExtra(DeadlinesDetailFragment.KEY_DEADLINE);
-					selectedDeadline_ = deadline;
-					detailFragment_.onDeadlineChanged(deadline);
+					if (detailFragment_ != null) {
+						Deadline deadline = data
+								.getParcelableExtra(DeadlinesDetailFragment.KEY_DEADLINE);
+						selectedDeadline_ = deadline;
+						detailFragment_.onDeadlineChanged(deadline);
+					}
 				}
 				break;
 			}

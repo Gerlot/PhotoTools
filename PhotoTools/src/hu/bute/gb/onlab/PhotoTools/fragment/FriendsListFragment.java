@@ -31,6 +31,9 @@ public class FriendsListFragment extends SherlockListFragment {
 
 	// Log tag
 	public static final String TAG = "FriendsListFragment";
+	public static final String KEY_ISALLSELECTED = "isAllSelected";
+	public static final String KEY_ISEMPTY = "isEmpty";
+	
 	public String searchFilter = null;
 	public SeparatedListAdapter listAdapter = null;
 	public boolean isAllSelected = true;
@@ -57,6 +60,11 @@ public class FriendsListFragment extends SherlockListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if (savedInstanceState != null) {
+			isAllSelected = savedInstanceState.getBoolean(KEY_ISALLSELECTED);
+			isEmpty = savedInstanceState.getBoolean(KEY_ISEMPTY);
+		}
 
 		broadcastManager = LocalBroadcastManager.getInstance(getActivity());
 		databaseLoader = PhotoToolsApplication.getDatabaseLoader();
@@ -113,8 +121,10 @@ public class FriendsListFragment extends SherlockListFragment {
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
 		outState.putInt("selectedPosition", selectedPosition_);
+		outState.putBoolean(KEY_ISALLSELECTED, isAllSelected);
+		outState.putBoolean(KEY_ISEMPTY, isEmpty);
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override

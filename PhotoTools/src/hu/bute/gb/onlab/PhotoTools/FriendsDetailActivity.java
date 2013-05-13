@@ -78,16 +78,18 @@ public class FriendsDetailActivity extends SlidingFragmentActivity {
 		super.onResume();
 		getSlidingMenu().showContent(false);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data != null) {
 			switch (requestCode) {
 			case FRIEND_EDIT:
 				if (resultCode == RESULT_OK) {
-					Friend friend = data.getParcelableExtra(FriendsDetailFragment.KEY_FRIEND);
-					selectedFriend_ = friend;
-					detailFragment_.onFriendChanged(friend);
+					if (detailFragment_ != null) {
+						Friend friend = data.getParcelableExtra(FriendsDetailFragment.KEY_FRIEND);
+						selectedFriend_ = friend;
+						detailFragment_.onFriendChanged(friend);
+					}
 				}
 				break;
 			}

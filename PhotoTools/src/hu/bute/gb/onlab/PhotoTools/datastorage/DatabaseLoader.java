@@ -1,14 +1,14 @@
 package hu.bute.gb.onlab.PhotoTools.datastorage;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import hu.bute.gb.onlab.PhotoTools.entities.Deadline;
 import hu.bute.gb.onlab.PhotoTools.entities.Equipment;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.helpers.Coordinate;
 import hu.bute.gb.onlab.PhotoTools.helpers.DeadlineDay;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 import org.joda.time.DateTime;
 
@@ -17,7 +17,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DatabaseLoader {
 
@@ -478,7 +477,7 @@ public class DatabaseLoader {
 			}
 			String first = cursor
 					.getString(cursor.getColumnIndex(DbConstants.Friend.KEY_FIRSTNAME)).substring(
-							0, 1);
+							0, 1).toUpperCase();
 			if (!result.contains(first)) {
 				result.add(first);
 			}

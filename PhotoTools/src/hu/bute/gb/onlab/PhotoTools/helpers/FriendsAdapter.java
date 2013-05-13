@@ -12,7 +12,6 @@ import java.util.List;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +44,6 @@ public class FriendsAdapter extends CursorAdapter {
 
 		if (cursor != null) {
 			Friend friend = DatabaseLoader.getFriendByCursor(cursor);
-			if (friend.getLentItems() == null) {
-				Log.d("friend", friend.getFullNameFirstLast() + "null");
-			}
 			title.setText(friend.getFullNameFirstLast());
 			if (friend.hasLentItems() && showSign) {
 				sign.setVisibility(View.VISIBLE);

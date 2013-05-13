@@ -4,6 +4,7 @@ import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsListFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
+import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment.ILocationsDetailFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -21,7 +22,7 @@ import com.actionbarsherlock.widget.SearchView;
 import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
 import com.slidingmenu.lib.SlidingMenu;
 
-public class LocationsActivity extends SherlockFragmentActivity {
+public class LocationsActivity extends SherlockFragmentActivity implements ILocationsDetailFragment  {
 
 	//public List<Long> locationsOnView = new ArrayList<Long>();
 	public static final int LOCATION_DELETE = 1;
@@ -126,7 +127,7 @@ public class LocationsActivity extends SherlockFragmentActivity {
 		case R.id.action_nearby_locations:
 			Intent mapIntent = new Intent();
 			mapIntent.setClass(LocationsActivity.this, LocationsMapActivity.class);
-			mapIntent.putExtra("edit", false);
+			mapIntent.putExtra(LocationsMapActivity.KEY_SINGLELOCATION, false);
 			startActivity(mapIntent);
 			return true;
 		case R.id.action_new_location:
@@ -175,6 +176,15 @@ public class LocationsActivity extends SherlockFragmentActivity {
 			}
 		});
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public void showOnMap(Location location) {
+		Intent mapIntent = new Intent();
+		mapIntent.setClass(LocationsActivity.this, LocationsMapActivity.class);
+		mapIntent.putExtra(LocationsMapActivity.KEY_SINGLELOCATION, true);
+		mapIntent.putExtra(LocationsDetailFragment.KEY_LOCATION, location);
+		startActivity(mapIntent);
 	}
 
 }

@@ -5,6 +5,7 @@ import hu.bute.gb.onlab.PhotoTools.datastorage.DatabaseLoader;
 import hu.bute.gb.onlab.PhotoTools.entities.Location;
 import hu.bute.gb.onlab.PhotoTools.fragment.DeleteLocationDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment;
+import hu.bute.gb.onlab.PhotoTools.fragment.LocationsDetailFragment.ILocationsDetailFragment;
 import hu.bute.gb.onlab.PhotoTools.fragment.MenuListFragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
-public class LocationsDetailActivity extends SlidingFragmentActivity {
+public class LocationsDetailActivity extends SlidingFragmentActivity implements ILocationsDetailFragment {
 	
 	public static final int LOCATION_EDIT = 3;
 
@@ -70,8 +71,8 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
 		outState.putParcelable(LocationsDetailFragment.KEY_LOCATION, selectedLocation_);
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override
@@ -86,9 +87,11 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 			switch (requestCode) {
 			case LOCATION_EDIT:
 				if (resultCode == RESULT_OK) {
-					Location location = data.getParcelableExtra(LocationsDetailFragment.KEY_LOCATION);
-					selectedLocation_ = location;
-					detailFragment_.onLocationChanged(location);
+					if (detailFragment_ != null) {
+						Location location = data.getParcelableExtra(LocationsDetailFragment.KEY_LOCATION);
+						selectedLocation_ = location;
+						detailFragment_.onLocationChanged(location);
+					}
 				}
 				break;
 			}
@@ -136,6 +139,15 @@ public class LocationsDetailActivity extends SlidingFragmentActivity {
 		returnIntent.putExtra("deleted", selectedLocation_.getID());
 		setResult(RESULT_OK, returnIntent);
 		finish();
+	}
+
+	@Override
+	public void showOnMap(Location location) {
+		Intent mapIntent = new Intent();
+		mapIntent.setClass(LocationsDetailActivity.this, LocationsMapActivity.class);
+		mapIntent.putExtra(LocationsMapActivity.KEY_SINGLELOCATION, true);
+		mapIntent.putExtra(LocationsDetailFragment.KEY_LOCATION, location);
+		startActivity(mapIntent);
 	}
 
 }

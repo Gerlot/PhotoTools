@@ -15,7 +15,21 @@
         <FrameLayout
             android:id="@+id/mapFragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="140dp" />
+            android:layout_height="140dp" >
+
+            <fragment
+                android:id="@+id/locations_map_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                class="hu.bute.gb.onlab.PhotoTools.fragment.LocationsMapFragment"
+                android:tag="LocationsMapFragment" />
+
+            <View
+                android:id="@+id/viewMap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/textViewAddressLabel"

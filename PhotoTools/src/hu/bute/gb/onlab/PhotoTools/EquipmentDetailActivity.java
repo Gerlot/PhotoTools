@@ -15,7 +15,7 @@ import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class EquipmentDetailActivity extends SlidingFragmentActivity {
-	
+
 	public static final int EQUIPMENT_EDIT = 3;
 
 	private Equipment selectedEquipment_;
@@ -77,16 +77,19 @@ public class EquipmentDetailActivity extends SlidingFragmentActivity {
 		super.onResume();
 		getSlidingMenu().showContent(false);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data != null) {
 			switch (requestCode) {
 			case EQUIPMENT_EDIT:
 				if (resultCode == RESULT_OK) {
-					Equipment equipment = data.getParcelableExtra(EquipmentDetailFragment.KEY_EQUIPMENT);
-					selectedEquipment_ = equipment;
-					detailFragment_.onEquipmentChanged(equipment);
+					if (detailFragment_ != null) {
+						Equipment equipment = data
+								.getParcelableExtra(EquipmentDetailFragment.KEY_EQUIPMENT);
+						selectedEquipment_ = equipment;
+						detailFragment_.onEquipmentChanged(equipment);
+					}
 				}
 				break;
 			}

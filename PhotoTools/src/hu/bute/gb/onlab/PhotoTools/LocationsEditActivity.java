@@ -8,13 +8,18 @@ import hu.bute.gb.onlab.PhotoTools.fragment.LocationsMapFragment;
 import hu.bute.gb.onlab.PhotoTools.helpers.Coordinate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -42,10 +47,13 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 	private CheckBox checkBoxCarEntry_;
 	private CheckBox checkBoxPowerSource_;
 	private EditText editTextNotes_;
-	
+
 	private ViewGroup fragmentContainer_;
+	private View viewMap_;
 	private FragmentManager fragmentManager_;
 	private LocationsMapFragment locationsMapFragment_;
+
+	private GeocodeTask geocodeTask_ = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +77,23 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 		textViewTitle_ = (TextView) findViewById(R.id.textViewTitle);
 		editTextName_ = (EditText) findViewById(R.id.editTextName);
 		editTextAddress_ = (EditText) findViewById(R.id.editTextAddress);
+		editTextAddress_.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (!hasFocus) {
+					Toast.makeText(LocationsEditActivity.this,
+							"Getting coordinates from address.", Toast.LENGTH_SHORT)
+							.show();
+					if (geocodeTask_ != null) {
+						geocodeTask_.cancel(false);
+					}
+					geocodeTask_ = new GeocodeTask();
+					geocodeTask_.execute();
+				}
+			}
+		});
+
 		editTextLatitude_ = (EditText) findViewById(R.id.editTextLatitude);
 		editTextLongitude_ = (EditText) findViewById(R.id.editTextLongitude);
 		checkBoxCarEntry_ = (CheckBox) findViewById(R.id.checkBoxCarEntry);
@@ -78,10 +103,9 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 		ArrayList<Location> locations = null;
 		if (getIntent().getExtras().getBoolean(KEY_EDIT)) {
 			editMode_ = true;
-			location_ = getIntent().getExtras().getParcelable(
-					LocationsDetailFragment.KEY_LOCATION);
+			location_ = getIntent().getExtras().getParcelable(LocationsDetailFragment.KEY_LOCATION);
 			textViewTitle_.setText("Edit " + location_.getName());
-			
+
 			locations = new ArrayList<Location>();
 			locations.add(location_);
 
@@ -93,12 +117,28 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 			checkBoxPowerSource_.setChecked(location_.hasPowerSource());
 			editTextNotes_.setText(location_.getNotes());
 		}
-		
-		locationsMapFragment_ = LocationsMapFragment.newInstance(false, locations);
-		FragmentTransaction fragmentTransaction = fragmentManager_.beginTransaction();
-		fragmentTransaction.replace(R.id.mapFragmentContainer, locationsMapFragment_);
-		fragmentTransaction.commit();
 
+		locationsMapFragment_ = LocationsMapFragment.newInstance(false, false, locations);
+		viewMap_ = findViewById(R.id.viewMap);
+		viewMap_.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent mapIntent = new Intent();
+				mapIntent.setClass(LocationsEditActivity.this, LocationsMapActivity.class);
+				mapIntent.putExtra(LocationsMapActivity.KEY_SINGLELOCATION, true);
+				mapIntent.putExtra(LocationsDetailFragment.KEY_LOCATION, location_);
+				startActivity(mapIntent);
+			}
+		});
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (geocodeTask_ != null) {
+			geocodeTask_.cancel(false);
+		}
 	}
 
 	private void saveLocation() {
@@ -158,6 +198,54 @@ public class LocationsEditActivity extends SherlockFragmentActivity {
 			}
 			setResult(RESULT_OK, returnIntent);
 			finish();
+		}
+	}
+
+	// Background task for geocoding
+	private class GeocodeTask extends AsyncTask<Void, Void, List<Address>> {
+		private static final String TAG = "GeocodeTask";
+
+		@Override
+		protected List<Address> doInBackground(Void... params) {
+			String address = editTextAddress_.getText().toString();
+			Geocoder geocoder = new Geocoder(LocationsEditActivity.this);
+			try {
+				List<Address> result = geocoder.getFromLocationName(address, 1);
+				if (!isCancelled()) {
+					return result;
+				}
+				else {
+					Log.d(TAG, "Cancelled");
+					return null;
+				}
+			}
+			catch (Exception e) {
+				return null;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(List<Address> result) {
+			super.onPostExecute(result);
+			double latitude = -1;
+			double longitude = -1;
+			if (result != null && result.size() != 0) {
+				latitude = result.get(0).getLatitude();
+				longitude = result.get(0).getLongitude();
+			}
+			else {
+				Log.d("location", "error");
+			}
+			
+			if (latitude != -1 && longitude != -1) {
+				Toast.makeText(LocationsEditActivity.this,
+						"Coordinates set.", Toast.LENGTH_SHORT)
+						.show();
+				editTextLatitude_.setText(Double.toString(latitude));
+				editTextLongitude_.setText(Double.toString(longitude));
+			}
+
+			geocodeTask_ = null;
 		}
 	}
 }

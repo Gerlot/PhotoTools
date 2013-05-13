@@ -1,6 +1,6 @@
 package hu.bute.gb.onlab.PhotoTools;
 
-import hu.bute.gb.onlab.PhotoTools.datastorage.DummyModel;
+import hu.bute.gb.onlab.PhotoTools.application.PhotoToolsApplication;
 import hu.bute.gb.onlab.PhotoTools.entities.Friend;
 import hu.bute.gb.onlab.PhotoTools.fragment.AddFriendMethodDialog;
 import hu.bute.gb.onlab.PhotoTools.fragment.FriendsDetailFragment;
@@ -228,14 +228,11 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 					// Show toast
 					Toast.makeText(
 							FriendsActivity.this,
-							"Added: " + firstName + " " + lastName + " - " + number + " - " + email
-									+ " - " + address, Toast.LENGTH_LONG).show();
+							"Added " + firstName + " " + lastName, Toast.LENGTH_LONG).show();
 					// Add friend
-					Friend firendToAdd = new Friend(
-							DummyModel.getInstance().friendId.getAndIncrement(), firstName,
-							lastName, number, email, address, null, false);
-					// TODO add friend
-					// DummyModel.getInstance().addFriend(firendToAdd);
+					Friend firendToAdd = new Friend(100, firstName, lastName, number, email,
+							address, null, false);
+					PhotoToolsApplication.getDatabaseLoader().addFriend(firendToAdd);
 				}
 				break;
 			}
@@ -260,7 +257,6 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 		switch (itemPosition) {
 		case 0:
 			if (!friendsListFragment_.isAllSelected) {
-				// friendsListFragment_.allFriendsSelected(null);
 				friendsListFragment_.isAllSelected = true;
 				friendsListFragment_.refreshList();
 				return true;
@@ -268,7 +264,6 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 			break;
 		case 1:
 			if (friendsListFragment_.isAllSelected) {
-				// friendsListFragment_.lentToSelected(null);
 				friendsListFragment_.isAllSelected = false;
 				friendsListFragment_.refreshList();
 				return true;
@@ -303,30 +298,30 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.friends, menu);
-		
+
 		SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 		searchView.setOnQueryTextListener(new OnQueryTextListener() {
-			
+
 			@Override
 			public boolean onQueryTextSubmit(String query) {
 				return false;
 			}
-			
+
 			@Override
 			public boolean onQueryTextChange(String newText) {
 				friendsListFragment_.search(newText);
 				return false;
 			}
 		});
-		
+
 		searchItem_ = (MenuItem) menu.getItem(0);
 		searchItem_.setOnActionExpandListener(new OnActionExpandListener() {
-			
+
 			@Override
 			public boolean onMenuItemActionExpand(MenuItem item) {
 				return true;
 			}
-			
+
 			@Override
 			public boolean onMenuItemActionCollapse(MenuItem item) {
 				friendsListFragment_.searchFilter = null;
@@ -334,46 +329,6 @@ public class FriendsActivity extends SherlockFragmentActivity implements OnNavig
 				return true;
 			}
 		});
-
-		/*final EditText editTextSearch = (EditText) menu.findItem(R.id.action_search)
-				.getActionView();
-		editTextSearch.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-				// friendsListFragment_.search(charSequence);
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-			}
-		});
-
-		MenuItem searchItem = (MenuItem) menu.getItem(0);
-		searchItem.setOnActionExpandListener(new OnActionExpandListener() {
-
-			@Override
-			public boolean onMenuItemActionExpand(MenuItem item) {
-				editTextSearch.requestFocus();
-				return true;
-			}
-
-			@Override
-			public boolean onMenuItemActionCollapse(MenuItem item) {
-				editTextSearch.setText("");
-				if (friendsListFragment_.isAllSelected) {
-					// friendsListFragment_.allFriendsSelected(null);
-				}
-				else {
-					// friendsListFragment_.lentToSelected(null);
-				}
-				return true;
-			}
-		});*/
 
 		return super.onCreateOptionsMenu(menu);
 	}

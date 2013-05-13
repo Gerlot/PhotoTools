@@ -43,8 +43,8 @@ public class LocationsListFragment extends SherlockListFragment {
 	private LocalBroadcastManager broadcastManager;
 
 	// DBloader
-	private DatabaseLoader databaseLoader;
-	private GetAllTask getAllTask;
+	private DatabaseLoader databaseLoader_;
+	private GetAllTask getAllTask_;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -57,7 +57,7 @@ public class LocationsListFragment extends SherlockListFragment {
 		super.onCreate(savedInstanceState);
 		
 		broadcastManager = LocalBroadcastManager.getInstance(getActivity());
-		databaseLoader = PhotoToolsApplication.getDatabaseLoader();
+		databaseLoader_ = PhotoToolsApplication.getDatabaseLoader();
 	}
 
 	@Override
@@ -66,26 +66,6 @@ public class LocationsListFragment extends SherlockListFragment {
 		
 		ListView listView = getListView();
 		listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
-
-		/*		ListView listView = getListView();
-		listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
-		listView.setSelection(selectedPosition_);
-		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				if (!isEmpty && actionMode_ == null) {
-					getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-					listAdapter = new ArrayAdapter<String>(getActivity(),
-							android.R.layout.simple_list_item_multiple_choice);
-					setListAdapter(listAdapter);
-					populateList();
-					actionMode_ = getSherlockActivity().startActionMode(new SelectActionMode());
-					return true;
-				}
-				return false;
-			}
-		});*/
 	}
 
 	@Override
@@ -106,8 +86,8 @@ public class LocationsListFragment extends SherlockListFragment {
 		super.onPause();
 		// Kiregisztraljuk az adatbazis modosulasara figyelmezteto Receiver-t
 		broadcastManager.unregisterReceiver(updateDatabaseReceiver);
-		if (getAllTask != null) {
-			getAllTask.cancel(false);
+		if (getAllTask_ != null) {
+			getAllTask_.cancel(false);
 		}
 	}
 	
@@ -141,12 +121,6 @@ public class LocationsListFragment extends SherlockListFragment {
 		activity_ = null;
 	}
 
-	public void addPlaceHolderText() {
-		//ArrayAdapter<String> emptyAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
-		//listAdapter.add
-		//listAdapter.add(getResources().getString(R.string.empty_locationlist));
-	}
-
 	public void search(String queryString) {
 		searchFilter = queryString.toLowerCase();
 		refreshList();
@@ -175,35 +149,18 @@ public class LocationsListFragment extends SherlockListFragment {
 
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
-			/*actionMode_ = null;
-			getListView().setChoiceMode(ListView.CHOICE_MODE_NONE);
-			listAdapter = new ArrayAdapter<String>(getActivity(),
-					android.R.layout.simple_list_item_1);
-			setListAdapter(listAdapter);
-			populateList();*/
 		}
 	}
-
-	/*public void populateList() {
-		for (Location location : model_.locations) {
-			listAdapter.add(location.getName());
-			activity_.locationsOnView.add(Long.valueOf(location.getID()));
-			isEmpty = false;
-		}
-		if (isEmpty) {
-			addPlaceHolderText();
-		}
-	}*/
 	
 	public void refreshList() {
-		if (getAllTask != null) {
-			getAllTask.cancel(false);
+		if (getAllTask_ != null) {
+			getAllTask_.cancel(false);
 		}
-		getAllTask = new GetAllTask();
-		getAllTask.execute();
+		getAllTask_ = new GetAllTask();
+		getAllTask_.execute();
 	}
 	
-	
+	// Background task for getting locations from database
 	private class GetAllTask extends AsyncTask<Void, Void, Cursor> {
 		private static final String TAG = "GetAllTask";
 
@@ -212,10 +169,10 @@ public class LocationsListFragment extends SherlockListFragment {
 			try {
 				Cursor result = null;
 				if (searchFilter != null) {
-					result = databaseLoader.getLocationByFilter(searchFilter);
+					result = databaseLoader_.getLocationByFilter(searchFilter);
 				}
 				else {
-					result = databaseLoader.getAllLocations();
+					result = databaseLoader_.getAllLocations();
 				}
 				if (!isCancelled()) {
 					return result;
@@ -247,7 +204,7 @@ public class LocationsListFragment extends SherlockListFragment {
 					else {
 						listAdapter.changeCursor(result);
 					}
-					getAllTask = null;
+					getAllTask_ = null;
 				}
 				catch (Exception e) {
 				}

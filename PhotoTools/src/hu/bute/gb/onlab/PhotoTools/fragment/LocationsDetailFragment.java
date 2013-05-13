@@ -9,9 +9,10 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -21,9 +22,10 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 public class LocationsDetailFragment extends SherlockFragment {
 
+	public static final String TAG = "LocationsDetailFragment";
 	public static final String KEY_LOCATION = "location";
 
-	private Activity activity_;
+	private ILocationsDetailFragment activity_;
 	private Location location_;
 	private boolean tabletSize_ = false;
 
@@ -34,8 +36,9 @@ public class LocationsDetailFragment extends SherlockFragment {
 	private CheckBox checkBoxCarEntry_;
 	private CheckBox checkBoxPowerSource_;
 	private TextView textViewNotes_;
-	
+
 	private ViewGroup fragmentContainer_;
+	private View viewMap_;
 	private FragmentManager fragmentManager_;
 	private LocationsMapFragment locationsMapFragment_;
 
@@ -58,7 +61,12 @@ public class LocationsDetailFragment extends SherlockFragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		activity_ = activity;
+		try {
+			activity_ = (ILocationsDetailFragment) activity;
+		}
+		catch (ClassCastException classCastException) {
+			Log.e(TAG, "Parent Activity is not appropriate!");
+		}
 	}
 
 	@Override
@@ -83,15 +91,21 @@ public class LocationsDetailFragment extends SherlockFragment {
 			return null;
 		}
 		View view = inflater.inflate(R.layout.fragment_locations_detail, container, false);
-		
-		fragmentContainer_ = (ViewGroup) view.findViewById(R.id.mapFragmentContainer);
+
 		fragmentManager_ = getChildFragmentManager();
 		ArrayList<Location> locations = new ArrayList<Location>();
 		locations.add(location_);
-		locationsMapFragment_ = LocationsMapFragment.newInstance(false, locations);
-		FragmentTransaction fragmentTransaction = fragmentManager_.beginTransaction();
-		fragmentTransaction.replace(R.id.mapFragmentContainer, locationsMapFragment_);
-		fragmentTransaction.commit();
+		locationsMapFragment_ = LocationsMapFragment.newInstance(false, false, locations);
+
+		fragmentContainer_ = (ViewGroup) view.findViewById(R.id.mapFragmentContainer);
+		viewMap_ = view.findViewById(R.id.viewMap);
+		viewMap_.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				activity_.showOnMap(location_);
+			}
+		});
 
 		textViewAddress_ = (TextView) view.findViewById(R.id.textViewAddress);
 		textViewLatitude_ = (TextView) view.findViewById(R.id.textViewLatitude);
@@ -120,7 +134,7 @@ public class LocationsDetailFragment extends SherlockFragment {
 		if (location_ != null) {
 			// Set the activity title on phones
 			if (!tabletSize_) {
-				activity_.setTitle(location_.getName());
+				((Activity) activity_).setTitle(location_.getName());
 			}
 			textViewAddress_.setText(location_.getAddress());
 			Coordinate coordinate = location_.getCoordinate();
@@ -134,5 +148,10 @@ public class LocationsDetailFragment extends SherlockFragment {
 
 	public long getSelectedLocationId() {
 		return location_.getID();
+	}
+
+	// Listener interface
+	public interface ILocationsDetailFragment {
+		public void showOnMap(Location location);
 	}
 }
