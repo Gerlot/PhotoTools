@@ -117,7 +117,7 @@
     <string name="need_to_sign_in">You need to sign to view the stats about stored Photos.</string>
     <string name="sign_in">Sign in</string>
     <string name="cancel">Cancel</string>
-    <string name="title_activity_focal_length_stats">FocalLengthStatsActivity</string>
-    <string name="title_activity_location_stats">LocationStatsActivity</string>
+    <string name="title_activity_focal_length_stats">Focal Length Stats</string>
+    <string name="title_activity_location_stats">Location Stats</string>
 
 </resources>
