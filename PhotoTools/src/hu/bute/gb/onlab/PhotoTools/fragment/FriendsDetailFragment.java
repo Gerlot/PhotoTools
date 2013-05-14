@@ -122,6 +122,25 @@ public class FriendsDetailFragment extends SherlockFragment {
 
 		textViewFriendPhone_ = (TextView) view.findViewById(R.id.textViewFriendPhone);
 		textViewFriendEmail_ = (TextView) view.findViewById(R.id.textViewFriendEmail);
+		textViewFriendEmail_.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent emailIntent = new Intent(Intent.ACTION_SEND);
+				emailIntent.setType("message/rfc822");
+				emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { textViewFriendEmail_.getText().toString() });
+				emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+				emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+				try {
+					startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+				}
+				catch (android.content.ActivityNotFoundException ex) {
+					Toast.makeText(getActivity(), "There are no email clients installed.",
+							Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
 		textViewFriendAddress_ = (TextView) view.findViewById(R.id.textViewFriendAddress);
 		textViewFriendLentLabel_ = (TextView) view.findViewById(R.id.textViewFriendLentLabel);
 		linearLayoutLentEquipment_ = (LinearLayout) view
