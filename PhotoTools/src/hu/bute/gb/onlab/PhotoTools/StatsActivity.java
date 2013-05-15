@@ -190,23 +190,11 @@ public class StatsActivity extends SherlockFragmentActivity {
 						FileList files = request.execute();
 						// Adding images to the list
 						photos.addAll(files.getItems());
-						/*
-						 * for (File file : photos) { Log.d("file",
-						 * file.getTitle()); Float focalLength =
-						 * file.getImageMediaMetadata().getFocalLength();
-						 * Location location =
-						 * file.getImageMediaMetadata().getLocation(); if
-						 * (location != null) { Log.d("file", "" +
-						 * location.getLatitude() + ", " +
-						 * location.getLongitude()); } if (focalLength != null)
-						 * { Log.d("file", "" +
-						 * file.getImageMediaMetadata().getFocalLength()); } }
-						 */
 						Log.d("file", "download completed");
 						request.setPageToken(files.getNextPageToken());
 					}
 					catch (IOException e) {
-						Log.d("file", "anyad3");
+						Log.d("file", "error3");
 						System.out.println("An error occurred: " + e);
 						request.setPageToken(null);
 					}

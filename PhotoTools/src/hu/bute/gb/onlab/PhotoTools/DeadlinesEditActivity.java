@@ -77,10 +77,12 @@ public class DeadlinesEditActivity extends SherlockFragmentActivity {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
 					// Set start time to midnight if all day selected
-					DateTime day = deadline_.getStartTime();
-					deadline_.setStartTime(new DateTime(day.getYear(), day.getMonthOfYear(), day
-							.getDayOfMonth(), 0, 0));
-					selectedStartTime_ = deadline_.getStartTime();
+					if (deadline_ != null) {
+						DateTime day = deadline_.getStartTime();
+						deadline_.setStartTime(new DateTime(day.getYear(), day.getMonthOfYear(), day
+								.getDayOfMonth(), 0, 0));
+						selectedStartTime_ = deadline_.getStartTime();
+					}
 
 					buttonStartTime_.setVisibility(View.GONE);
 					textViewSeparator_.setVisibility(View.GONE);

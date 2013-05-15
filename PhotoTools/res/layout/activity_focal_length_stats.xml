@@ -15,6 +15,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:textColor="@android:color/primary_text_light"
-        android:text="sdsdasdads" />
+        android:text="Most used focal lengthes:" />
+
+    <ListView
+        android:id="@+id/listViewFocalLengthes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView1" >
+
+    </ListView>
 
 </RelativeLayout>

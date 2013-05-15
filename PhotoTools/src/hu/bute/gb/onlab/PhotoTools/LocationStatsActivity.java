@@ -10,6 +10,7 @@ import java.util.List;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -36,11 +37,17 @@ public class LocationStatsActivity extends SherlockFragmentActivity {
 		locations_ = new ArrayList<Location>();
 		for (File file : photos) {
 			boolean add = true;
+			Log.d("file", file.getTitle());
 			com.google.api.services.drive.model.File.ImageMediaMetadata.Location locationTaken = file
 					.getImageMediaMetadata().getLocation();
 			if (locationTaken != null) {
+				Log.d("file", locationTaken.getLatitude() + ", " + locationTaken.getLongitude());
 				double latitude = locationTaken.getLatitude();
 				double longitude = locationTaken.getLongitude();
+				if (locations_.size() == 0) {
+					locations_.add(new Location(100, file.getTitle(), "", new Coordinate(
+							latitude, longitude), false, false, ""));
+				}
 				for (Location location : locations_) {
 					// Combine photos nearby
 					double locationLatitude = location.getCoordinate().getLatitude();

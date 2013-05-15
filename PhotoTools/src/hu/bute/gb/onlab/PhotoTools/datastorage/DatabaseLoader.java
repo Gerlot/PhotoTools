@@ -220,7 +220,9 @@ public class DatabaseLoader {
 					result.add(day);
 				}
 			}
-			Collections.sort(result);
+			if (result != null) {
+				Collections.sort(result);
+			}
 			cursor.close();
 		}
 		return result;
